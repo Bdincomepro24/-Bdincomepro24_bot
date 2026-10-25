@@ -1,66 +1,45 @@
 import os
-import logging
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
-from telegram.ext import Application, CommandHandler, ContextTypes
+import telebot
+from telebot import types
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+# আপনার বটের টোকেন
+BOT_TOKEN = "7963283287:AAHO4y9Ww2t8rW8WbL8O8W8bL8" # এখানে আপনার আসল বট টোকেন দিন
+bot = telebot.TeleBot(BOT_TOKEN)
 
-# Config
-BOT_TOKEN = "8841290203:AAHyF71CTbOf7Ptkx5wQgVOAk2rouMr6uz0"
-BOT_USERNAME = "Bdincomepro24_bot"
-# Replace with your new GitHub Pages or deployment URL
-MINI_APP_URL = "https://privetrostom08-rgb.github.io/pocket-income/index.html"
+# গিটহাব পেজের মিনি অ্যাপ লিংক
+WEB_APP_BASE_URL = "https://bdincomepro24.github.io/-Bdincomepro24_bot/index.html"
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user = update.effective_user
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    user_id = message.from_user.id
+    first_name = message.from_user.first_name or "ইউজার"
     
+    # রেফারার আইডি চেক করা (/start 12345678)
+    args = message.text.split()
     referrer_id = None
-    if context.args and len(context.args) > 0:
-        referrer_id = context.args[0]
-        logger.info(f"User {user.id} joined via referrer: {referrer_id}")
+    if len(args) > 1:
+        referrer_id = args[1].strip()
 
-    app_url = MINI_APP_URL
-    if referrer_id:
-        app_url = f"{MINI_APP_URL}?start={referrer_id}"
+    # মিনি অ্যাপ URL তৈরি করা (রেফারার সহ)
+    if referrer_id and str(referrer_id) != str(user_id):
+        app_url = f"{WEB_APP_BASE_URL}?start={referrer_id}"
+    else:
+        app_url = WEB_APP_BASE_URL
+
+    # ইনলাইন কিবোর্ড বাটন তৈরি
+    markup = types.InlineKeyboardMarkup()
+    web_app = types.WebAppInfo(url=app_url)
+    btn_play = types.InlineKeyboardButton(text="🚀 অ্যাপ ওপেন করুন ও ইনকাম করুন", web_app=web_app)
+    markup.add(btn_play)
 
     welcome_text = (
-        f"👋 **স্বাগতম, {user.first_name}!**\n\n"
-        f"✨ **পকেট খরচ ইনকাম করুন** বটে আপনাকে স্বাগতম।\n"
-        f"ইনভেস্ট ছাড়া খুব সহজে ছোট ছোট কাজ ও ভিডিও দেখে পকেট খরচ ইনকাম করুন।\n\n"
-        f"💰 **পেমেন্ট সুবিধা:** মাত্র ৫০ টাকা বা $10 হলেই বিকাশ, নগদ বা USDT-তে সরাসরি পেমেন্ট নিতে পারবেন।\n\n"
-        f"👇 কাজ শুরু করতে নিচের **'🚀 ওপেন অ্যাপ'** বাটনে চাপ দিন:"
+        f"স্বাগতম, {first_name}!\n\n"
+        f"আমাদের মিনি অ্যাপে ভিডিও দেখে, গণিত সমাধান করে এবং স্পিন ঘুরিয়ে প্রতিদিন পকেট খরচ আয় করুন।\n\n"
+        f"নিচের বাটনে ক্লিক করে কাজ শুরু করুন 👇"
     )
 
-    keyboard = [
-        [
-            InlineKeyboardButton(
-                "🚀 ওপেন অ্যাপ (কাজ শুরু করুন)", 
-                web_app=WebAppInfo(url=app_url)
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                "👥 বন্ধুদের ইনভাইট করুন", 
-                url=f"https://t.me/share/url?url=https://t.me/{BOT_USERNAME}?start={user.id}&text={user.first_name}%20আপনাকে%20ইনভাইট%20করেছে!%20ছোট%20কাজ%20করে%20পকেট%20খরচ%20ইনকাম%20করুন।"
-            )
-        ]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    bot.send_message(message.chat.id, welcome_text, reply_markup=markup)
 
-    await update.message.reply_text(
-        text=welcome_text,
-        reply_markup=reply_markup,
-        parse_mode="Markdown"
-    )
-
-def main():
-    application = Application.builder().token(BOT_TOKEN).build()
-    application.add_handler(CommandHandler("start", start))
-    logger.info("Bot is running...")
-    application.run_polling(drop_pending_updates=True)
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    print("Bot is running...")
+    bot.infinity_polling()
