@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -66,11 +66,11 @@
         <div id="tab-home" class="tab-content space-y-4">
             
             <div class="balance-card-gradient rounded-3xl p-5 text-white shadow-xl relative overflow-hidden">
-                <p class="text-xs font-semibold text-blue-100 uppercase tracking-wider">Total Balance</p>
+                <p class="text-xs font-semibold text-blue-100 uppercase tracking-wider">মোট ব্যালেন্স</p>
                 <div class="flex items-baseline space-x-1.5 my-1.5">
-                    <span class="text-yellow-300 text-2xl font-black">$</span>
+                    <span class="text-yellow-300 text-3xl font-black">৳</span>
                     <span class="text-4xl font-extrabold tracking-tight" id="homeBalance">0.00</span>
-                    <span class="text-xs text-blue-100 font-bold">USD</span>
+                    <span class="text-xs text-blue-100 font-bold">BDT</span>
                 </div>
                 
                 <div class="w-full bg-blue-900/40 h-2 rounded-full overflow-hidden mt-2 mb-4">
@@ -79,7 +79,7 @@
 
                 <button onclick="openModal('withdrawModal')" class="w-full withdraw-banner-btn text-white py-2.5 rounded-2xl font-bold text-xs flex items-center justify-center space-x-2 transition active:scale-95">
                     <span>🔔</span>
-                    <span>Withdraw from minimum $10.00!</span>
+                    <span>সর্বনিম্ন ৫০ টাকা হলে উত্তোলন করুন!</span>
                 </button>
             </div>
 
@@ -125,7 +125,7 @@
                     </div>
                     <div>
                         <h4 class="font-extrabold text-xs text-slate-800 tracking-wide">FRESH VIDEOS</h4>
-                        <p class="text-[10px] text-slate-500">Watch & earn extra cash daily</p>
+                        <p class="text-[10px] text-slate-500">প্রতিদিন ভিডিও দেখে আয় করুন</p>
                     </div>
                 </div>
                 <button onclick="switchTab('tab-tasks', 2)" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-2 rounded-xl shadow-md active:scale-95 transition">Watch Now</button>
@@ -135,9 +135,9 @@
 
         <!-- Tab: Tasks / Videos -->
         <div id="tab-tasks" class="tab-content hidden space-y-3">
-            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">Watch Videos & Complete Tasks</h3>
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">ভিডিও দেখুন এবং টাকা ইনকাম করুন</h3>
             <div id="jobsList" class="space-y-2.5">
-                <div class="glass-box p-4 text-center text-xs text-slate-500 rounded-2xl">Loading videos/tasks...</div>
+                <div class="glass-box p-4 text-center text-xs text-slate-500 rounded-2xl">কাজ লোড হচ্ছে...</div>
             </div>
         </div>
 
@@ -147,28 +147,28 @@
                 <div class="w-12 h-12 mx-auto rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl">
                     <i class="fa-solid fa-users"></i>
                 </div>
-                <h3 class="text-lg font-black text-white">Invite Friends & Earn</h3>
-                <p class="text-xs text-slate-300">Share your link and earn $1.00 for every invited friend!</p>
+                <h3 class="text-lg font-black text-white">বন্ধুদের ইনভাইট করুন</h3>
+                <p class="text-xs text-slate-300">প্রতিটি সফল রেফারে সরাসরি ব্যালেন্সে টাকা বোনাস পান!</p>
                 
                 <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 flex justify-around">
                     <div>
                         <p class="text-xl font-black text-emerald-400" id="refCount">0</p>
-                        <p class="text-[10px] text-slate-400 uppercase font-semibold">Total Referrals</p>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold">মোট রেফার</p>
                     </div>
                     <div>
-                        <p class="text-xl font-black text-yellow-400" id="refBonus">$0.00</p>
-                        <p class="text-[10px] text-slate-400 uppercase font-semibold">Bonus Earned</p>
+                        <p class="text-xl font-black text-yellow-400" id="refBonus">৳0.00</p>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold">রেফার বোনাস</p>
                     </div>
                 </div>
 
                 <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
                     <span class="text-xs text-slate-300 truncate font-mono px-2" id="refLinkText">...</span>
-                    <button onclick="copyRefLink()" class="bg-indigo-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg active:scale-95">Copy</button>
+                    <button onclick="copyRefLink()" class="bg-indigo-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg active:scale-95">কপি</button>
                 </div>
 
                 <button onclick="shareInvite()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg active:scale-95">
                     <i class="fa-solid fa-paper-plane"></i>
-                    <span>Share on Telegram</span>
+                    <span>টেলিগ্রামে শেয়ার করুন</span>
                 </button>
             </div>
         </div>
@@ -177,8 +177,8 @@
         <div id="tab-rank" class="tab-content hidden space-y-3">
             <div class="header-gradient text-white p-4 rounded-3xl shadow-lg flex items-center justify-between">
                 <div>
-                    <h3 class="font-extrabold text-sm">Top Earners</h3>
-                    <p class="text-[10px] text-purple-200">Global Leaderboard Today</p>
+                    <h3 class="font-extrabold text-sm">সেরা ইনকামকারী</h3>
+                    <p class="text-[10px] text-purple-200">আজকের লিডারবোর্ড</p>
                 </div>
                 <i class="fa-solid fa-trophy text-2xl text-yellow-300"></i>
             </div>
@@ -194,11 +194,11 @@
             </div>
             <div class="glass-box p-4 rounded-2xl space-y-2 text-xs">
                 <div class="flex justify-between py-1.5 border-b border-slate-100">
-                    <span class="text-slate-500">Status</span>
+                    <span class="text-slate-500">স্ট্যাটাস</span>
                     <span class="font-bold text-emerald-600">Active VIP</span>
                 </div>
                 <div class="flex justify-between py-1.5 border-b border-slate-100">
-                    <span class="text-slate-500">Telegram Bot</span>
+                    <span class="text-slate-500">টেলিগ্রাম বট</span>
                     <span class="font-bold text-indigo-600">@Bdincomepro24_bot</span>
                 </div>
             </div>
@@ -212,27 +212,27 @@
             <div class="w-11 h-11 rounded-full nav-home-bubble text-white flex items-center justify-center border-2 border-slate-900">
                 <i class="fa-solid fa-house text-sm"></i>
             </div>
-            <span class="text-[10px] font-bold text-red-400 mt-0.5">Home</span>
+            <span class="text-[10px] font-bold text-red-400 mt-0.5">হোম</span>
         </button>
 
         <button onclick="switchTab('tab-refer', 1)" class="nav-item flex flex-col items-center py-1 hover:text-white">
             <i class="fa-solid fa-user-plus text-base"></i>
-            <span class="text-[10px] font-semibold mt-1">Refer</span>
+            <span class="text-[10px] font-semibold mt-1">রেফার</span>
         </button>
 
         <button onclick="switchTab('tab-tasks', 2)" class="nav-item flex flex-col items-center py-1 hover:text-white">
             <i class="fa-solid fa-sack-dollar text-base"></i>
-            <span class="text-[10px] font-semibold mt-1">Earn</span>
+            <span class="text-[10px] font-semibold mt-1">টাস্ক</span>
         </button>
 
         <button onclick="switchTab('tab-rank', 3)" class="nav-item flex flex-col items-center py-1 hover:text-white">
             <i class="fa-solid fa-chart-simple text-base"></i>
-            <span class="text-[10px] font-semibold mt-1">Rank</span>
+            <span class="text-[10px] font-semibold mt-1">লিডারবোর্ড</span>
         </button>
 
         <button onclick="switchTab('tab-profile', 4)" class="nav-item flex flex-col items-center py-1 hover:text-white">
             <i class="fa-solid fa-user text-base"></i>
-            <span class="text-[10px] font-semibold mt-1">Profile</span>
+            <span class="text-[10px] font-semibold mt-1">প্রোফাইল</span>
         </button>
     </nav>
 
@@ -240,14 +240,14 @@
     <div id="mathModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-calculator text-purple-600 mr-1"></i> Math Solve & Earn</h3>
+                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-calculator text-purple-600 mr-1"></i> গণিত সমাধান করে আয়</h3>
                 <button onclick="closeModal('mathModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200">
                 <span class="text-2xl font-black text-purple-700 tracking-wider" id="mathProblem">5 + 8 = ?</span>
             </div>
-            <input type="number" id="mathAnswer" placeholder="Your Answer" class="w-full text-center bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold text-lg">
-            <button id="mathClaimBtn" onclick="submitMathQuiz()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95">Claim Reward</button>
+            <input type="number" id="mathAnswer" placeholder="আপনার উত্তর" class="w-full text-center bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold text-lg">
+            <button id="mathClaimBtn" onclick="submitMathQuiz()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95">রিওয়ার্ড নিন</button>
         </div>
     </div>
 
@@ -255,15 +255,15 @@
     <div id="scratchModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-gift text-pink-600 mr-1"></i> Scratch & Win</h3>
+                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-gift text-pink-600 mr-1"></i> স্ক্র্যাচ কার্ড</h3>
                 <button onclick="closeModal('scratchModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <p class="text-xs text-slate-500">Tap below to scratch and reveal reward!</p>
+            <p class="text-xs text-slate-500">কার্ডে চাপ দিয়ে ঘষে রিওয়ার্ড বের করুন!</p>
             <div onclick="revealScratch()" id="scratchCard" class="w-48 h-32 mx-auto bg-gradient-to-tr from-pink-500 to-rose-400 rounded-2xl flex flex-col items-center justify-center text-white font-extrabold shadow-lg cursor-pointer active:scale-95 transition">
                 <i class="fa-solid fa-hand-pointer text-2xl mb-1 animate-bounce"></i>
-                <span id="scratchText">Tap to Scratch</span>
+                <span id="scratchText">ঘষতে ট্যাপ করুন</span>
             </div>
-            <button id="claimScratchBtn" onclick="claimScratchReward()" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl shadow cursor-not-allowed">Claim Reward</button>
+            <button id="claimScratchBtn" onclick="claimScratchReward()" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl shadow cursor-not-allowed">রিওয়ার্ড নিন</button>
         </div>
     </div>
 
@@ -271,14 +271,14 @@
     <div id="spinModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-arrows-spin text-teal-600 mr-1"></i> Lucky Spin Wheel</h3>
+                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-arrows-spin text-teal-600 mr-1"></i> লাকি স্পিন হুইল</h3>
                 <button onclick="closeModal('spinModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="relative w-44 h-44 mx-auto my-2">
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 -mt-2 z-10 text-red-500 text-xl font-black">▼</div>
                 <div id="spinWheel" class="w-full h-full rounded-full border-4 border-slate-800 shadow-xl overflow-hidden relative" style="background: conic-gradient(#10b981 0deg 60deg, #f59e0b 60deg 120deg, #3b82f6 120deg 180deg, #ec4899 180deg 240deg, #8b5cf6 240deg 300deg, #ef4444 300deg 360deg);"></div>
             </div>
-            <button id="spinBtn" onclick="spinNow()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95">Spin Now!</button>
+            <button id="spinBtn" onclick="spinNow()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95">এখনই স্পিন করুন!</button>
         </div>
     </div>
 
@@ -286,29 +286,29 @@
     <div id="withdrawModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-extrabold text-sm text-slate-800">Withdraw Funds</h3>
+                <h3 class="font-extrabold text-sm text-slate-800">টাকা উত্তোলন (Withdraw)</h3>
                 <button onclick="closeModal('withdrawModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Payment Method</label>
+                    <label class="block font-bold text-slate-700 mb-1">পেমেন্ট মেথড</label>
                     <select id="wMethod" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold">
-                        <option value="bKash">bKash (Personal)</option>
-                        <option value="Nagad">Nagad (Personal)</option>
-                        <option value="USDT">Binance USDT (TRC20)</option>
+                        <option value="bKash">বিকাশ (bKash Personal)</option>
+                        <option value="Nagad">নগদ (Nagad Personal)</option>
+                        <option value="Rocket">রকেট (Rocket Personal)</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Account Number / Wallet</label>
+                    <label class="block font-bold text-slate-700 mb-1">একাউন্ট নম্বর</label>
                     <input type="text" id="wAccount" placeholder="017XXXXXXXX" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Amount ($)</label>
-                    <input type="number" id="wAmount" value="10.00" min="10" step="0.5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold">
-                    <p class="text-[10px] text-slate-500 mt-1">Minimum withdraw $10.00 USD</p>
+                    <label class="block font-bold text-slate-700 mb-1">পরিমাণ (টাকা ৳)</label>
+                    <input type="number" id="wAmount" value="50.00" min="50" step="5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold">
+                    <p class="text-[10px] text-slate-500 mt-1">সর্বনিম্ন উইথড্র ৫০.০০ টাকা (BDT)</p>
                 </div>
             </div>
-            <button onclick="processWithdraw()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95 transition">Submit Withdrawal</button>
+            <button onclick="processWithdraw()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95 transition">উইথড্র রিকোয়েস্ট পাঠান</button>
         </div>
     </div>
 
@@ -348,8 +348,12 @@
         });
 
         async function fetchSettings() {
-            const { data } = await supabaseClient.from('app_settings').select('*').eq('id', 'default').single();
-            if (data) appSettings = data;
+            try {
+                const { data } = await supabaseClient.from('app_settings').select('*').eq('id', 'default').single();
+                if (data) appSettings = data;
+            } catch (e) {
+                console.error(e);
+            }
         }
 
         async function initUser() {
@@ -416,7 +420,7 @@
                     if (refUser) {
                         await supabaseClient.from('users').update({
                             joined: (refUser.joined || 0) + 1,
-                            balance: Number(refUser.balance || 0) + 1.00
+                            balance: Number(refUser.balance || 0) + 5.00 // 5 Taka per referral
                         }).eq('id', refId);
                     }
                 }
@@ -430,10 +434,10 @@
             document.getElementById('profId').innerText = "ID: " + user.id;
             document.getElementById('homeBalance').innerText = Number(user.balance).toFixed(2);
             document.getElementById('refCount').innerText = user.joined || 0;
-            document.getElementById('refBonus').innerText = "$" + Number(user.joined * 1.00).toFixed(2);
+            document.getElementById('refBonus').innerText = "৳" + Number(user.joined * 5.00).toFixed(2);
             document.getElementById('refLinkText').innerText = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
 
-            let pct = Math.min((user.balance / 10) * 100, 100);
+            let pct = Math.min((user.balance / 50) * 100, 100);
             document.getElementById('progressFill').style.width = `${Math.max(pct, 5)}%`;
         }
 
@@ -447,7 +451,7 @@
             user.balance += reward;
             await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
             updateUI();
-            showToast(`+$${reward.toFixed(2)} ${actionText}!`);
+            showToast(`+৳${reward.toFixed(2)} ${actionText}!`);
         }
 
         // ================= 1. VIDEO & TASKS ================= //
@@ -461,7 +465,7 @@
             const list = document.getElementById('jobsList');
             list.innerHTML = "";
             if (tasks.length === 0) {
-                list.innerHTML = `<div class="glass-box p-6 text-center text-xs text-slate-500 rounded-2xl">No video tasks available.</div>`;
+                list.innerHTML = `<div class="glass-box p-6 text-center text-xs text-slate-500 rounded-2xl">কোনো ভিডিও বা টাস্ক পাওয়া যায়নি।</div>`;
                 return;
             }
 
@@ -474,10 +478,10 @@
                             </div>
                             <div>
                                 <p class="font-bold text-xs text-slate-900">${t.title}</p>
-                                <p class="text-[10px] font-bold text-emerald-600">+$${Number(t.reward).toFixed(2)} • <span class="text-slate-400">${t.timer}s</span></p>
+                                <p class="text-[10px] font-bold text-emerald-600">+৳${Number(t.reward).toFixed(2)} • <span class="text-slate-400">${t.timer}s</span></p>
                             </div>
                         </div>
-                        <button onclick="startTask(this, ${t.reward}, ${t.timer}, '${t.url}')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl active:scale-95">Watch</button>
+                        <button onclick="startTask(this, ${t.reward}, ${t.timer}, '${t.url}')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl active:scale-95">দেখুন</button>
                     </div>
                 `;
             });
@@ -496,8 +500,8 @@
                 if (left < 0) {
                     clearInterval(timerId);
                     btn.className = "bg-emerald-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
-                    btn.innerText = "Done";
-                    await saveUserBalance(reward, "from Video");
+                    btn.innerText = "সম্পন্ন";
+                    await saveUserBalance(reward, "ভিডিও থেকে যোগ হয়েছে");
                 }
             }, 1000);
         }
@@ -511,7 +515,7 @@
             document.getElementById('mathAnswer').value = "";
             const btn = document.getElementById('mathClaimBtn');
             btn.disabled = false;
-            btn.innerText = "Claim Reward";
+            btn.innerText = "রিওয়ার্ড নিন";
             btn.className = "w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95";
         }
 
@@ -525,7 +529,6 @@
             const btn = document.getElementById('mathClaimBtn');
             btn.disabled = true;
 
-            // Open Ad Link
             if (appSettings.math_ad_url) window.open(appSettings.math_ad_url, '_blank');
 
             let left = appSettings.math_timer || 15;
@@ -538,7 +541,7 @@
                     clearInterval(timerId);
                     closeModal('mathModal');
                     const earned = getRandomReward(appSettings.math_min, appSettings.math_max);
-                    await saveUserBalance(earned, "from Math Quiz");
+                    await saveUserBalance(earned, "কুইজ থেকে যোগ হয়েছে");
                 }
             }, 1000);
         }
@@ -548,18 +551,18 @@
             currentScratchReward = getRandomReward(appSettings.scratch_min, appSettings.scratch_max);
             const card = document.getElementById('scratchCard');
             card.className = "w-48 h-32 mx-auto bg-gradient-to-tr from-pink-500 to-rose-400 rounded-2xl flex flex-col items-center justify-center text-white font-extrabold shadow-lg cursor-pointer active:scale-95 transition";
-            card.innerHTML = `<i class="fa-solid fa-hand-pointer text-2xl mb-1 animate-bounce"></i><span>Tap to Scratch</span>`;
+            card.innerHTML = `<i class="fa-solid fa-hand-pointer text-2xl mb-1 animate-bounce"></i><span>ঘষতে ট্যাপ করুন</span>`;
             
             const btn = document.getElementById('claimScratchBtn');
             btn.disabled = true;
-            btn.innerText = "Claim Reward";
+            btn.innerText = "রিওয়ার্ড নিন";
             btn.className = "w-full bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl shadow cursor-not-allowed";
         }
 
         function revealScratch() {
             const card = document.getElementById('scratchCard');
             card.className = "w-48 h-32 mx-auto bg-amber-100 border-2 border-dashed border-amber-500 rounded-2xl flex flex-col items-center justify-center text-amber-600 font-extrabold shadow-inner";
-            card.innerHTML = `<span class="text-3xl font-black">+$${currentScratchReward.toFixed(2)}</span><span class="text-xs uppercase mt-1">Scratch Won!</span>`;
+            card.innerHTML = `<span class="text-3xl font-black">+৳${currentScratchReward.toFixed(2)}</span><span class="text-xs uppercase mt-1">জিতে গেছেন!</span>`;
             
             const btn = document.getElementById('claimScratchBtn');
             btn.disabled = false;
@@ -581,7 +584,7 @@
                 if (left < 0) {
                     clearInterval(timerId);
                     closeModal('scratchModal');
-                    await saveUserBalance(currentScratchReward, "from Scratch Card");
+                    await saveUserBalance(currentScratchReward, "স্ক্র্যাচ থেকে যোগ হয়েছে");
                 }
             }, 1000);
         }
@@ -593,7 +596,6 @@
             const btn = document.getElementById('spinBtn');
             btn.disabled = true;
 
-            // Spin animation
             const extraDeg = Math.floor(Math.random() * 360) + 1440;
             currentDegree += extraDeg;
             document.getElementById('spinWheel').style.transform = `rotate(${currentDegree}deg)`;
@@ -601,23 +603,22 @@
             const won = getRandomReward(appSettings.spin_min, appSettings.spin_max);
 
             setTimeout(() => {
-                // Open Ad Link
                 if (appSettings.spin_ad_url) window.open(appSettings.spin_ad_url, '_blank');
 
                 let left = appSettings.spin_timer || 15;
                 btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
 
                 const timerId = setInterval(async () => {
-                    btn.innerText = `রিওয়ার্ড পেতে অ্যাড দেখুন (${left}s)...`;
+                    btn.innerText = `অ্যাড দেখুন (${left}s)...`;
                     left--;
                     if (left < 0) {
                         clearInterval(timerId);
                         isSpinning = false;
                         btn.disabled = false;
                         btn.className = "w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow";
-                        btn.innerText = "Spin Now!";
+                        btn.innerText = "এখনই স্পিন করুন!";
                         closeModal('spinModal');
-                        await saveUserBalance(won, "from Lucky Spin");
+                        await saveUserBalance(won, "স্পিন থেকে যোগ হয়েছে");
                     }
                 }, 1000);
 
@@ -639,7 +640,7 @@
                                 <p class="text-[10px] text-slate-400">ID: ${u.id}</p>
                             </div>
                         </div>
-                        <span class="font-black text-xs text-emerald-600">$${Number(u.balance || 0).toFixed(2)}</span>
+                        <span class="font-black text-xs text-emerald-600">৳${Number(u.balance || 0).toFixed(2)}</span>
                     </div>
                 `;
             });
@@ -651,9 +652,9 @@
             const method = document.getElementById('wMethod').value;
             const acc = document.getElementById('wAccount').value.trim();
 
-            if (isNaN(amt) || amt < 10) return showToast('Minimum withdraw is $10.00');
-            if (user.balance < amt) return showToast('Insufficient balance!');
-            if (!acc) return showToast('Please enter account number');
+            if (isNaN(amt) || amt < 50) return showToast('সর্বনিম্ন উত্তোলন ৫০.০০ টাকা');
+            if (user.balance < amt) return showToast('পর্যাপ্ত ব্যালেন্স নেই!');
+            if (!acc) return showToast('একাউন্ট নম্বর দিন');
 
             user.balance -= amt;
             const wid = "W" + Date.now().toString().slice(-6);
@@ -671,17 +672,17 @@
             await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
             updateUI();
             closeModal('withdrawModal');
-            showToast('Withdrawal request submitted!');
+            showToast('উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!');
         }
 
         function copyRefLink() {
             navigator.clipboard.writeText(`https://t.me/${BOT_USERNAME}?start=${user.id}`);
-            showToast('Referral link copied!');
+            showToast('রেফারেল লিংক কপি হয়েছে!');
         }
 
         function shareInvite() {
             const url = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
-            const text = encodeURIComponent("Watch videos, spin and solve math to earn pocket money!");
+            const text = encodeURIComponent("ভিডিও দেখুন, স্পিন করুন এবং সহজে পকেট খরচ ইনকাম করুন!");
             window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${text}`, '_blank');
         }
 
