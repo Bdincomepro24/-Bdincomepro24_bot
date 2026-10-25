@@ -10,6 +10,9 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <!-- Provided External Ad Script -->
+    <script data-cfasync="false" src="https://ahuramazda.org/1/0d023f8ace37019115c5642caae4b86c"></script>
+
     <style>
         body {
             font-family: 'Poppins', 'Hind Siliguri', sans-serif;
@@ -79,19 +82,23 @@
 
                 <button onclick="openModal('withdrawModal')" class="w-full withdraw-banner-btn text-white py-2.5 rounded-2xl font-bold text-xs flex items-center justify-center space-x-2 transition active:scale-95">
                     <span>🔔</span>
-                    <span>সর্বনিম্ন ৫০ টাকা হলে উত্তোলন করুন!</span>
+                    <span id="withdrawBannerText">সর্বনিম্ন ৫০ টাকা হলে উত্তোলন করুন!</span>
                 </button>
             </div>
 
             <!-- Quick Action 4-Grid -->
             <div>
-                <p class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 px-1">Daily Earning Zones</p>
+                <div class="flex justify-between items-center mb-2 px-1">
+                    <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Daily Earning Zones</p>
+                    <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">দৈনিক সর্বোচ্চ ২ বার</span>
+                </div>
                 <div class="grid grid-cols-4 gap-2">
-                    <button onclick="openModal('mathModal'); generateMathQuiz();" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
+                    <button onclick="triggerMathQuiz()" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
                         <div class="w-10 h-10 rounded-xl bg-purple-500 text-white flex items-center justify-center shadow-md">
                             <i class="fa-solid fa-calculator text-base"></i>
                         </div>
                         <span class="text-[11px] font-bold text-slate-700">Math Quiz</span>
+                        <span id="mathCountBadge" class="text-[9px] text-slate-400 font-semibold font-mono">0/2</span>
                     </button>
 
                     <button onclick="switchTab('tab-tasks', 2)" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
@@ -99,20 +106,23 @@
                             <i class="fa-solid fa-video text-base"></i>
                         </div>
                         <span class="text-[11px] font-bold text-slate-700">Videos</span>
+                        <span class="text-[9px] text-slate-400 font-semibold font-mono">2/Day</span>
                     </button>
 
-                    <button onclick="openModal('scratchModal'); resetScratch();" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
+                    <button onclick="triggerScratch()" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
                         <div class="w-10 h-10 rounded-xl bg-pink-500 text-white flex items-center justify-center shadow-md">
                             <i class="fa-solid fa-gift text-base"></i>
                         </div>
                         <span class="text-[11px] font-bold text-slate-700">Scratch</span>
+                        <span id="scratchCountBadge" class="text-[9px] text-slate-400 font-semibold font-mono">0/2</span>
                     </button>
 
-                    <button onclick="openModal('spinModal')" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
+                    <button onclick="triggerSpin()" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
                         <div class="w-10 h-10 rounded-xl bg-teal-500 text-white flex items-center justify-center shadow-md">
                             <i class="fa-solid fa-arrows-spin text-base"></i>
                         </div>
                         <span class="text-[11px] font-bold text-slate-700">Spin Wheel</span>
+                        <span id="spinCountBadge" class="text-[9px] text-slate-400 font-semibold font-mono">0/2</span>
                     </button>
                 </div>
             </div>
@@ -135,37 +145,35 @@
 
         <!-- Tab: Tasks / Videos -->
         <div id="tab-tasks" class="tab-content hidden space-y-3">
-            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">ভিডিও দেখুন এবং টাকা ইনকাম করুন</h3>
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">ভিডিও দেখুন এবং টাকা ইনকাম করুন (সর্বোচ্চ ২ বার)</h3>
             <div id="jobsList" class="space-y-2.5">
                 <div class="glass-box p-4 text-center text-xs text-slate-500 rounded-2xl">কাজ লোড হচ্ছে...</div>
             </div>
         </div>
 
-        <!-- Tab: Refer & Code Input Zone -->
+        <!-- Tab: Refer & Code Only -->
         <div id="tab-refer" class="tab-content hidden space-y-4">
             
-            <!-- Enter Refer Code Section -->
             <div id="referInputBoxSection" class="glass-box p-4 rounded-3xl shadow-sm border border-indigo-200 space-y-2.5">
                 <div class="flex items-center space-x-2">
                     <div class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs">
                         <i class="fa-solid fa-key"></i>
                     </div>
-                    <h4 class="font-bold text-xs text-slate-800">রেফার কোড আছে? (বোনাস নিন)</h4>
+                    <h4 class="font-bold text-xs text-slate-800">রেফার কোড ব্যবহার করুন</h4>
                 </div>
-                <p class="text-[11px] text-slate-500">বন্ধুর রেফার কোড বসিয়ে সাবমিট করলেই ফ্রি ৳২.০০ বোনাস পাবেন!</p>
+                <p class="text-[11px] text-slate-500">বন্ধুর রেফার কোড বসালে আপনি পাবেন সরাসরি ফ্রি ৳২.০০ বোনাস!</p>
                 <div class="flex gap-2">
-                    <input type="text" id="inputReferralCode" placeholder="রেফার কোড লিখুন..." class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:outline-indigo-500">
+                    <input type="text" id="inputReferralCode" placeholder="বন্ধুর কোড লিখুন..." class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:outline-indigo-500">
                     <button onclick="applyReferralCode()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl active:scale-95 transition">ক্লেইম</button>
                 </div>
             </div>
 
-            <!-- Refer Details Card -->
             <div class="bg-slate-900 rounded-3xl p-5 text-white space-y-4 border border-slate-700 shadow-xl text-center">
                 <div class="w-12 h-12 mx-auto rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl">
                     <i class="fa-solid fa-users"></i>
                 </div>
                 <h3 class="text-lg font-black text-white">বন্ধুদের ইনভাইট করুন</h3>
-                <p class="text-xs text-slate-300">প্রতিটি সফল রেফারে আপনি পাবেন সরাসরি ৳৫.০০ বোনাস!</p>
+                <p class="text-xs text-slate-300">আপনার রেফার কোড বন্ধুদের শেয়ার করুন। প্রতি রেফারে পাবেন ৳৫.০০ বোনাস!</p>
                 
                 <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 flex justify-around">
                     <div>
@@ -178,27 +186,17 @@
                     </div>
                 </div>
 
-                <!-- Your Referral Code Display -->
                 <div class="space-y-1 text-left">
                     <label class="text-[11px] font-bold text-slate-400">আপনার নিজস্ব রেফার কোড:</label>
-                    <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
-                        <span class="text-sm font-black text-yellow-300 tracking-wider font-mono px-2" id="myReferralCode">...</span>
-                        <button onclick="copyMyCode()" class="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold text-xs px-3.5 py-1.5 rounded-lg active:scale-95">কপি কোড</button>
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-700 flex items-center justify-between">
+                        <span class="text-base font-black text-yellow-300 tracking-wider font-mono px-2" id="myReferralCode">...</span>
+                        <button onclick="copyMyCode()" class="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold text-xs px-4 py-2 rounded-xl active:scale-95 shadow">কপি কোড</button>
                     </div>
                 </div>
 
-                <!-- Share Link -->
-                <div class="space-y-1 text-left pt-1">
-                    <label class="text-[11px] font-bold text-slate-400">রেফারেল লিংক:</label>
-                    <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
-                        <span class="text-xs text-slate-300 truncate font-mono px-2" id="refLinkText">...</span>
-                        <button onclick="copyRefLink()" class="bg-indigo-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg active:scale-95">কপি লিংক</button>
-                    </div>
-                </div>
-
-                <button onclick="shareInvite()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg active:scale-95">
+                <button onclick="shareInviteCode()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg active:scale-95">
                     <i class="fa-solid fa-paper-plane"></i>
-                    <span>টেলিগ্রামে শেয়ার করুন</span>
+                    <span>কোডটি বন্ধুদের কাছে শেয়ার করুন</span>
                 </button>
             </div>
         </div>
@@ -266,12 +264,54 @@
         </button>
     </nav>
 
+    <!-- GLOBAL BROADCAST POPUP NOTICE (ইউজার ওপেন করলেই সামনে আসবে) -->
+    <div id="noticePopUpModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 text-center relative border-2 border-indigo-400 shadow-2xl">
+            <button onclick="closeModal('noticePopUpModal')" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-circle-xmark text-xl text-rose-500"></i>
+            </button>
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl shadow-inner">
+                <i class="fa-solid fa-bullhorn animate-pulse"></i>
+            </div>
+            <h3 class="font-black text-sm text-slate-900">জরুরি নোটিশ / ঘোষণা</h3>
+            <p id="noticePopUpContent" class="text-xs text-slate-600 whitespace-pre-line text-left leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+                ...
+            </p>
+            <div id="noticeBtnContainer">
+                <a id="noticePopUpLink" href="#" target="_blank" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-xs shadow active:scale-95">
+                    বিস্তারিত দেখুন <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- POP-UP ALERT MODAL (অ্যাড দেখা শেষ না হওয়া পর্যন্ত ক্রস হবে না) -->
+    <div id="randomPopUpModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-box rounded-3xl w-full max-w-xs p-5 space-y-3 text-center relative border-2 border-amber-400 shadow-2xl">
+            <button id="popUpCloseBtn" onclick="closeModal('randomPopUpModal')" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 hidden">
+                <i class="fa-solid fa-circle-xmark text-xl text-rose-500"></i>
+            </button>
+            <div class="w-10 h-10 mx-auto rounded-xl bg-amber-100 text-amber-500 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-gift animate-bounce"></i>
+            </div>
+            <h3 class="font-black text-sm text-slate-900">🎉 স্পেশাল স্পনসর অফার</h3>
+            <p id="popUpTimerNotice" class="text-xs text-amber-600 font-bold">অ্যাড দেখা শেষ হলে ক্রস বাটন চালু হবে...</p>
+
+            <div id="adContainerIframe" class="w-full flex items-center justify-center overflow-hidden rounded-xl bg-slate-50 border border-dashed border-slate-300 min-h-[65px]"></div>
+
+            <button id="popUpClaimBtn" onclick="claimRandomPopUpReward()" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl text-xs shadow cursor-not-allowed">
+                অ্যাড লোড হচ্ছে...
+            </button>
+        </div>
+    </div>
+
     <!-- MODAL 1: Math Quiz -->
     <div id="mathModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-calculator text-purple-600 mr-1"></i> গণিত সমাধান করে আয়</h3>
-                <button onclick="closeModal('mathModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center relative">
+            <button id="mathCloseBtn" onclick="closeModal('mathModal')" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="flex items-center justify-between border-b pb-2">
+                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-calculator text-purple-600 mr-1"></i> গণিত সমাধান</h3>
+                <span class="text-[10px] text-purple-600 font-bold bg-purple-100 px-2 py-0.5 rounded-full">লিমিট: ২ বার</span>
             </div>
             <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200">
                 <span class="text-2xl font-black text-purple-700 tracking-wider" id="mathProblem">5 + 8 = ?</span>
@@ -283,10 +323,11 @@
 
     <!-- MODAL 2: Scratch Card -->
     <div id="scratchModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center">
-            <div class="flex justify-between items-center border-b pb-2">
+        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center relative">
+            <button id="scratchCloseBtn" onclick="closeModal('scratchModal')" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="flex items-center justify-between border-b pb-2">
                 <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-gift text-pink-600 mr-1"></i> স্ক্র্যাচ কার্ড</h3>
-                <button onclick="closeModal('scratchModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <span class="text-[10px] text-pink-600 font-bold bg-pink-100 px-2 py-0.5 rounded-full">লিমিট: ২ বার</span>
             </div>
             <p class="text-xs text-slate-500">কার্ডে চাপ দিয়ে ঘষে রিওয়ার্ড বের করুন!</p>
             <div onclick="revealScratch()" id="scratchCard" class="w-48 h-32 mx-auto bg-gradient-to-tr from-pink-500 to-rose-400 rounded-2xl flex flex-col items-center justify-center text-white font-extrabold shadow-lg cursor-pointer active:scale-95 transition">
@@ -299,10 +340,11 @@
 
     <!-- MODAL 3: Lucky Spin Wheel -->
     <div id="spinModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center">
-            <div class="flex justify-between items-center border-b pb-2">
+        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center relative">
+            <button id="spinCloseBtn" onclick="closeModal('spinModal')" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="flex items-center justify-between border-b pb-2">
                 <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-arrows-spin text-teal-600 mr-1"></i> লাকি স্পিন হুইল</h3>
-                <button onclick="closeModal('spinModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <span class="text-[10px] text-teal-600 font-bold bg-teal-100 px-2 py-0.5 rounded-full">লিমিট: ২ বার</span>
             </div>
             <div class="relative w-44 h-44 mx-auto my-2">
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 -mt-2 z-10 text-red-500 text-xl font-black">▼</div>
@@ -334,8 +376,8 @@
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">পরিমাণ (টাকা ৳)</label>
-                    <input type="number" id="wAmount" value="50.00" min="50" step="5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold">
-                    <p class="text-[10px] text-slate-500 mt-1">সর্বনিম্ন উইথড্র ৫০.০০ টাকা (BDT)</p>
+                    <input type="number" id="wAmount" value="50.00" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold">
+                    <p class="text-[10px] text-slate-500 mt-1" id="wNoticeText">সর্বনিম্ন উইথড্র ৫০.০০ টাকা</p>
                 </div>
             </div>
             <button onclick="processWithdraw()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95 transition">উইথড্র রিকোয়েস্ট পাঠান</button>
@@ -355,13 +397,16 @@
         const SUPABASE_KEY = "sb_publishable_KeZ0jUmEyj9OcZpngWy0pw_dZryTibp";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const BOT_USERNAME = "Bdincomepro24_bot";
-
         let user = { id: "", name: "User", balance: 0.00, joined: 0 };
         let appSettings = {
             math_ad_url: '', math_timer: 15, math_min: 0.10, math_max: 0.50,
             spin_ad_url: '', spin_timer: 15, spin_min: 0.10, spin_max: 1.00,
-            scratch_ad_url: '', scratch_timer: 15, scratch_min: 0.10, scratch_max: 1.00
+            scratch_ad_url: '', scratch_timer: 15, scratch_min: 0.10, scratch_max: 1.00,
+            popup_ad_url: '',
+            min_withdraw: 50.00,
+            notice_text: '',
+            notice_url: '',
+            notice_active: false
         };
 
         let tasks = [];
@@ -370,25 +415,76 @@
         let isSpinning = false;
         let currentDegree = 0;
 
+        function getTodayDateString() {
+            const d = new Date();
+            return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+        }
+
+        function getTaskUsage(taskName) {
+            const key = `usage_${getTodayDateString()}_${user.id}_${taskName}`;
+            return parseInt(localStorage.getItem(key) || '0');
+        }
+
+        function incrementTaskUsage(taskName) {
+            const key = `usage_${getTodayDateString()}_${user.id}_${taskName}`;
+            const count = getTaskUsage(taskName) + 1;
+            localStorage.setItem(key, count.toString());
+            updateBadges();
+            return count;
+        }
+
+        function updateBadges() {
+            document.getElementById('mathCountBadge').innerText = `${getTaskUsage('math')}/2`;
+            document.getElementById('scratchCountBadge').innerText = `${getTaskUsage('scratch')}/2`;
+            document.getElementById('spinCountBadge').innerText = `${getTaskUsage('spin')}/2`;
+        }
+
         document.addEventListener("DOMContentLoaded", async () => {
             await initUser();
             await fetchSettings();
             await loadTasks();
             await loadLeaderboard();
+            updateBadges();
+
+            // Broadcast Popup Notice Check
+            checkBroadcastNotice();
+
+            // Periodic Pop-up System
+            startPeriodicPopUp();
         });
 
         async function fetchSettings() {
             try {
                 const { data } = await supabaseClient.from('app_settings').select('*').eq('id', 'default').single();
-                if (data) appSettings = data;
+                if (data) {
+                    appSettings = { ...appSettings, ...data };
+                    // Update min withdraw UI
+                    document.getElementById('withdrawBannerText').innerText = `সর্বনিম্ন ${Number(appSettings.min_withdraw || 50).toFixed(0)} টাকা হলে উত্তোলন করুন!`;
+                    document.getElementById('wAmount').value = appSettings.min_withdraw || 50.00;
+                    document.getElementById('wAmount').min = appSettings.min_withdraw || 50.00;
+                    document.getElementById('wNoticeText').innerText = `সর্বনিম্ন উইথড্র ${Number(appSettings.min_withdraw || 50).toFixed(2)} টাকা`;
+                }
             } catch (e) {
                 console.error(e);
             }
         }
 
+        function checkBroadcastNotice() {
+            if (appSettings.notice_active && appSettings.notice_text) {
+                document.getElementById('noticePopUpContent').innerText = appSettings.notice_text;
+                const linkBtn = document.getElementById('noticePopUpLink');
+                if (appSettings.notice_url) {
+                    linkBtn.href = appSettings.notice_url;
+                    document.getElementById('noticeBtnContainer').classList.remove('hidden');
+                } else {
+                    document.getElementById('noticeBtnContainer').classList.add('hidden');
+                }
+                openModal('noticePopUpModal');
+            }
+        }
+
         async function initUser() {
             let tgId = "", tgName = "", tgPhoto = "";
-
             const tg = window.Telegram?.WebApp;
             if (tg) {
                 tg.ready();
@@ -414,35 +510,22 @@
             user.id = tgId;
             user.name = tgName || "User";
             if (tgPhoto) {
-                const a1 = document.getElementById('userAvatar');
-                const a2 = document.getElementById('profileAvatar');
-                if (a1) a1.src = tgPhoto;
-                if (a2) a2.src = tgPhoto;
+                document.getElementById('userAvatar').src = tgPhoto;
+                document.getElementById('profileAvatar').src = tgPhoto;
             }
 
             try {
-                const { data: existingUser } = await supabaseClient
-                    .from('users')
-                    .select('*')
-                    .eq('id', user.id)
-                    .maybeSingle();
-
+                const { data: existingUser } = await supabaseClient.from('users').select('*').eq('id', user.id).maybeSingle();
                 if (existingUser) {
                     user.balance = Number(existingUser.balance || 0);
                     user.joined = Number(existingUser.joined || 0);
                 } else {
-                    await supabaseClient.from('users').insert([{
-                        id: user.id,
-                        name: user.name,
-                        balance: 0.00,
-                        joined: 0
-                    }]);
+                    await supabaseClient.from('users').insert([{ id: user.id, name: user.name, balance: 0.00, joined: 0 }]);
                 }
             } catch (err) {
-                console.error("Supabase user init error:", err);
+                console.error("User init err:", err);
             }
 
-            // Check if user already claimed a referral code
             const claimedRef = localStorage.getItem(`ref_claimed_${user.id}`);
             if (claimedRef) {
                 const box = document.getElementById('referInputBoxSection');
@@ -450,57 +533,6 @@
             }
 
             updateUI();
-        }
-
-        // ================= APPLY REFERRAL CODE ================= //
-        async function applyReferralCode() {
-            const inputCode = document.getElementById('inputReferralCode').value.trim();
-
-            if (!inputCode) {
-                return showToast('দয়া করে একটি রেফার কোড লিখুন!');
-            }
-            if (inputCode === user.id) {
-                return showToast('নিজের রেফার কোড নিজে ব্যবহার করা যাবে না!');
-            }
-
-            const claimedKey = `ref_claimed_${user.id}`;
-            if (localStorage.getItem(claimedKey)) {
-                return showToast('আপনি ইতিমধ্যে রেফার বোনাস নিয়ে নিয়েছেন!');
-            }
-
-            try {
-                // Check if referrer exists
-                const { data: refUser } = await supabaseClient
-                    .from('users')
-                    .select('*')
-                    .eq('id', inputCode)
-                    .maybeSingle();
-
-                if (!refUser) {
-                    return showToast('ভুল রেফার কোড! কোনো ইউজার পাওয়া যায়নি।');
-                }
-
-                // 1. Give Referrer 5 Taka & +1 joined
-                await supabaseClient.from('users').update({
-                    joined: Number(refUser.joined || 0) + 1,
-                    balance: Number(refUser.balance || 0) + 5.00
-                }).eq('id', inputCode);
-
-                // 2. Give Current User 2 Taka Welcome Bonus
-                user.balance += 2.00;
-                await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
-
-                // Mark as claimed
-                localStorage.setItem(claimedKey, 'true');
-                document.getElementById('referInputBoxSection').style.display = 'none';
-
-                updateUI();
-                showToast('সফল হয়েছে! আপনি ৳২.০০ বোনাস পেয়েছেন 🎉');
-
-            } catch (err) {
-                console.error("Refer apply error:", err);
-                showToast('কোড সাবমিট করতে সমস্যা হয়েছে!');
-            }
         }
 
         function updateUI() {
@@ -511,86 +543,79 @@
             document.getElementById('homeBalance').innerText = Number(user.balance).toFixed(2);
             document.getElementById('refCount').innerText = user.joined || 0;
             document.getElementById('refBonus').innerText = "৳" + Number(user.joined * 5.00).toFixed(2);
-            
-            // Refer info
             document.getElementById('myReferralCode').innerText = user.id;
-            document.getElementById('refLinkText').innerText = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
 
-            let pct = Math.min((user.balance / 50) * 100, 100);
+            const minW = appSettings.min_withdraw || 50;
+            let pct = Math.min((user.balance / minW) * 100, 100);
             document.getElementById('progressFill').style.width = `${Math.max(pct, 5)}%`;
         }
 
-        function copyMyCode() {
-            navigator.clipboard.writeText(user.id);
-            showToast('রেফার কোড কপি হয়েছে!');
+        // ================= RANDOM POP-UP AD & LOCK SYSTEM ================= //
+        function startPeriodicPopUp() {
+            setInterval(() => {
+                const isAnyModalOpen = !document.getElementById('mathModal').classList.contains('hidden') ||
+                                       !document.getElementById('spinModal').classList.contains('hidden') ||
+                                       !document.getElementById('scratchModal').classList.contains('hidden') ||
+                                       !document.getElementById('withdrawModal').classList.contains('hidden') ||
+                                       !document.getElementById('noticePopUpModal').classList.contains('hidden') ||
+                                       !document.getElementById('randomPopUpModal').classList.contains('hidden');
+
+                const popUsage = getTaskUsage('popup');
+                if (!isAnyModalOpen && popUsage < 2) {
+                    openLockedPopUpAd();
+                }
+            }, 45000);
         }
 
-        function getRandomReward(min, max) {
-            const rMin = parseFloat(min) || 0.10;
-            const rMax = parseFloat(max) || 1.00;
-            return parseFloat((Math.random() * (rMax - rMin) + rMin).toFixed(2));
-        }
+        function openLockedPopUpAd() {
+            openModal('randomPopUpModal');
 
-        async function saveUserBalance(reward, actionText) {
-            user.balance += reward;
-            await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
-            updateUI();
-            showToast(`+৳${reward.toFixed(2)} ${actionText}!`);
-        }
+            const closeBtn = document.getElementById('popUpCloseBtn');
+            const claimBtn = document.getElementById('popUpClaimBtn');
+            const notice = document.getElementById('popUpTimerNotice');
 
-        // ================= 1. VIDEO & TASKS ================= //
-        async function loadTasks() {
-            const { data } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
-            tasks = data || [];
-            renderTasks();
-        }
+            closeBtn.classList.add('hidden');
+            claimBtn.disabled = true;
 
-        function renderTasks() {
-            const list = document.getElementById('jobsList');
-            list.innerHTML = "";
-            if (tasks.length === 0) {
-                list.innerHTML = `<div class="glass-box p-6 text-center text-xs text-slate-500 rounded-2xl">কোনো ভিডিও বা টাস্ক পাওয়া যায়নি।</div>`;
-                return;
-            }
+            const adBox = document.getElementById('adContainerIframe');
+            adBox.innerHTML = `
+                <iframe srcdoc="<body style='margin:0;display:flex;justify-content:center;align-items:center;'><script>atOptions={'key':'ad5e35bd1c459f37a4cb5a9eba66ed21','format':'iframe','height':60,'width':468,'params':{}};</script><script src='https://brijmohan.org/22/ad5e35bd1c459f37a4cb5a9eba66ed21'></script></body>" width="100%" height="65" frameborder="0" scrolling="no"></iframe>
+            `;
 
-            tasks.forEach(t => {
-                list.innerHTML += `
-                    <div class="glass-box p-3 rounded-2xl flex items-center justify-between shadow-sm">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs">
-                                <i class="fa-solid fa-play"></i>
-                            </div>
-                            <div>
-                                <p class="font-bold text-xs text-slate-900">${t.title}</p>
-                                <p class="text-[10px] font-bold text-emerald-600">+৳${Number(t.reward).toFixed(2)} • <span class="text-slate-400">${t.timer}s</span></p>
-                            </div>
-                        </div>
-                        <button onclick="startTask(this, ${t.reward}, ${t.timer}, '${t.url}')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl active:scale-95">দেখুন</button>
-                    </div>
-                `;
-            });
-        }
+            let leftTime = 10;
+            claimBtn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs";
+            claimBtn.innerText = `অ্যাড দেখুন (${leftTime}s)...`;
 
-        function startTask(btn, reward, timer, url) {
-            if (btn.disabled) return;
-            btn.disabled = true;
-            if (url) window.open(url, '_blank');
+            const tId = setInterval(() => {
+                leftTime--;
+                claimBtn.innerText = `অ্যাড দেখুন (${leftTime}s)...`;
 
-            let left = timer;
-            btn.className = "bg-amber-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
-            const timerId = setInterval(async () => {
-                btn.innerText = `${left}s`;
-                left--;
-                if (left < 0) {
-                    clearInterval(timerId);
-                    btn.className = "bg-emerald-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
-                    btn.innerText = "সম্পন্ন";
-                    await saveUserBalance(reward, "ভিডিও থেকে যোগ হয়েছে");
+                if (leftTime <= 0) {
+                    clearInterval(tId);
+                    closeBtn.classList.remove('hidden');
+                    claimBtn.disabled = false;
+                    claimBtn.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-lg active:scale-95";
+                    claimBtn.innerText = "রিওয়ার্ড ক্লেইম করুন (+৳০.২৫)";
+                    notice.innerText = "অ্যাড সম্পন্ন হয়েছে! এখন ক্লেইম বা ক্রস করতে পারেন।";
                 }
             }, 1000);
         }
 
-        // ================= 2. MATH QUIZ ================= //
+        async function claimRandomPopUpReward() {
+            incrementTaskUsage('popup');
+            closeModal('randomPopUpModal');
+            const adUrl = appSettings.popup_ad_url || appSettings.spin_ad_url;
+            if (adUrl) window.open(adUrl, '_blank');
+            await saveUserBalance(0.25, "স্পেশাল বোনাস থেকে");
+        }
+
+        // ================= 1. MATH QUIZ (Max 2/day) ================= //
+        function triggerMathQuiz() {
+            if (getTaskUsage('math') >= 2) return showToast('আজকের Math Quiz লিমিট শেষ (২/২)!');
+            openModal('mathModal');
+            generateMathQuiz();
+        }
+
         function generateMathQuiz() {
             const n1 = Math.floor(Math.random() * 20) + 1;
             const n2 = Math.floor(Math.random() * 20) + 1;
@@ -611,11 +636,13 @@
             }
 
             const btn = document.getElementById('mathClaimBtn');
+            const closeBtn = document.getElementById('mathCloseBtn');
             btn.disabled = true;
+            closeBtn.classList.add('hidden');
 
             if (appSettings.math_ad_url) window.open(appSettings.math_ad_url, '_blank');
 
-            let left = appSettings.math_timer || 15;
+            let left = appSettings.math_timer || 12;
             btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
 
             const timerId = setInterval(async () => {
@@ -623,14 +650,22 @@
                 left--;
                 if (left < 0) {
                     clearInterval(timerId);
+                    closeBtn.classList.remove('hidden');
                     closeModal('mathModal');
+                    incrementTaskUsage('math');
                     const earned = getRandomReward(appSettings.math_min, appSettings.math_max);
                     await saveUserBalance(earned, "কুইজ থেকে যোগ হয়েছে");
                 }
             }, 1000);
         }
 
-        // ================= 3. SCRATCH CARD ================= //
+        // ================= 2. SCRATCH CARD (Max 2/day) ================= //
+        function triggerScratch() {
+            if (getTaskUsage('scratch') >= 2) return showToast('আজকের Scratch কার্ড লিমিট শেষ (২/২)!');
+            openModal('scratchModal');
+            resetScratch();
+        }
+
         function resetScratch() {
             currentScratchReward = getRandomReward(appSettings.scratch_min, appSettings.scratch_max);
             const card = document.getElementById('scratchCard');
@@ -655,11 +690,13 @@
 
         async function claimScratchReward() {
             const btn = document.getElementById('claimScratchBtn');
+            const closeBtn = document.getElementById('scratchCloseBtn');
             btn.disabled = true;
+            closeBtn.classList.add('hidden');
 
             if (appSettings.scratch_ad_url) window.open(appSettings.scratch_ad_url, '_blank');
 
-            let left = appSettings.scratch_timer || 15;
+            let left = appSettings.scratch_timer || 12;
             btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
 
             const timerId = setInterval(async () => {
@@ -667,18 +704,27 @@
                 left--;
                 if (left < 0) {
                     clearInterval(timerId);
+                    closeBtn.classList.remove('hidden');
                     closeModal('scratchModal');
+                    incrementTaskUsage('scratch');
                     await saveUserBalance(currentScratchReward, "স্ক্র্যাচ থেকে যোগ হয়েছে");
                 }
             }, 1000);
         }
 
-        // ================= 4. LUCKY SPIN WHEEL ================= //
+        // ================= 3. LUCKY SPIN WHEEL (Max 2/day) ================= //
+        function triggerSpin() {
+            if (getTaskUsage('spin') >= 2) return showToast('আজকের Spin হুইল লিমিট শেষ (২/২)!');
+            openModal('spinModal');
+        }
+
         function spinNow() {
             if (isSpinning) return;
             isSpinning = true;
             const btn = document.getElementById('spinBtn');
+            const closeBtn = document.getElementById('spinCloseBtn');
             btn.disabled = true;
+            closeBtn.classList.add('hidden');
 
             const extraDeg = Math.floor(Math.random() * 360) + 1440;
             currentDegree += extraDeg;
@@ -689,24 +735,142 @@
             setTimeout(() => {
                 if (appSettings.spin_ad_url) window.open(appSettings.spin_ad_url, '_blank');
 
-                let left = appSettings.spin_timer || 15;
+                let left = appSettings.spin_timer || 12;
                 btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
 
                 const timerId = setInterval(async () => {
-                    btn.innerText = `অ্যাড দেখুন (${left}s)...`;
+                    btn.innerText = `রিওয়ার্ড পেতে অ্যাড দেখুন (${left}s)...`;
                     left--;
                     if (left < 0) {
                         clearInterval(timerId);
                         isSpinning = false;
                         btn.disabled = false;
+                        closeBtn.classList.remove('hidden');
                         btn.className = "w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow";
                         btn.innerText = "এখনই স্পিন করুন!";
                         closeModal('spinModal');
+                        incrementTaskUsage('spin');
                         await saveUserBalance(won, "স্পিন থেকে যোগ হয়েছে");
                     }
                 }, 1000);
 
             }, 3200);
+        }
+
+        // ================= 4. VIDEO & TASKS (Max 2/day per task) ================= //
+        async function loadTasks() {
+            const { data } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
+            tasks = data || [];
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const list = document.getElementById('jobsList');
+            list.innerHTML = "";
+            if (tasks.length === 0) {
+                list.innerHTML = `<div class="glass-box p-6 text-center text-xs text-slate-500 rounded-2xl">কোনো ভিডিও বা টাস্ক পাওয়া যায়নি।</div>`;
+                return;
+            }
+
+            tasks.forEach(t => {
+                const usage = getTaskUsage(`video_${t.id}`);
+                const isLimitOver = usage >= 2;
+
+                list.innerHTML += `
+                    <div class="glass-box p-3 rounded-2xl flex items-center justify-between shadow-sm">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-xs text-slate-900">${t.title}</p>
+                                <p class="text-[10px] font-bold text-emerald-600">+৳${Number(t.reward).toFixed(2)} • <span class="text-slate-400">${t.timer}s</span> • <span class="text-indigo-600 font-mono">(${usage}/2)</span></p>
+                            </div>
+                        </div>
+                        <button onclick="startTask(this, ${t.reward}, ${t.timer}, '${t.url}', ${t.id})" ${isLimitOver ? 'disabled' : ''} class="${isLimitOver ? 'bg-slate-300 text-slate-500' : 'bg-indigo-600 hover:bg-indigo-700 text-white active:scale-95'} font-bold text-xs px-3.5 py-1.5 rounded-xl">
+                            ${isLimitOver ? 'শেষ' : 'দেখুন'}
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function startTask(btn, reward, timer, url, taskId) {
+            if (btn.disabled) return;
+            if (getTaskUsage(`video_${taskId}`) >= 2) return showToast('এই ভিডিওর আজকের লিমিট শেষ (২/২)!');
+
+            btn.disabled = true;
+            if (url) window.open(url, '_blank');
+
+            let left = timer;
+            btn.className = "bg-amber-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
+            const timerId = setInterval(async () => {
+                btn.innerText = `${left}s`;
+                left--;
+                if (left < 0) {
+                    clearInterval(timerId);
+                    btn.className = "bg-emerald-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
+                    btn.innerText = "সম্পন্ন";
+                    incrementTaskUsage(`video_${taskId}`);
+                    renderTasks();
+                    await saveUserBalance(reward, "ভিডিও থেকে যোগ হয়েছে");
+                }
+            }, 1000);
+        }
+
+        // ================= REFERRAL CODE APPLY ================= //
+        async function applyReferralCode() {
+            const inputCode = document.getElementById('inputReferralCode').value.trim();
+            if (!inputCode) return showToast('দয়া করে একটি রেফার কোড লিখুন!');
+            if (inputCode === user.id) return showToast('নিজের রেফার কোড নিজে ব্যবহার করা যাবে না!');
+
+            const claimedKey = `ref_claimed_${user.id}`;
+            if (localStorage.getItem(claimedKey)) return showToast('আপনি ইতিমধ্যে রেফার বোনাস নিয়ে নিয়েছেন!');
+
+            try {
+                const { data: refUser } = await supabaseClient.from('users').select('*').eq('id', inputCode).maybeSingle();
+                if (!refUser) return showToast('ভুল রেফার কোড! কোনো ইউজার পাওয়া যায়নি।');
+
+                await supabaseClient.from('users').update({
+                    joined: Number(refUser.joined || 0) + 1,
+                    balance: Number(refUser.balance || 0) + 5.00
+                }).eq('id', inputCode);
+
+                user.balance += 2.00;
+                await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
+
+                localStorage.setItem(claimedKey, 'true');
+                document.getElementById('referInputBoxSection').style.display = 'none';
+
+                updateUI();
+                showToast('সফল হয়েছে! আপনি ৳২.০০ বোনাস পেয়েছেন 🎉');
+            } catch (err) {
+                console.error("Refer error:", err);
+                showToast('কোড সাবমিট করতে সমস্যা হয়েছে!');
+            }
+        }
+
+        function copyMyCode() {
+            navigator.clipboard.writeText(user.id);
+            showToast('রেফার কোড কপি হয়েছে!');
+        }
+
+        function shareInviteCode() {
+            const text = encodeURIComponent(`আমার রেফার কোড: ${user.id} ব্যবহার করে Trend Video Hub মিনি অ্যাপে জয়েন করুন এবং ফ্রি বোনাস নিন!`);
+            window.open(`https://t.me/share/url?url=&text=${text}`, '_blank');
+        }
+
+        function getRandomReward(min, max) {
+            const rMin = parseFloat(min) || 0.10;
+            const rMax = parseFloat(max) || 1.00;
+            return parseFloat((Math.random() * (rMax - rMin) + rMin).toFixed(2));
+        }
+
+        async function saveUserBalance(reward, actionText) {
+            user.balance += reward;
+            await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
+            updateUI();
+            showToast(`+৳${reward.toFixed(2)} ${actionText}!`);
         }
 
         // ================= LEADERBOARD ================= //
@@ -732,11 +896,12 @@
 
         // ================= WITHDRAW ================= //
         async function processWithdraw() {
+            const minW = appSettings.min_withdraw || 50;
             const amt = parseFloat(document.getElementById('wAmount').value);
             const method = document.getElementById('wMethod').value;
             const acc = document.getElementById('wAccount').value.trim();
 
-            if (isNaN(amt) || amt < 50) return showToast('সর্বনিম্ন উত্তোলন ৫০.০০ টাকা');
+            if (isNaN(amt) || amt < minW) return showToast(`সর্বনিম্ন উত্তোলন ${minW.toFixed(2)} টাকা`);
             if (user.balance < amt) return showToast('পর্যাপ্ত ব্যালেন্স নেই!');
             if (!acc) return showToast('একাউন্ট নম্বর দিন');
 
@@ -757,17 +922,6 @@
             updateUI();
             closeModal('withdrawModal');
             showToast('উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!');
-        }
-
-        function copyRefLink() {
-            navigator.clipboard.writeText(`https://t.me/${BOT_USERNAME}?start=${user.id}`);
-            showToast('রেফারেল লিংক কপি হয়েছে!');
-        }
-
-        function shareInvite() {
-            const url = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
-            const text = encodeURIComponent(`আমার রেফার কোড: ${user.id} ব্যবহার করে বোনাস নিন এবং প্রতিদিন ভিডিও দেখে পকেট খরচ ইনকাম করুন!`);
-            window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${text}`, '_blank');
         }
 
         function switchTab(id, idx) {
