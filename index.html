@@ -86,7 +86,7 @@
                 </button>
             </div>
 
-            <!-- Quick Action 4-Grid -->
+            <!-- Quick Action 4-Grid with Daily 2-Times Limit -->
             <div>
                 <div class="flex justify-between items-center mb-2 px-1">
                     <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Daily Earning Zones</p>
@@ -127,7 +127,7 @@
                 </div>
             </div>
 
-            <!-- Fresh Videos Promotion Card -->
+            <!-- Fresh Videos Card -->
             <div class="glass-box p-4 rounded-3xl flex items-center justify-between shadow-sm border border-purple-200/60">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-500 flex items-center justify-center">
@@ -264,7 +264,7 @@
         </button>
     </nav>
 
-    <!-- GLOBAL BROADCAST POPUP NOTICE (ইউজার ওপেন করলেই সামনে আসবে) -->
+    <!-- GLOBAL BROADCAST POPUP NOTICE -->
     <div id="noticePopUpModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
         <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 text-center relative border-2 border-indigo-400 shadow-2xl">
             <button onclick="closeModal('noticePopUpModal')" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600">
@@ -285,7 +285,7 @@
         </div>
     </div>
 
-    <!-- POP-UP ALERT MODAL (অ্যাড দেখা শেষ না হওয়া পর্যন্ত ক্রস হবে না) -->
+    <!-- POP-UP ALERT MODAL -->
     <div id="randomPopUpModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
         <div class="glass-box rounded-3xl w-full max-w-xs p-5 space-y-3 text-center relative border-2 border-amber-400 shadow-2xl">
             <button id="popUpCloseBtn" onclick="closeModal('randomPopUpModal')" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 hidden">
@@ -297,6 +297,7 @@
             <h3 class="font-black text-sm text-slate-900">🎉 স্পেশাল স্পনসর অফার</h3>
             <p id="popUpTimerNotice" class="text-xs text-amber-600 font-bold">অ্যাড দেখা শেষ হলে ক্রস বাটন চালু হবে...</p>
 
+            <!-- Dynamic Banner Ad Placement -->
             <div id="adContainerIframe" class="w-full flex items-center justify-center overflow-hidden rounded-xl bg-slate-50 border border-dashed border-slate-300 min-h-[65px]"></div>
 
             <button id="popUpClaimBtn" onclick="claimRandomPopUpReward()" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl text-xs shadow cursor-not-allowed">
@@ -446,10 +447,7 @@
             await loadLeaderboard();
             updateBadges();
 
-            // Broadcast Popup Notice Check
             checkBroadcastNotice();
-
-            // Periodic Pop-up System
             startPeriodicPopUp();
         });
 
@@ -458,7 +456,6 @@
                 const { data } = await supabaseClient.from('app_settings').select('*').eq('id', 'default').single();
                 if (data) {
                     appSettings = { ...appSettings, ...data };
-                    // Update min withdraw UI
                     document.getElementById('withdrawBannerText').innerText = `সর্বনিম্ন ${Number(appSettings.min_withdraw || 50).toFixed(0)} টাকা হলে উত্তোলন করুন!`;
                     document.getElementById('wAmount').value = appSettings.min_withdraw || 50.00;
                     document.getElementById('wAmount').min = appSettings.min_withdraw || 50.00;
@@ -510,8 +507,10 @@
             user.id = tgId;
             user.name = tgName || "User";
             if (tgPhoto) {
-                document.getElementById('userAvatar').src = tgPhoto;
-                document.getElementById('profileAvatar').src = tgPhoto;
+                const a1 = document.getElementById('userAvatar');
+                const a2 = document.getElementById('profileAvatar');
+                if (a1) a1.src = tgPhoto;
+                if (a2) a2.src = tgPhoto;
             }
 
             try {
@@ -550,7 +549,7 @@
             document.getElementById('progressFill').style.width = `${Math.max(pct, 5)}%`;
         }
 
-        // ================= RANDOM POP-UP AD & LOCK SYSTEM ================= //
+        // ================= POP-UP SYSTEM ================= //
         function startPeriodicPopUp() {
             setInterval(() => {
                 const isAnyModalOpen = !document.getElementById('mathModal').classList.contains('hidden') ||
@@ -577,10 +576,20 @@
             closeBtn.classList.add('hidden');
             claimBtn.disabled = true;
 
+            // Safe Iframe Construction
             const adBox = document.getElementById('adContainerIframe');
-            adBox.innerHTML = `
-                <iframe srcdoc="<body style='margin:0;display:flex;justify-content:center;align-items:center;'><script>atOptions={'key':'ad5e35bd1c459f37a4cb5a9eba66ed21','format':'iframe','height':60,'width':468,'params':{}};</script><script src='https://brijmohan.org/22/ad5e35bd1c459f37a4cb5a9eba66ed21'></script></body>" width="100%" height="65" frameborder="0" scrolling="no"></iframe>
-            `;
+            adBox.innerHTML = '';
+            const iframe = document.createElement('iframe');
+            iframe.width = "100%";
+            iframe.height = "65";
+            iframe.frameBorder = "0";
+            iframe.scrolling = "no";
+            adBox.appendChild(iframe);
+
+            const iframeDoc = iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(`<!DOCTYPE html><html><body style="margin:0;display:flex;justify-content:center;align-items:center;"><script>atOptions={'key':'ad5e35bd1c459f37a4cb5a9eba66ed21','format':'iframe','height':60,'width':468,'params':{}};</scr` + `ipt><script src="https://brijmohan.org/22/ad5e35bd1c459f37a4cb5a9eba66ed21"></scr` + `ipt></body></html>`);
+            iframeDoc.close();
 
             let leftTime = 10;
             claimBtn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs";
@@ -757,7 +766,7 @@
             }, 3200);
         }
 
-        // ================= 4. VIDEO & TASKS (Max 2/day per task) ================= //
+        // ================= 4. VIDEO & TASKS (Max 2/day) ================= //
         async function loadTasks() {
             const { data } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
             tasks = data || [];
@@ -818,7 +827,7 @@
             }, 1000);
         }
 
-        // ================= REFERRAL CODE APPLY ================= //
+        // ================= REFERRAL CODE ================= //
         async function applyReferralCode() {
             const inputCode = document.getElementById('inputReferralCode').value.trim();
             if (!inputCode) return showToast('দয়া করে একটি রেফার কোড লিখুন!');
