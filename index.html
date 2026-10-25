@@ -141,14 +141,31 @@
             </div>
         </div>
 
-        <!-- Tab: Refer -->
+        <!-- Tab: Refer & Code Input Zone -->
         <div id="tab-refer" class="tab-content hidden space-y-4">
+            
+            <!-- Enter Refer Code Section -->
+            <div id="referInputBoxSection" class="glass-box p-4 rounded-3xl shadow-sm border border-indigo-200 space-y-2.5">
+                <div class="flex items-center space-x-2">
+                    <div class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <h4 class="font-bold text-xs text-slate-800">রেফার কোড আছে? (বোনাস নিন)</h4>
+                </div>
+                <p class="text-[11px] text-slate-500">বন্ধুর রেফার কোড বসিয়ে সাবমিট করলেই ফ্রি ৳২.০০ বোনাস পাবেন!</p>
+                <div class="flex gap-2">
+                    <input type="text" id="inputReferralCode" placeholder="রেফার কোড লিখুন..." class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:outline-indigo-500">
+                    <button onclick="applyReferralCode()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl active:scale-95 transition">ক্লেইম</button>
+                </div>
+            </div>
+
+            <!-- Refer Details Card -->
             <div class="bg-slate-900 rounded-3xl p-5 text-white space-y-4 border border-slate-700 shadow-xl text-center">
                 <div class="w-12 h-12 mx-auto rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl">
                     <i class="fa-solid fa-users"></i>
                 </div>
                 <h3 class="text-lg font-black text-white">বন্ধুদের ইনভাইট করুন</h3>
-                <p class="text-xs text-slate-300">প্রতিটি সফল রেফারে পান সরাসরি ৫.০০ টাকা বোনাস!</p>
+                <p class="text-xs text-slate-300">প্রতিটি সফল রেফারে আপনি পাবেন সরাসরি ৳৫.০০ বোনাস!</p>
                 
                 <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 flex justify-around">
                     <div>
@@ -161,9 +178,22 @@
                     </div>
                 </div>
 
-                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
-                    <span class="text-xs text-slate-300 truncate font-mono px-2" id="refLinkText">...</span>
-                    <button onclick="copyRefLink()" class="bg-indigo-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg active:scale-95">কপি</button>
+                <!-- Your Referral Code Display -->
+                <div class="space-y-1 text-left">
+                    <label class="text-[11px] font-bold text-slate-400">আপনার নিজস্ব রেফার কোড:</label>
+                    <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
+                        <span class="text-sm font-black text-yellow-300 tracking-wider font-mono px-2" id="myReferralCode">...</span>
+                        <button onclick="copyMyCode()" class="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold text-xs px-3.5 py-1.5 rounded-lg active:scale-95">কপি কোড</button>
+                    </div>
+                </div>
+
+                <!-- Share Link -->
+                <div class="space-y-1 text-left pt-1">
+                    <label class="text-[11px] font-bold text-slate-400">রেফারেল লিংক:</label>
+                    <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
+                        <span class="text-xs text-slate-300 truncate font-mono px-2" id="refLinkText">...</span>
+                        <button onclick="copyRefLink()" class="bg-indigo-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg active:scale-95">কপি লিংক</button>
+                    </div>
                 </div>
 
                 <button onclick="shareInvite()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg active:scale-95">
@@ -356,14 +386,9 @@
             }
         }
 
-        // ================= USER & REFERRAL LOGIC ================= //
         async function initUser() {
-            let tgId = "";
-            let tgName = "";
-            let tgPhoto = "";
-            let referrerId = null;
+            let tgId = "", tgName = "", tgPhoto = "";
 
-            // ১. টেলিগ্রাম ওয়েব অ্যাপ থেকে ডেটা চেক
             const tg = window.Telegram?.WebApp;
             if (tg) {
                 tg.ready();
@@ -374,15 +399,6 @@
                     tgName = (u.first_name || "") + (u.last_name ? " " + u.last_name : "");
                     if (u.photo_url) tgPhoto = u.photo_url;
                 }
-                if (tg.initDataUnsafe?.start_param) {
-                    referrerId = String(tg.initDataUnsafe.start_param).trim();
-                }
-            }
-
-            // ২. সাধারণ ব্রাউজার লিংক চেক
-            if (!referrerId) {
-                const urlParams = new URLSearchParams(window.location.search);
-                referrerId = urlParams.get('start') || urlParams.get('ref');
             }
 
             if (!tgId) {
@@ -404,7 +420,6 @@
                 if (a2) a2.src = tgPhoto;
             }
 
-            // ৩. Supabase-এ ইউজার যাচাই ও রেফারেল পয়েন্ট যোগ
             try {
                 const { data: existingUser } = await supabaseClient
                     .from('users')
@@ -422,38 +437,69 @@
                         balance: 0.00,
                         joined: 0
                     }]);
-
-                    // নতুন ইউজারের ক্ষেত্রে রেফার বোনাস
-                    if (referrerId && referrerId !== user.id) {
-                        await processReferralBonus(referrerId);
-                    }
                 }
             } catch (err) {
                 console.error("Supabase user init error:", err);
             }
 
+            // Check if user already claimed a referral code
+            const claimedRef = localStorage.getItem(`ref_claimed_${user.id}`);
+            if (claimedRef) {
+                const box = document.getElementById('referInputBoxSection');
+                if (box) box.style.display = 'none';
+            }
+
             updateUI();
         }
 
-        async function processReferralBonus(referrerId) {
+        // ================= APPLY REFERRAL CODE ================= //
+        async function applyReferralCode() {
+            const inputCode = document.getElementById('inputReferralCode').value.trim();
+
+            if (!inputCode) {
+                return showToast('দয়া করে একটি রেফার কোড লিখুন!');
+            }
+            if (inputCode === user.id) {
+                return showToast('নিজের রেফার কোড নিজে ব্যবহার করা যাবে না!');
+            }
+
+            const claimedKey = `ref_claimed_${user.id}`;
+            if (localStorage.getItem(claimedKey)) {
+                return showToast('আপনি ইতিমধ্যে রেফার বোনাস নিয়ে নিয়েছেন!');
+            }
+
             try {
+                // Check if referrer exists
                 const { data: refUser } = await supabaseClient
                     .from('users')
                     .select('*')
-                    .eq('id', referrerId)
+                    .eq('id', inputCode)
                     .maybeSingle();
 
-                if (refUser) {
-                    const newCount = Number(refUser.joined || 0) + 1;
-                    const newBalance = Number(refUser.balance || 0) + 5.00; // প্রতি রেফারে ৫ টাকা
-
-                    await supabaseClient.from('users').update({
-                        joined: newCount,
-                        balance: newBalance
-                    }).eq('id', referrerId);
+                if (!refUser) {
+                    return showToast('ভুল রেফার কোড! কোনো ইউজার পাওয়া যায়নি।');
                 }
-            } catch (e) {
-                console.error("Referral process error:", e);
+
+                // 1. Give Referrer 5 Taka & +1 joined
+                await supabaseClient.from('users').update({
+                    joined: Number(refUser.joined || 0) + 1,
+                    balance: Number(refUser.balance || 0) + 5.00
+                }).eq('id', inputCode);
+
+                // 2. Give Current User 2 Taka Welcome Bonus
+                user.balance += 2.00;
+                await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
+
+                // Mark as claimed
+                localStorage.setItem(claimedKey, 'true');
+                document.getElementById('referInputBoxSection').style.display = 'none';
+
+                updateUI();
+                showToast('সফল হয়েছে! আপনি ৳২.০০ বোনাস পেয়েছেন 🎉');
+
+            } catch (err) {
+                console.error("Refer apply error:", err);
+                showToast('কোড সাবমিট করতে সমস্যা হয়েছে!');
             }
         }
 
@@ -465,10 +511,18 @@
             document.getElementById('homeBalance').innerText = Number(user.balance).toFixed(2);
             document.getElementById('refCount').innerText = user.joined || 0;
             document.getElementById('refBonus').innerText = "৳" + Number(user.joined * 5.00).toFixed(2);
+            
+            // Refer info
+            document.getElementById('myReferralCode').innerText = user.id;
             document.getElementById('refLinkText').innerText = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
 
             let pct = Math.min((user.balance / 50) * 100, 100);
             document.getElementById('progressFill').style.width = `${Math.max(pct, 5)}%`;
+        }
+
+        function copyMyCode() {
+            navigator.clipboard.writeText(user.id);
+            showToast('রেফার কোড কপি হয়েছে!');
         }
 
         function getRandomReward(min, max) {
@@ -712,7 +766,7 @@
 
         function shareInvite() {
             const url = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
-            const text = encodeURIComponent("ভিডিও দেখুন, স্পিন করুন এবং সহজে পকেট খরচ ইনকাম করুন!");
+            const text = encodeURIComponent(`আমার রেফার কোড: ${user.id} ব্যবহার করে বোনাস নিন এবং প্রতিদিন ভিডিও দেখে পকেট খরচ ইনকাম করুন!`);
             window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${text}`, '_blank');
         }
 
