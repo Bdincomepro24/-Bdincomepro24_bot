@@ -10,7 +10,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Provided External Ad Script -->
+    <!-- External Script -->
     <script data-cfasync="false" src="https://ahuramazda.org/1/0d023f8ace37019115c5642caae4b86c"></script>
 
     <style>
@@ -127,7 +127,7 @@
                 </div>
             </div>
 
-            <!-- Fresh Videos Card -->
+            <!-- Fresh Videos Promotion Card -->
             <div class="glass-box p-4 rounded-3xl flex items-center justify-between shadow-sm border border-purple-200/60">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-500 flex items-center justify-center">
@@ -285,23 +285,27 @@
         </div>
     </div>
 
-    <!-- POP-UP ALERT MODAL -->
-    <div id="randomPopUpModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
+    <!-- POP-UP ALERT MODAL (সম্পূর্ণ ইন্টারনাল অ্যাড টাইমার ও ক্রস লক) -->
+    <div id="randomPopUpModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
         <div class="glass-box rounded-3xl w-full max-w-xs p-5 space-y-3 text-center relative border-2 border-amber-400 shadow-2xl">
-            <button id="popUpCloseBtn" onclick="closeModal('randomPopUpModal')" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 hidden">
-                <i class="fa-solid fa-circle-xmark text-xl text-rose-500"></i>
+            
+            <!-- ক্রস বাটন: অ্যাড দেখা শেষ না হওয়া পর্যন্ত লুকানো থাকবে -->
+            <button id="popUpCloseBtn" onclick="finishPopUpAd()" class="absolute top-3 right-3 text-rose-500 hover:text-rose-600 hidden">
+                <i class="fa-solid fa-circle-xmark text-2xl"></i>
             </button>
+
             <div class="w-10 h-10 mx-auto rounded-xl bg-amber-100 text-amber-500 flex items-center justify-center text-xl">
                 <i class="fa-solid fa-gift animate-bounce"></i>
             </div>
-            <h3 class="font-black text-sm text-slate-900">🎉 স্পেশাল স্পনসর অফার</h3>
-            <p id="popUpTimerNotice" class="text-xs text-amber-600 font-bold">অ্যাড দেখা শেষ হলে ক্রস বাটন চালু হবে...</p>
+            
+            <h3 class="font-black text-sm text-slate-900">🎉 স্পেশাল অফার ব্যানার</h3>
+            <p id="popUpTimerNotice" class="text-xs text-amber-600 font-bold">অ্যাড লোড হচ্ছে, অপেক্ষা করুন...</p>
 
-            <!-- Dynamic Banner Ad Placement -->
+            <!-- ব্যানার অ্যাড কন্টেইনার -->
             <div id="adContainerIframe" class="w-full flex items-center justify-center overflow-hidden rounded-xl bg-slate-50 border border-dashed border-slate-300 min-h-[65px]"></div>
 
-            <button id="popUpClaimBtn" onclick="claimRandomPopUpReward()" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl text-xs shadow cursor-not-allowed">
-                অ্যাড লোড হচ্ছে...
+            <button id="popUpClaimBtn" onclick="finishPopUpAd()" disabled class="w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs shadow">
+                অ্যাড চলছে...
             </button>
         </div>
     </div>
@@ -549,9 +553,8 @@
             document.getElementById('progressFill').style.width = `${Math.max(pct, 5)}%`;
         }
 
-        // ================= POP-UP SYSTEM (5 MINUTE INTERVAL) ================= //
+        // ================= POP-UP SYSTEM (NO EXTERNAL LINK / INTERNAL COUNTDOWN) ================= //
         function startPeriodicPopUp() {
-            // Check every 10 seconds if 5 minutes (300000 ms) have passed
             setInterval(() => {
                 const now = Date.now();
                 const lastPopupTime = parseInt(localStorage.getItem(`last_popup_${user.id}`) || '0');
@@ -580,10 +583,11 @@
             const claimBtn = document.getElementById('popUpClaimBtn');
             const notice = document.getElementById('popUpTimerNotice');
 
+            // ১. শুরুতে ক্রস বাটন হাইড থাকবে
             closeBtn.classList.add('hidden');
             claimBtn.disabled = true;
 
-            // Safe Iframe Construction
+            // ২. ব্যানার অ্যাড ফ্রেম তৈরি
             const adBox = document.getElementById('adContainerIframe');
             adBox.innerHTML = '';
             const iframe = document.createElement('iframe');
@@ -598,30 +602,32 @@
             iframeDoc.write(`<!DOCTYPE html><html><body style="margin:0;display:flex;justify-content:center;align-items:center;"><script>atOptions={'key':'ad5e35bd1c459f37a4cb5a9eba66ed21','format':'iframe','height':60,'width':468,'params':{}};</scr` + `ipt><script src="https://brijmohan.org/22/ad5e35bd1c459f37a4cb5a9eba66ed21"></scr` + `ipt></body></html>`);
             iframeDoc.close();
 
+            // ৩. ১০ সেকেন্ডের কাউন্টডাউন
             let leftTime = 10;
             claimBtn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs";
-            claimBtn.innerText = `অ্যাড দেখুন (${leftTime}s)...`;
+            claimBtn.innerText = `অ্যাড দেখা শেষ হতে বাকি (${leftTime}s)...`;
+            notice.innerText = `বিজ্ঞাপনটি পুরো দেখুন, এরপর ক্রস বা ক্লেইম করুন`;
 
             const tId = setInterval(() => {
                 leftTime--;
-                claimBtn.innerText = `অ্যাড দেখুন (${leftTime}s)...`;
+                claimBtn.innerText = `অ্যাড দেখা শেষ হতে বাকি (${leftTime}s)...`;
 
                 if (leftTime <= 0) {
                     clearInterval(tId);
+                    // ৪. সময় শেষ হলে ক্রস বাটন এবং ক্লেইম বাটন চালু
                     closeBtn.classList.remove('hidden');
                     claimBtn.disabled = false;
                     claimBtn.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-lg active:scale-95";
                     claimBtn.innerText = "রিওয়ার্ড ক্লেইম করুন (+৳০.২৫)";
-                    notice.innerText = "অ্যাড সম্পন্ন হয়েছে! এখন ক্লেইম বা ক্রস করতে পারেন।";
+                    notice.innerText = "অ্যাড সম্পন্ন হয়েছে! এখন বন্ধ বা ক্লেইম করতে পারেন।";
                 }
             }, 1000);
         }
 
-        async function claimRandomPopUpReward() {
+        // রিওয়ার্ড ক্লেইম বা ক্রস বাটনে চাপলে ব্যালেন্স অ্যাড ও ক্লোজ
+        async function finishPopUpAd() {
             incrementTaskUsage('popup');
             closeModal('randomPopUpModal');
-            const adUrl = appSettings.popup_ad_url || appSettings.spin_ad_url;
-            if (adUrl) window.open(adUrl, '_blank');
             await saveUserBalance(0.25, "স্পেশাল বোনাস থেকে");
         }
 
@@ -656,13 +662,11 @@
             btn.disabled = true;
             closeBtn.classList.add('hidden');
 
-            if (appSettings.math_ad_url) window.open(appSettings.math_ad_url, '_blank');
-
             let left = appSettings.math_timer || 12;
             btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
 
             const timerId = setInterval(async () => {
-                btn.innerText = `অ্যাড দেখুন (${left}s)...`;
+                btn.innerText = `অ্যাড সম্পন্ন হচ্ছে (${left}s)...`;
                 left--;
                 if (left < 0) {
                     clearInterval(timerId);
@@ -710,13 +714,11 @@
             btn.disabled = true;
             closeBtn.classList.add('hidden');
 
-            if (appSettings.scratch_ad_url) window.open(appSettings.scratch_ad_url, '_blank');
-
             let left = appSettings.scratch_timer || 12;
             btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
 
             const timerId = setInterval(async () => {
-                btn.innerText = `অ্যাড দেখুন (${left}s)...`;
+                btn.innerText = `অ্যাড সম্পন্ন হচ্ছে (${left}s)...`;
                 left--;
                 if (left < 0) {
                     clearInterval(timerId);
@@ -749,13 +751,11 @@
             const won = getRandomReward(appSettings.spin_min, appSettings.spin_max);
 
             setTimeout(() => {
-                if (appSettings.spin_ad_url) window.open(appSettings.spin_ad_url, '_blank');
-
                 let left = appSettings.spin_timer || 12;
                 btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
 
                 const timerId = setInterval(async () => {
-                    btn.innerText = `রিওয়ার্ড পেতে অ্যাড দেখুন (${left}s)...`;
+                    btn.innerText = `রিওয়ার্ড প্রসেস হচ্ছে (${left}s)...`;
                     left--;
                     if (left < 0) {
                         clearInterval(timerId);
