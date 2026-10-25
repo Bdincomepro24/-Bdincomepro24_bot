@@ -148,7 +148,7 @@
                     <i class="fa-solid fa-users"></i>
                 </div>
                 <h3 class="text-lg font-black text-white">বন্ধুদের ইনভাইট করুন</h3>
-                <p class="text-xs text-slate-300">প্রতিটি সফল রেফারে সরাসরি ব্যালেন্সে টাকা বোনাস পান!</p>
+                <p class="text-xs text-slate-300">প্রতিটি সফল রেফারে পান সরাসরি ৫.০০ টাকা বোনাস!</p>
                 
                 <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 flex justify-around">
                     <div>
@@ -356,8 +356,14 @@
             }
         }
 
+        // ================= USER & REFERRAL LOGIC ================= //
         async function initUser() {
-            let tgId = "", tgName = "", tgPhoto = "";
+            let tgId = "";
+            let tgName = "";
+            let tgPhoto = "";
+            let referrerId = null;
+
+            // ১. টেলিগ্রাম ওয়েব অ্যাপ থেকে ডেটা চেক
             const tg = window.Telegram?.WebApp;
             if (tg) {
                 tg.ready();
@@ -365,9 +371,18 @@
                 if (tg.initDataUnsafe?.user) {
                     const u = tg.initDataUnsafe.user;
                     tgId = String(u.id);
-                    tgName = u.first_name + (u.last_name ? " " + u.last_name : "");
+                    tgName = (u.first_name || "") + (u.last_name ? " " + u.last_name : "");
                     if (u.photo_url) tgPhoto = u.photo_url;
                 }
+                if (tg.initDataUnsafe?.start_param) {
+                    referrerId = String(tg.initDataUnsafe.start_param).trim();
+                }
+            }
+
+            // ২. সাধারণ ব্রাউজার লিংক চেক
+            if (!referrerId) {
+                const urlParams = new URLSearchParams(window.location.search);
+                referrerId = urlParams.get('start') || urlParams.get('ref');
             }
 
             if (!tgId) {
@@ -383,47 +398,62 @@
             user.id = tgId;
             user.name = tgName || "User";
             if (tgPhoto) {
-                document.getElementById('userAvatar').src = tgPhoto;
-                document.getElementById('profileAvatar').src = tgPhoto;
+                const a1 = document.getElementById('userAvatar');
+                const a2 = document.getElementById('profileAvatar');
+                if (a1) a1.src = tgPhoto;
+                if (a2) a2.src = tgPhoto;
             }
 
+            // ৩. Supabase-এ ইউজার যাচাই ও রেফারেল পয়েন্ট যোগ
             try {
-                const { data } = await supabaseClient.from('users').select('*').eq('id', user.id).single();
-                if (data) {
-                    user.balance = Number(data.balance || 0);
-                    user.joined = data.joined || 0;
+                const { data: existingUser } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', user.id)
+                    .maybeSingle();
+
+                if (existingUser) {
+                    user.balance = Number(existingUser.balance || 0);
+                    user.joined = Number(existingUser.joined || 0);
                 } else {
-                    await supabaseClient.from('users').insert([{ id: user.id, name: user.name, balance: 0.00, joined: 0 }]);
+                    await supabaseClient.from('users').insert([{
+                        id: user.id,
+                        name: user.name,
+                        balance: 0.00,
+                        joined: 0
+                    }]);
+
+                    // নতুন ইউজারের ক্ষেত্রে রেফার বোনাস
+                    if (referrerId && referrerId !== user.id) {
+                        await processReferralBonus(referrerId);
+                    }
                 }
             } catch (err) {
-                console.error(err);
+                console.error("Supabase user init error:", err);
             }
 
-            await checkReferral(user.id);
             updateUI();
         }
 
-        async function checkReferral(uid) {
-            let refId = null;
-            const tg = window.Telegram?.WebApp;
-            if (tg?.initDataUnsafe?.start_param) {
-                refId = String(tg.initDataUnsafe.start_param);
-            } else {
-                refId = new URLSearchParams(window.location.search).get('start');
-            }
+        async function processReferralBonus(referrerId) {
+            try {
+                const { data: refUser } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', referrerId)
+                    .maybeSingle();
 
-            if (refId && refId !== uid) {
-                const already = localStorage.getItem('pki_ref_done');
-                if (!already) {
-                    localStorage.setItem('pki_ref_done', 'true');
-                    const { data: refUser } = await supabaseClient.from('users').select('*').eq('id', refId).single();
-                    if (refUser) {
-                        await supabaseClient.from('users').update({
-                            joined: (refUser.joined || 0) + 1,
-                            balance: Number(refUser.balance || 0) + 5.00 // 5 Taka per referral
-                        }).eq('id', refId);
-                    }
+                if (refUser) {
+                    const newCount = Number(refUser.joined || 0) + 1;
+                    const newBalance = Number(refUser.balance || 0) + 5.00; // প্রতি রেফারে ৫ টাকা
+
+                    await supabaseClient.from('users').update({
+                        joined: newCount,
+                        balance: newBalance
+                    }).eq('id', referrerId);
                 }
+            } catch (e) {
+                console.error("Referral process error:", e);
             }
         }
 
