@@ -1,395 +1,355 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Trend Video Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script data-cfasync="false" src="https://ahuramazda.org/1/0d023f8ace37019115c5642caae4b86c"></script>
-
     <style>
-        body {
-            font-family: 'Poppins', 'Hind Siliguri', sans-serif;
-            background: linear-gradient(180deg, #ede9fe 0%, #f3e8ff 50%, #e0e7ff 100%);
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        .header-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
-        .balance-card-gradient { background: linear-gradient(135deg, #6366f1 0%, #3b82f6 50%, #60a5fa 100%); }
-        .withdraw-banner-btn { background: linear-gradient(90deg, #f43f5e 0%, #fb7185 100%); box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4); }
-        .glass-box { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.7); }
-        .nav-home-bubble { background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
-        #spinWheel { transition: transform 3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        body { font-family: 'Hind Siliguri', 'Inter', sans-serif; background-color: #0b1120; color: #f1f5f9; }
+        .glass-panel { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(30, 41, 59, 0.8); }
     </style>
 </head>
-<body class="flex flex-col h-screen max-w-md mx-auto overflow-hidden relative text-slate-800">
+<body class="min-h-screen flex flex-col md:flex-row overflow-x-hidden text-slate-100">
 
-    <!-- Top App Header -->
-    <header class="header-gradient text-white px-4 py-3 flex justify-between items-center z-20 shadow-md">
-        <h1 class="font-extrabold text-base tracking-wide flex items-center gap-2">Trend Video Hub</h1>
-        <div class="flex items-center space-x-3 text-white">
-            <i class="fa-solid fa-ellipsis-vertical text-lg cursor-pointer"></i>
-            <button onclick="closeApp()" class="hover:opacity-80"><i class="fa-solid fa-xmark text-xl"></i></button>
-        </div>
-    </header>
-
-    <!-- User Profile Bar -->
-    <div class="header-gradient text-white px-4 pb-3 flex justify-between items-center z-10 shadow-sm text-xs">
-        <div class="flex items-center space-x-2.5">
-            <div class="relative">
-                <img id="userAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-9 h-9 rounded-full border-2 border-emerald-400 object-cover">
-                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 rounded-full border border-white"></span>
-            </div>
-            <div>
-                <p id="headerName" class="font-bold text-sm leading-tight truncate max-w-[130px]">User</p>
-                <p id="headerUserId" class="text-[10px] text-purple-200 font-mono">ID: ...</p>
-            </div>
-        </div>
-        <div class="flex items-center space-x-2">
-            <div class="bg-indigo-950/60 border border-emerald-400/40 rounded-full px-2.5 py-1 flex items-center space-x-1.5 font-bold text-emerald-300 text-[11px]">
-                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                <span>14 ONLINE</span>
-            </div>
-            <button onclick="switchTab('tab-profile', 4)" class="w-7 h-7 rounded-full bg-indigo-950/60 flex items-center justify-center text-yellow-400 hover:text-yellow-300 border border-purple-500/30">
-                <i class="fa-solid fa-gear text-xs"></i>
-            </button>
+    <div id="toast" class="fixed top-5 right-5 z-50 transition-all opacity-0 pointer-events-none">
+        <div class="px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-lg flex items-center gap-2">
+            <i class="fa-solid fa-circle-check"></i> <span id="toastMsg">Action Done</span>
         </div>
     </div>
 
-    <!-- Main Container -->
-    <main class="flex-1 overflow-y-auto px-4 pt-3 pb-24 space-y-4" id="mainContent">
-
-        <!-- Tab: Home -->
-        <div id="tab-home" class="tab-content space-y-4">
-            
-            <div class="balance-card-gradient rounded-3xl p-5 text-white shadow-xl relative overflow-hidden">
-                <p class="text-xs font-semibold text-blue-100 uppercase tracking-wider">মোট ব্যালেন্স</p>
-                <div class="flex items-baseline space-x-1.5 my-1.5">
-                    <span class="text-yellow-300 text-3xl font-black">৳</span>
-                    <span class="text-4xl font-extrabold tracking-tight" id="homeBalance">0.00</span>
-                    <span class="text-xs text-blue-100 font-bold">BDT</span>
+    <!-- Sidebar -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 p-4 flex flex-col justify-between hidden md:flex">
+        <div>
+            <div class="flex items-center gap-3 pb-6 border-b border-slate-800">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg">
+                    <i class="fa-solid fa-crown"></i>
                 </div>
-                
-                <div class="w-full bg-blue-900/40 h-2 rounded-full overflow-hidden mt-2 mb-4">
-                    <div id="progressFill" class="bg-gradient-to-r from-emerald-400 to-teal-300 h-full w-[5%] transition-all duration-500"></div>
-                </div>
-
-                <button onclick="openModal('withdrawModal')" class="w-full withdraw-banner-btn text-white py-2.5 rounded-2xl font-bold text-xs flex items-center justify-center space-x-2 transition active:scale-95">
-                    <span>🔔</span>
-                    <span id="withdrawBannerText">সর্বনিম্ন ৫০ টাকা হলে উত্তোলন করুন!</span>
-                </button>
-            </div>
-
-            <!-- Quick Action 4-Grid with Daily 2-Times Limit -->
-            <div>
-                <div class="flex justify-between items-center mb-2 px-1">
-                    <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Daily Earning Zones</p>
-                    <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">দৈনিক সর্বোচ্চ ২ বার</span>
-                </div>
-                <div class="grid grid-cols-4 gap-2">
-                    <button onclick="triggerMathQuiz()" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
-                        <div class="w-10 h-10 rounded-xl bg-purple-500 text-white flex items-center justify-center shadow-md">
-                            <i class="fa-solid fa-calculator text-base"></i>
-                        </div>
-                        <span class="text-[11px] font-bold text-slate-700">Math Quiz</span>
-                        <span id="mathCountBadge" class="text-[9px] text-slate-400 font-semibold font-mono">0/2</span>
-                    </button>
-
-                    <button onclick="switchTab('tab-tasks', 2)" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md">
-                            <i class="fa-solid fa-video text-base"></i>
-                        </div>
-                        <span class="text-[11px] font-bold text-slate-700">Videos</span>
-                        <span class="text-[9px] text-slate-400 font-semibold font-mono">2/Day</span>
-                    </button>
-
-                    <button onclick="triggerScratch()" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
-                        <div class="w-10 h-10 rounded-xl bg-pink-500 text-white flex items-center justify-center shadow-md">
-                            <i class="fa-solid fa-gift text-base"></i>
-                        </div>
-                        <span class="text-[11px] font-bold text-slate-700">Scratch</span>
-                        <span id="scratchCountBadge" class="text-[9px] text-slate-400 font-semibold font-mono">0/2</span>
-                    </button>
-
-                    <button onclick="triggerSpin()" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
-                        <div class="w-10 h-10 rounded-xl bg-teal-500 text-white flex items-center justify-center shadow-md">
-                            <i class="fa-solid fa-arrows-spin text-base"></i>
-                        </div>
-                        <span class="text-[11px] font-bold text-slate-700">Spin Wheel</span>
-                        <span id="spinCountBadge" class="text-[9px] text-slate-400 font-semibold font-mono">0/2</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Fresh Videos Promotion Card -->
-            <div class="glass-box p-4 rounded-3xl flex items-center justify-between shadow-sm border border-purple-200/60">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-500 flex items-center justify-center">
-                        <i class="fa-solid fa-fire text-lg"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-extrabold text-xs text-slate-800 tracking-wide">FRESH VIDEOS</h4>
-                        <p class="text-[10px] text-slate-500">প্রতিদিন ভিডিও দেখে আয় করুন</p>
-                    </div>
-                </div>
-                <button onclick="switchTab('tab-tasks', 2)" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-2 rounded-xl shadow-md active:scale-95 transition">Watch Now</button>
-            </div>
-
-        </div>
-
-        <!-- Tab: Tasks / Videos -->
-        <div id="tab-tasks" class="tab-content hidden space-y-3">
-            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">ভিডিও দেখুন এবং টাকা ইনকাম করুন (সর্বোচ্চ ২ বার)</h3>
-            <div id="jobsList" class="space-y-2.5">
-                <div class="glass-box p-4 text-center text-xs text-slate-500 rounded-2xl">কাজ লোড হচ্ছে...</div>
-            </div>
-        </div>
-
-        <!-- Tab: Refer & Code Only -->
-        <div id="tab-refer" class="tab-content hidden space-y-4">
-            
-            <div id="referInputBoxSection" class="glass-box p-4 rounded-3xl shadow-sm border border-indigo-200 space-y-2.5">
-                <div class="flex items-center space-x-2">
-                    <div class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs">
-                        <i class="fa-solid fa-key"></i>
-                    </div>
-                    <h4 class="font-bold text-xs text-slate-800">রেফার কোড ব্যবহার করুন</h4>
-                </div>
-                <p class="text-[11px] text-slate-500">বন্ধুর রেফার কোড বসালে আপনি পাবেন সরাসরি ফ্রি ৳২.০০ বোনাস!</p>
-                <div class="flex gap-2">
-                    <input type="text" id="inputReferralCode" placeholder="বন্ধুর কোড লিখুন..." class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:outline-indigo-500">
-                    <button onclick="applyReferralCode()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl active:scale-95 transition">ক্লেইম</button>
-                </div>
-            </div>
-
-            <div class="bg-slate-900 rounded-3xl p-5 text-white space-y-4 border border-slate-700 shadow-xl text-center">
-                <div class="w-12 h-12 mx-auto rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-users"></i>
-                </div>
-                <h3 class="text-lg font-black text-white">বন্ধুদের ইনভাইট করুন</h3>
-                <p class="text-xs text-slate-300">আপনার রেফার কোড বন্ধুদের শেয়ার করুন। প্রতি রেফারে পাবেন ৳৫.০০ বোনাস!</p>
-                
-                <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 flex justify-around">
-                    <div>
-                        <p class="text-xl font-black text-emerald-400" id="refCount">0</p>
-                        <p class="text-[10px] text-slate-400 uppercase font-semibold">মোট রেফার</p>
-                    </div>
-                    <div>
-                        <p class="text-xl font-black text-yellow-400" id="refBonus">৳0.00</p>
-                        <p class="text-[10px] text-slate-400 uppercase font-semibold">রেফার বোনাস</p>
-                    </div>
-                </div>
-
-                <div class="space-y-1 text-left">
-                    <label class="text-[11px] font-bold text-slate-400">আপনার নিজস্ব রেফার কোড:</label>
-                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-700 flex items-center justify-between">
-                        <span class="text-base font-black text-yellow-300 tracking-wider font-mono px-2" id="myReferralCode">...</span>
-                        <button onclick="copyMyCode()" class="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold text-xs px-4 py-2 rounded-xl active:scale-95 shadow">কপি কোড</button>
-                    </div>
-                </div>
-
-                <button onclick="shareInviteCode()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg active:scale-95">
-                    <i class="fa-solid fa-paper-plane"></i>
-                    <span>কোডটি বন্ধুদের কাছে শেয়ার করুন</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Tab: Rank -->
-        <div id="tab-rank" class="tab-content hidden space-y-3">
-            <div class="header-gradient text-white p-4 rounded-3xl shadow-lg flex items-center justify-between">
                 <div>
-                    <h3 class="font-extrabold text-sm">সেরা ইনকামকারী</h3>
-                    <p class="text-[10px] text-purple-200">আজকের লিডারবোর্ড</p>
+                    <h1 class="font-bold text-sm text-white">Master Admin</h1>
+                    <span class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Instant Sync Active
+                    </span>
                 </div>
-                <i class="fa-solid fa-trophy text-2xl text-yellow-300"></i>
             </div>
-            <div id="rankList" class="space-y-2 text-xs"></div>
+            <nav class="mt-6 space-y-2 text-xs font-semibold">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-600/30">
+                    <i class="fa-solid fa-chart-pie w-4"></i> Dashboard
+                </button>
+                <button onclick="switchTab('notice')" id="nav-notice" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-bullhorn w-4 text-amber-400"></i> Pop-up Notice
+                </button>
+                <button onclick="switchTab('settings')" id="nav-settings" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-sliders w-4 text-teal-400"></i> Withdraw & Ad Settings
+                </button>
+                <button onclick="switchTab('tasks')" id="nav-tasks" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-video w-4 text-purple-400"></i> Tasks Management
+                </button>
+                <button onclick="switchTab('users')" id="nav-users" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-users w-4 text-blue-400"></i> Users & Balance Edit
+                </button>
+                <button onclick="switchTab('withdrawals')" id="nav-withdrawals" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-wallet w-4 text-rose-400"></i> Withdraw Requests
+                </button>
+            </nav>
+        </div>
+        <div class="text-xs text-slate-500 font-mono text-center">@Bdincomepro24_bot</div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 space-y-6">
+
+        <div class="flex justify-between items-center pb-4 border-b border-slate-800">
+            <div>
+                <h2 id="pageTitle" class="text-lg font-bold text-white">Instant Admin Controller</h2>
+                <p class="text-xs text-slate-400">Eikhane change korle instant index app-e update hobe</p>
+            </div>
+            <button onclick="openModal('addTaskModal')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Notun Task Add
+            </button>
         </div>
 
-        <!-- Tab: Profile -->
-        <div id="tab-profile" class="tab-content hidden space-y-3">
-            <div class="glass-box p-5 rounded-3xl space-y-3 text-center">
-                <img id="profileAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-16 h-16 mx-auto rounded-full border-2 border-indigo-500 object-cover">
-                <h3 class="font-bold text-sm text-slate-800" id="profName">User</h3>
-                <p class="text-xs text-slate-400 font-mono" id="profId">ID: ...</p>
+        <!-- Section: Dashboard -->
+        <section id="view-dashboard" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="glass-panel p-5 rounded-2xl">
+                <p class="text-xs text-slate-400 uppercase font-semibold">Total Users</p>
+                <h3 class="text-3xl font-black text-white mt-1" id="dashUsers">0</h3>
             </div>
-            <div class="glass-box p-4 rounded-2xl space-y-2 text-xs">
-                <div class="flex justify-between py-1.5 border-b border-slate-100">
-                    <span class="text-slate-500">স্ট্যাটাস</span>
-                    <span class="font-bold text-emerald-600">Active VIP</span>
-                </div>
-                <div class="flex justify-between py-1.5 border-b border-slate-100">
-                    <span class="text-slate-500">টেলিগ্রাম বট</span>
-                    <span class="font-bold text-indigo-600">@Bdincomepro24_bot</span>
-                </div>
+            <div class="glass-panel p-5 rounded-2xl">
+                <p class="text-xs text-slate-400 uppercase font-semibold">Live Tasks</p>
+                <h3 class="text-3xl font-black text-emerald-400 mt-1" id="dashTasks">0</h3>
             </div>
-        </div>
+            <div class="glass-panel p-5 rounded-2xl">
+                <p class="text-xs text-slate-400 uppercase font-semibold">Pending Withdraw</p>
+                <h3 class="text-3xl font-black text-amber-400 mt-1" id="dashPending">0</h3>
+            </div>
+        </section>
+
+        <!-- Section: Notice Popup -->
+        <section id="view-notice" class="hidden space-y-4">
+            <div class="glass-panel p-6 rounded-2xl space-y-4">
+                <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-bullhorn"></i> Live Pop-up Notice (App open korle samne ashbe)
+                </h3>
+                <form onsubmit="saveNoticeSettings(event)" class="space-y-4 text-xs">
+                    <div>
+                        <label class="block text-slate-300 font-bold mb-1">Notice Message</label>
+                        <textarea id="s_notice_text" rows="3" placeholder="Notice text ekhane likhun..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 font-bold mb-1">Notice Target URL (Optional)</label>
+                        <input type="url" id="s_notice_url" placeholder="https://t.me/..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+                    </div>
+                    <div class="flex items-center gap-2 pt-1">
+                        <input type="checkbox" id="s_notice_active" class="w-4 h-4 rounded text-indigo-600 bg-slate-950 border-slate-700">
+                        <label for="s_notice_active" class="text-slate-300 font-bold">Notice pop-up active thakbe</label>
+                    </div>
+                    <button type="submit" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl shadow">Save & Publish Notice</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Section: Settings -->
+        <section id="view-settings" class="hidden space-y-5">
+            <div class="glass-panel p-6 rounded-2xl space-y-4">
+                <h3 class="text-sm font-bold text-teal-400 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> System, Ads & Withdraw Control
+                </h3>
+                <form onsubmit="saveAppSettings(event)" class="space-y-6 text-xs">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                            <label class="block text-amber-400 font-bold mb-1 text-sm">Minimum Withdraw (BDT ৳)</label>
+                            <input type="number" id="s_min_withdraw" value="50.00" step="1" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white font-bold text-sm">
+                        </div>
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                            <label class="block text-emerald-400 font-bold mb-1 text-sm">Pop-up Banner Key (Adsterra)</label>
+                            <input type="text" id="s_banner_key" placeholder="ad5e35bd1c459f37a4cb5a9eba66ed21" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white font-mono">
+                        </div>
+                    </div>
+
+                    <!-- Math Settings -->
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
+                        <h4 class="font-bold text-purple-400 text-sm">Math Quiz Settings</h4>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Direct Ad Link</label>
+                            <input type="url" id="s_math_url" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-slate-400 mb-1">Timer (s)</label>
+                                <input type="number" id="s_math_timer" value="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Min (৳)</label>
+                                <input type="number" step="0.01" id="s_math_min" value="0.10" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Max (৳)</label>
+                                <input type="number" step="0.01" id="s_math_max" value="0.50" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Spin Settings -->
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
+                        <h4 class="font-bold text-teal-400 text-sm">Lucky Spin Wheel Settings</h4>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Direct Ad Link</label>
+                            <input type="url" id="s_spin_url" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-slate-400 mb-1">Timer (s)</label>
+                                <input type="number" id="s_spin_timer" value="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Min (৳)</label>
+                                <input type="number" step="0.01" id="s_spin_min" value="0.10" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Max (৳)</label>
+                                <input type="number" step="0.01" id="s_spin_max" value="1.00" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scratch Settings -->
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
+                        <h4 class="font-bold text-pink-400 text-sm">Scratch Card Settings</h4>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Direct Ad Link</label>
+                            <input type="url" id="s_scratch_url" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-slate-400 mb-1">Timer (s)</label>
+                                <input type="number" id="s_scratch_timer" value="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Min (৳)</label>
+                                <input type="number" step="0.01" id="s_scratch_min" value="0.10" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Max (৳)</label>
+                                <input type="number" step="0.01" id="s_scratch_max" value="1.00" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg">Save All Settings (Instant Sync)</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Section: Tasks Management -->
+        <section id="view-tasks" class="hidden glass-panel p-5 rounded-2xl space-y-4">
+            <h3 class="text-sm font-bold text-white">Tasks List (Instant Edit & Delete)</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="bg-slate-800/80 text-slate-400 border-b border-slate-700">
+                        <tr>
+                            <th class="p-3">Title</th>
+                            <th class="p-3">Reward (৳)</th>
+                            <th class="p-3">Timer (s)</th>
+                            <th class="p-3">Link</th>
+                            <th class="p-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskBody" class="divide-y divide-slate-800"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section: Users & Balance Edit -->
+        <section id="view-users" class="hidden glass-panel p-5 rounded-2xl space-y-4">
+            <h3 class="text-sm font-bold text-white">User List & Balance Controller</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="bg-slate-800/80 text-slate-400 border-b border-slate-700">
+                        <tr>
+                            <th class="p-3">User</th>
+                            <th class="p-3">ID</th>
+                            <th class="p-3">Balance (৳)</th>
+                            <th class="p-3">Refer</th>
+                            <th class="p-3 text-right">Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userBody" class="divide-y divide-slate-800"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section: Withdrawals -->
+        <section id="view-withdrawals" class="hidden glass-panel p-5 rounded-2xl space-y-4">
+            <h3 class="text-sm font-bold text-white">Withdraw Requests</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="bg-slate-800/80 text-slate-400 border-b border-slate-700">
+                        <tr>
+                            <th class="p-3">User</th>
+                            <th class="p-3">Method</th>
+                            <th class="p-3">Account</th>
+                            <th class="p-3">Amount (৳)</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="withdrawBody" class="divide-y divide-slate-800"></tbody>
+                </table>
+            </div>
+        </section>
 
     </main>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-900 text-slate-400 px-3 py-2 flex justify-around items-center z-30 border-t border-slate-800">
-        <button onclick="switchTab('tab-home', 0)" class="nav-item flex flex-col items-center -mt-4">
-            <div class="w-11 h-11 rounded-full nav-home-bubble text-white flex items-center justify-center border-2 border-slate-900">
-                <i class="fa-solid fa-house text-sm"></i>
+    <!-- Modal: Add Task -->
+    <div id="addTaskModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-panel w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h3 class="text-sm font-bold text-white">Add New Task</h3>
+                <button onclick="closeModal('addTaskModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <span class="text-[10px] font-bold text-red-400 mt-0.5">হোম</span>
-        </button>
-
-        <button onclick="switchTab('tab-refer', 1)" class="nav-item flex flex-col items-center py-1 hover:text-white">
-            <i class="fa-solid fa-user-plus text-base"></i>
-            <span class="text-[10px] font-semibold mt-1">রেফার</span>
-        </button>
-
-        <button onclick="switchTab('tab-tasks', 2)" class="nav-item flex flex-col items-center py-1 hover:text-white">
-            <i class="fa-solid fa-sack-dollar text-base"></i>
-            <span class="text-[10px] font-semibold mt-1">টাস্ক</span>
-        </button>
-
-        <button onclick="switchTab('tab-rank', 3)" class="nav-item flex flex-col items-center py-1 hover:text-white">
-            <i class="fa-solid fa-chart-simple text-base"></i>
-            <span class="text-[10px] font-semibold mt-1">লিডারবোর্ড</span>
-        </button>
-
-        <button onclick="switchTab('tab-profile', 4)" class="nav-item flex flex-col items-center py-1 hover:text-white">
-            <i class="fa-solid fa-user text-base"></i>
-            <span class="text-[10px] font-semibold mt-1">প্রোফাইল</span>
-        </button>
-    </nav>
-
-    <!-- GLOBAL BROADCAST POPUP NOTICE -->
-    <div id="noticePopUpModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 text-center relative border-2 border-indigo-400 shadow-2xl">
-            <button onclick="closeModal('noticePopUpModal')" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600">
-                <i class="fa-solid fa-circle-xmark text-xl text-rose-500"></i>
-            </button>
-            <div class="w-12 h-12 mx-auto rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl shadow-inner">
-                <i class="fa-solid fa-bullhorn animate-pulse"></i>
-            </div>
-            <h3 class="font-black text-sm text-slate-900">জরুরি নোটিশ / ঘোষণা</h3>
-            <p id="noticePopUpContent" class="text-xs text-slate-600 whitespace-pre-line text-left leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
-                ...
-            </p>
-            <div id="noticeBtnContainer">
-                <a id="noticePopUpLink" href="#" target="_blank" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-xs shadow active:scale-95">
-                    বিস্তারিত দেখুন <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- POP-UP ALERT MODAL (Internal Countdown, No Outside Redirection) -->
-    <div id="randomPopUpModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-box rounded-3xl w-full max-w-xs p-5 space-y-3 text-center relative border-2 border-amber-400 shadow-2xl">
-            <button id="popUpCloseBtn" onclick="finishPopUpAd()" class="absolute top-3 right-3 text-rose-500 hover:text-rose-600 hidden">
-                <i class="fa-solid fa-circle-xmark text-2xl"></i>
-            </button>
-
-            <div class="w-10 h-10 mx-auto rounded-xl bg-amber-100 text-amber-500 flex items-center justify-center text-xl">
-                <i class="fa-solid fa-gift animate-bounce"></i>
-            </div>
-            
-            <h3 class="font-black text-sm text-slate-900">🎉 স্পেশাল অফার ব্যানার</h3>
-            <p id="popUpTimerNotice" class="text-xs text-amber-600 font-bold">অ্যাড দেখা হচ্ছে, অপেক্ষা করুন...</p>
-
-            <div id="adContainerIframe" class="w-full flex items-center justify-center overflow-hidden rounded-xl bg-slate-50 border border-dashed border-slate-300 min-h-[65px]"></div>
-
-            <button id="popUpClaimBtn" onclick="finishPopUpAd()" disabled class="w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs shadow">
-                অ্যাড দেখা শেষ হতে বাকি...
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL 1: Math Quiz -->
-    <div id="mathModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center relative">
-            <button id="mathCloseBtn" onclick="closeModal('mathModal')" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <div class="flex items-center justify-between border-b pb-2">
-                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-calculator text-purple-600 mr-1"></i> গণিত সমাধান</h3>
-                <span class="text-[10px] text-purple-600 font-bold bg-purple-100 px-2 py-0.5 rounded-full">লিমিট: ২ বার</span>
-            </div>
-            <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200">
-                <span class="text-2xl font-black text-purple-700 tracking-wider" id="mathProblem">5 + 8 = ?</span>
-            </div>
-            <input type="number" id="mathAnswer" placeholder="আপনার উত্তর" class="w-full text-center bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold text-lg">
-            <button id="mathClaimBtn" onclick="submitMathQuiz()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95">রিওয়ার্ড নিন</button>
-        </div>
-    </div>
-
-    <!-- MODAL 2: Scratch Card -->
-    <div id="scratchModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center relative">
-            <button id="scratchCloseBtn" onclick="closeModal('scratchModal')" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <div class="flex items-center justify-between border-b pb-2">
-                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-gift text-pink-600 mr-1"></i> স্ক্র্যাচ কার্ড</h3>
-                <span class="text-[10px] text-pink-600 font-bold bg-pink-100 px-2 py-0.5 rounded-full">লিমিট: ২ বার</span>
-            </div>
-            <p class="text-xs text-slate-500">কার্ডে চাপ দিয়ে ঘষে রিওয়ার্ড বের করুন!</p>
-            <div onclick="revealScratch()" id="scratchCard" class="w-48 h-32 mx-auto bg-gradient-to-tr from-pink-500 to-rose-400 rounded-2xl flex flex-col items-center justify-center text-white font-extrabold shadow-lg cursor-pointer active:scale-95 transition">
-                <i class="fa-solid fa-hand-pointer text-2xl mb-1 animate-bounce"></i>
-                <span id="scratchText">ঘষতে ট্যাপ করুন</span>
-            </div>
-            <button id="claimScratchBtn" onclick="claimScratchReward()" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl shadow cursor-not-allowed">রিওয়ার্ড নিন</button>
-        </div>
-    </div>
-
-    <!-- MODAL 3: Lucky Spin Wheel -->
-    <div id="spinModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center relative">
-            <button id="spinCloseBtn" onclick="closeModal('spinModal')" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <div class="flex items-center justify-between border-b pb-2">
-                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-arrows-spin text-teal-600 mr-1"></i> লাকি স্পিন হুইল</h3>
-                <span class="text-[10px] text-teal-600 font-bold bg-teal-100 px-2 py-0.5 rounded-full">লিমিট: ২ বার</span>
-            </div>
-            <div class="relative w-44 h-44 mx-auto my-2">
-                <div class="absolute top-0 left-1/2 -translate-x-1/2 -mt-2 z-10 text-red-500 text-xl font-black">▼</div>
-                <div id="spinWheel" class="w-full h-full rounded-full border-4 border-slate-800 shadow-xl overflow-hidden relative" style="background: conic-gradient(#10b981 0deg 60deg, #f59e0b 60deg 120deg, #3b82f6 120deg 180deg, #ec4899 180deg 240deg, #8b5cf6 240deg 300deg, #ef4444 300deg 360deg);"></div>
-            </div>
-            <button id="spinBtn" onclick="spinNow()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95">এখনই স্পিন করুন!</button>
-        </div>
-    </div>
-
-    <!-- MODAL 4: Withdraw -->
-    <div id="withdrawModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-extrabold text-sm text-slate-800">টাকা উত্তোলন (Withdraw)</h3>
-                <button onclick="closeModal('withdrawModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="space-y-3 text-xs">
+            <form onsubmit="handleAddTask(event)" class="space-y-3 text-xs">
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">পেমেন্ট মেথড</label>
-                    <select id="wMethod" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold">
-                        <option value="bKash">বিকাশ (bKash Personal)</option>
-                        <option value="Nagad">নগদ (Nagad Personal)</option>
-                        <option value="Rocket">রকেট (Rocket Personal)</option>
-                    </select>
+                    <label class="block text-slate-300 mb-1">Title</label>
+                    <input type="text" id="tTitle" placeholder="Video 1" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-slate-300 mb-1">Reward (৳)</label>
+                        <input type="number" step="0.01" id="tReward" value="1.00" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Timer (s)</label>
+                        <input type="number" id="tTimer" value="30" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
+                    </div>
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">একাউন্ট নম্বর</label>
-                    <input type="text" id="wAccount" placeholder="017XXXXXXXX" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono">
+                    <label class="block text-slate-300 mb-1">URL / Video Link</label>
+                    <input type="url" id="tUrl" placeholder="https://..." required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
                 </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">পরিমাণ (টাকা ৳)</label>
-                    <input type="number" id="wAmount" value="50.00" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold">
-                    <p class="text-[10px] text-slate-500 mt-1" id="wNoticeText">সর্বনিম্ন উইথড্র ৫০.০০ টাকা</p>
+                <div class="flex justify-end gap-2 pt-2 border-t border-slate-700">
+                    <button type="button" onclick="closeModal('addTaskModal')" class="px-3 py-2 bg-slate-800 text-slate-300 rounded-xl">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl">Publish</button>
                 </div>
-            </div>
-            <button onclick="processWithdraw()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95 transition">উইথড্র রিকোয়েস্ট পাঠান</button>
+            </form>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed top-12 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 opacity-0 pointer-events-none">
-        <div class="bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full border border-indigo-500/50 shadow-2xl flex items-center space-x-2">
-            <i class="fa-solid fa-circle-check text-emerald-400"></i>
-            <span id="toastMsg"></span>
+    <!-- Modal: Edit Task -->
+    <div id="editTaskModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-panel w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h3 class="text-sm font-bold text-white">Edit Task Details</h3>
+                <button onclick="closeModal('editTaskModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleUpdateTask(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="editTaskId">
+                <div>
+                    <label class="block text-slate-300 mb-1">Title</label>
+                    <input type="text" id="editTaskTitle" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-slate-300 mb-1">Reward (৳)</label>
+                        <input type="number" step="0.01" id="editTaskReward" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Timer (s)</label>
+                        <input type="number" id="editTaskTimer" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">URL</label>
+                    <input type="url" id="editTaskUrl" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow">Update Task</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Edit User Balance -->
+    <div id="editBalanceModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-panel w-full max-w-xs rounded-2xl p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h3 class="text-sm font-bold text-white">Modify User Balance</h3>
+                <button onclick="closeModal('editBalanceModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleUpdateBalance(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="editUserId">
+                <div>
+                    <label class="block text-slate-400 mb-1">User Name</label>
+                    <input type="text" id="editUserName" disabled class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-slate-400 font-bold">
+                </div>
+                <div>
+                    <label class="block text-slate-300 font-bold mb-1">New Balance (BDT ৳)</label>
+                    <input type="number" step="0.01" id="editUserBalance" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-bold text-base">
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow">Save Balance</button>
+            </form>
         </div>
     </div>
 
@@ -398,593 +358,248 @@
         const SUPABASE_KEY = "sb_publishable_KeZ0jUmEyj9OcZpngWy0pw_dZryTibp";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let user = { id: "", name: "User", balance: 0.00, joined: 0 };
-        let appSettings = {
-            math_ad_url: '', math_timer: 12, math_min: 0.10, math_max: 0.50,
-            spin_ad_url: '', spin_timer: 12, spin_min: 0.10, spin_max: 1.00,
-            scratch_ad_url: '', scratch_timer: 12, scratch_min: 0.10, scratch_max: 1.00,
-            popup_ad_url: '',
-            banner_key: 'ad5e35bd1c459f37a4cb5a9eba66ed21',
-            min_withdraw: 50.00,
-            notice_text: '',
-            notice_url: '',
-            notice_active: false
+        let tasks = [], users = [], withdrawals = [];
+
+        window.onload = function() {
+            loadDashboardData();
+            loadAppSettings();
         };
 
-        let tasks = [];
-        let currentMathAns = 0;
-        let currentScratchReward = 0;
-        let isSpinning = false;
-        let currentDegree = 0;
-
-        function getTodayDateString() {
-            const d = new Date();
-            return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-        }
-
-        function getTaskUsage(taskName) {
-            const key = `usage_${getTodayDateString()}_${user.id}_${taskName}`;
-            return parseInt(localStorage.getItem(key) || '0');
-        }
-
-        function incrementTaskUsage(taskName) {
-            const key = `usage_${getTodayDateString()}_${user.id}_${taskName}`;
-            const count = getTaskUsage(taskName) + 1;
-            localStorage.setItem(key, count.toString());
-            updateBadges();
-            return count;
-        }
-
-        function updateBadges() {
-            document.getElementById('mathCountBadge').innerText = `${getTaskUsage('math')}/2`;
-            document.getElementById('scratchCountBadge').innerText = `${getTaskUsage('scratch')}/2`;
-            document.getElementById('spinCountBadge').innerText = `${getTaskUsage('spin')}/2`;
-        }
-
-        document.addEventListener("DOMContentLoaded", async () => {
-            await initUser();
-            await fetchSettings();
-            await loadTasks();
-            await loadLeaderboard();
-            updateBadges();
-
-            checkBroadcastNotice();
-            startPeriodicPopUp();
-
-            // INSTANT REALTIME SYNC LISTENER
-            setupRealtimeSync();
-        });
-
-        function setupRealtimeSync() {
-            // Realtime listening for settings change in admin
-            supabaseClient
-                .channel('public:app_settings')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'app_settings' }, async (payload) => {
-                    await fetchSettings();
-                    checkBroadcastNotice();
-                })
-                .subscribe();
-
-            // Realtime listening for user balance change
-            supabaseClient
-                .channel('public:users')
-                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users', filter: `id=eq.${user.id}` }, (payload) => {
-                    if (payload.new) {
-                        user.balance = Number(payload.new.balance || 0);
-                        user.joined = Number(payload.new.joined || 0);
-                        updateUI();
-                    }
-                })
-                .subscribe();
-
-            // Realtime listening for tasks change
-            supabaseClient
-                .channel('public:tasks')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, async () => {
-                    await loadTasks();
-                })
-                .subscribe();
-        }
-
-        async function fetchSettings() {
+        async function loadAppSettings() {
             try {
                 const { data } = await supabaseClient.from('app_settings').select('*').eq('id', 'default').single();
                 if (data) {
-                    appSettings = { ...appSettings, ...data };
-                    document.getElementById('withdrawBannerText').innerText = `সর্বনিম্ন ${Number(appSettings.min_withdraw || 50).toFixed(0)} টাকা হলে উত্তোলন করুন!`;
-                    document.getElementById('wAmount').value = appSettings.min_withdraw || 50.00;
-                    document.getElementById('wAmount').min = appSettings.min_withdraw || 50.00;
-                    document.getElementById('wNoticeText').innerText = `সর্বনিম্ন উইথড্র ${Number(appSettings.min_withdraw || 50).toFixed(2)} টাকা`;
+                    document.getElementById('s_min_withdraw').value = data.min_withdraw || 50.00;
+                    document.getElementById('s_banner_key').value = data.banner_key || 'ad5e35bd1c459f37a4cb5a9eba66ed21';
+                    document.getElementById('s_notice_text').value = data.notice_text || '';
+                    document.getElementById('s_notice_url').value = data.notice_url || '';
+                    document.getElementById('s_notice_active').checked = !!data.notice_active;
+
+                    document.getElementById('s_math_url').value = data.math_ad_url || '';
+                    document.getElementById('s_math_timer').value = data.math_timer || 12;
+                    document.getElementById('s_math_min').value = data.math_min || 0.10;
+                    document.getElementById('s_math_max').value = data.math_max || 0.50;
+
+                    document.getElementById('s_spin_url').value = data.spin_ad_url || '';
+                    document.getElementById('s_spin_timer').value = data.spin_timer || 12;
+                    document.getElementById('s_spin_min').value = data.spin_min || 0.10;
+                    document.getElementById('s_spin_max').value = data.spin_max || 1.00;
+
+                    document.getElementById('s_scratch_url').value = data.scratch_ad_url || '';
+                    document.getElementById('s_scratch_timer').value = data.scratch_timer || 12;
+                    document.getElementById('s_scratch_min').value = data.scratch_min || 0.10;
+                    document.getElementById('s_scratch_max').value = data.scratch_max || 1.00;
                 }
-            } catch (e) {
+            } catch(e) {
                 console.error(e);
             }
         }
 
-        function checkBroadcastNotice() {
-            if (appSettings.notice_active && appSettings.notice_text) {
-                document.getElementById('noticePopUpContent').innerText = appSettings.notice_text;
-                const linkBtn = document.getElementById('noticePopUpLink');
-                if (appSettings.notice_url) {
-                    linkBtn.href = appSettings.notice_url;
-                    document.getElementById('noticeBtnContainer').classList.remove('hidden');
-                } else {
-                    document.getElementById('noticeBtnContainer').classList.add('hidden');
-                }
-                openModal('noticePopUpModal');
-            } else {
-                closeModal('noticePopUpModal');
-            }
+        async function saveNoticeSettings(e) {
+            e.preventDefault();
+            const payload = {
+                notice_text: document.getElementById('s_notice_text').value,
+                notice_url: document.getElementById('s_notice_url').value,
+                notice_active: document.getElementById('s_notice_active').checked,
+                updated_at: new Date().toISOString()
+            };
+            await supabaseClient.from('app_settings').upsert({ id: 'default', ...payload });
+            showToast('Notice instant update hoyeche!');
         }
 
-        async function initUser() {
-            let tgId = "", tgName = "", tgPhoto = "";
-            const tg = window.Telegram?.WebApp;
-            if (tg) {
-                tg.ready();
-                tg.expand();
-                if (tg.initDataUnsafe?.user) {
-                    const u = tg.initDataUnsafe.user;
-                    tgId = String(u.id);
-                    tgName = (u.first_name || "") + (u.last_name ? " " + u.last_name : "");
-                    if (u.photo_url) tgPhoto = u.photo_url;
-                }
-            }
+        async function saveAppSettings(e) {
+            e.preventDefault();
+            const payload = {
+                min_withdraw: parseFloat(document.getElementById('s_min_withdraw').value),
+                banner_key: document.getElementById('s_banner_key').value.trim(),
+                math_ad_url: document.getElementById('s_math_url').value,
+                math_timer: parseInt(document.getElementById('s_math_timer').value),
+                math_min: parseFloat(document.getElementById('s_math_min').value),
+                math_max: parseFloat(document.getElementById('s_math_max').value),
 
-            if (!tgId) {
-                let savedId = localStorage.getItem('pki_user_id');
-                if (!savedId) {
-                    savedId = String(Math.floor(10000000 + Math.random() * 90000000));
-                    localStorage.setItem('pki_user_id', savedId);
-                }
-                tgId = savedId;
-                tgName = "Rostom Ali";
-            }
+                spin_ad_url: document.getElementById('s_spin_url').value,
+                spin_timer: parseInt(document.getElementById('s_spin_timer').value),
+                spin_min: parseFloat(document.getElementById('s_spin_min').value),
+                spin_max: parseFloat(document.getElementById('s_spin_max').value),
 
-            user.id = tgId;
-            user.name = tgName || "User";
-            if (tgPhoto) {
-                const a1 = document.getElementById('userAvatar');
-                const a2 = document.getElementById('profileAvatar');
-                if (a1) a1.src = tgPhoto;
-                if (a2) a2.src = tgPhoto;
-            }
-
-            try {
-                const { data: existingUser } = await supabaseClient.from('users').select('*').eq('id', user.id).maybeSingle();
-                if (existingUser) {
-                    user.balance = Number(existingUser.balance || 0);
-                    user.joined = Number(existingUser.joined || 0);
-                } else {
-                    await supabaseClient.from('users').insert([{ id: user.id, name: user.name, balance: 0.00, joined: 0 }]);
-                }
-            } catch (err) {
-                console.error("User init err:", err);
-            }
-
-            const claimedRef = localStorage.getItem(`ref_claimed_${user.id}`);
-            if (claimedRef) {
-                const box = document.getElementById('referInputBoxSection');
-                if (box) box.style.display = 'none';
-            }
-
-            updateUI();
+                scratch_ad_url: document.getElementById('s_scratch_url').value,
+                scratch_timer: parseInt(document.getElementById('s_scratch_timer').value),
+                scratch_min: parseFloat(document.getElementById('s_scratch_min').value),
+                scratch_max: parseFloat(document.getElementById('s_scratch_max').value),
+                updated_at: new Date().toISOString()
+            };
+            await supabaseClient.from('app_settings').upsert({ id: 'default', ...payload });
+            showToast('Settings saved & synced instantly!');
         }
 
-        function updateUI() {
-            document.getElementById('headerName').innerText = user.name;
-            document.getElementById('profName').innerText = user.name;
-            document.getElementById('headerUserId').innerText = "ID: " + user.id;
-            document.getElementById('profId').innerText = "ID: " + user.id;
-            document.getElementById('homeBalance').innerText = Number(user.balance).toFixed(2);
-            document.getElementById('refCount').innerText = user.joined || 0;
-            document.getElementById('refBonus').innerText = "৳" + Number(user.joined * 5.00).toFixed(2);
-            document.getElementById('myReferralCode').innerText = user.id;
-
-            const minW = appSettings.min_withdraw || 50;
-            let pct = Math.min((user.balance / minW) * 100, 100);
-            document.getElementById('progressFill').style.width = `${Math.max(pct, 5)}%`;
-        }
-
-        // ================= POP-UP SYSTEM (5 MINUTE INTERVAL) ================= //
-        function startPeriodicPopUp() {
-            setInterval(() => {
-                const now = Date.now();
-                const lastPopupTime = parseInt(localStorage.getItem(`last_popup_${user.id}`) || '0');
-                const fiveMinutes = 5 * 60 * 1000;
-
-                const isAnyModalOpen = !document.getElementById('mathModal').classList.contains('hidden') ||
-                                       !document.getElementById('spinModal').classList.contains('hidden') ||
-                                       !document.getElementById('scratchModal').classList.contains('hidden') ||
-                                       !document.getElementById('withdrawModal').classList.contains('hidden') ||
-                                       !document.getElementById('noticePopUpModal').classList.contains('hidden') ||
-                                       !document.getElementById('randomPopUpModal').classList.contains('hidden');
-
-                const popUsage = getTaskUsage('popup');
-
-                if (!isAnyModalOpen && popUsage < 2 && (now - lastPopupTime >= fiveMinutes)) {
-                    localStorage.setItem(`last_popup_${user.id}`, now.toString());
-                    openLockedPopUpAd();
-                }
-            }, 10000);
-        }
-
-        function openLockedPopUpAd() {
-            openModal('randomPopUpModal');
-
-            const closeBtn = document.getElementById('popUpCloseBtn');
-            const claimBtn = document.getElementById('popUpClaimBtn');
-            const notice = document.getElementById('popUpTimerNotice');
-
-            closeBtn.classList.add('hidden');
-            claimBtn.disabled = true;
-
-            const currentKey = appSettings.banner_key || 'ad5e35bd1c459f37a4cb5a9eba66ed21';
-
-            // Safe Iframe Construction
-            const adBox = document.getElementById('adContainerIframe');
-            adBox.innerHTML = '';
-            const iframe = document.createElement('iframe');
-            iframe.width = "100%";
-            iframe.height = "65";
-            iframe.frameBorder = "0";
-            iframe.scrolling = "no";
-            adBox.appendChild(iframe);
-
-            const iframeDoc = iframe.contentWindow.document;
-            iframeDoc.open();
-            iframeDoc.write(`<!DOCTYPE html><html><body style="margin:0;display:flex;justify-content:center;align-items:center;"><script>atOptions={'key':'${currentKey}','format':'iframe','height':60,'width':468,'params':{}};</scr` + `ipt><script src="https://brijmohan.org/22/${currentKey}"></scr` + `ipt></body></html>`);
-            iframeDoc.close();
-
-            let leftTime = 10;
-            claimBtn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs";
-            claimBtn.innerText = `অ্যাড দেখা শেষ হতে বাকি (${leftTime}s)...`;
-            notice.innerText = `বিজ্ঞাপনটি পুরো দেখুন, এরপর ক্রস বা ক্লেইম করুন`;
-
-            const tId = setInterval(() => {
-                leftTime--;
-                claimBtn.innerText = `অ্যাড দেখা শেষ হতে বাকি (${leftTime}s)...`;
-
-                if (leftTime <= 0) {
-                    clearInterval(tId);
-                    closeBtn.classList.remove('hidden');
-                    claimBtn.disabled = false;
-                    claimBtn.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-lg active:scale-95";
-                    claimBtn.innerText = "রিওয়ার্ড ক্লেইম করুন (+৳০.২৫)";
-                    notice.innerText = "অ্যাড সম্পন্ন হয়েছে! এখন বন্ধ বা ক্লেইম করতে পারেন।";
-                }
-            }, 1000);
-        }
-
-        async function finishPopUpAd() {
-            incrementTaskUsage('popup');
-            closeModal('randomPopUpModal');
-            await saveUserBalance(0.25, "স্পেশাল বোনাস থেকে");
-        }
-
-        // ================= 1. MATH QUIZ (Max 2/day) ================= //
-        function triggerMathQuiz() {
-            if (getTaskUsage('math') >= 2) return showToast('আজকের Math Quiz লিমিট শেষ (২/২)!');
-            openModal('mathModal');
-            generateMathQuiz();
-        }
-
-        function generateMathQuiz() {
-            const n1 = Math.floor(Math.random() * 20) + 1;
-            const n2 = Math.floor(Math.random() * 20) + 1;
-            currentMathAns = n1 + n2;
-            document.getElementById('mathProblem').innerText = `${n1} + ${n2} = ?`;
-            document.getElementById('mathAnswer').value = "";
-            const btn = document.getElementById('mathClaimBtn');
-            btn.disabled = false;
-            btn.innerText = "রিওয়ার্ড নিন";
-            btn.className = "w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95";
-        }
-
-        async function submitMathQuiz() {
-            const ans = parseInt(document.getElementById('mathAnswer').value);
-            if (ans !== currentMathAns) {
-                showToast("ভুল উত্তর! আবার চেষ্টা করুন।");
-                return generateMathQuiz();
-            }
-
-            const btn = document.getElementById('mathClaimBtn');
-            const closeBtn = document.getElementById('mathCloseBtn');
-            btn.disabled = true;
-            closeBtn.classList.add('hidden');
-
-            let left = appSettings.math_timer || 12;
-            btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
-
-            const timerId = setInterval(async () => {
-                btn.innerText = `অ্যাড সম্পন্ন হচ্ছে (${left}s)...`;
-                left--;
-                if (left < 0) {
-                    clearInterval(timerId);
-                    closeBtn.classList.remove('hidden');
-                    closeModal('mathModal');
-                    incrementTaskUsage('math');
-                    const earned = getRandomReward(appSettings.math_min, appSettings.math_max);
-                    await saveUserBalance(earned, "কুইজ থেকে যোগ হয়েছে");
-                }
-            }, 1000);
-        }
-
-        // ================= 2. SCRATCH CARD (Max 2/day) ================= //
-        function triggerScratch() {
-            if (getTaskUsage('scratch') >= 2) return showToast('আজকের Scratch কার্ড লিমিট শেষ (২/২)!');
-            openModal('scratchModal');
-            resetScratch();
-        }
-
-        function resetScratch() {
-            currentScratchReward = getRandomReward(appSettings.scratch_min, appSettings.scratch_max);
-            const card = document.getElementById('scratchCard');
-            card.className = "w-48 h-32 mx-auto bg-gradient-to-tr from-pink-500 to-rose-400 rounded-2xl flex flex-col items-center justify-center text-white font-extrabold shadow-lg cursor-pointer active:scale-95 transition";
-            card.innerHTML = `<i class="fa-solid fa-hand-pointer text-2xl mb-1 animate-bounce"></i><span>ঘষতে ট্যাপ করুন</span>`;
-            
-            const btn = document.getElementById('claimScratchBtn');
-            btn.disabled = true;
-            btn.innerText = "রিওয়ার্ড নিন";
-            btn.className = "w-full bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl shadow cursor-not-allowed";
-        }
-
-        function revealScratch() {
-            const card = document.getElementById('scratchCard');
-            card.className = "w-48 h-32 mx-auto bg-amber-100 border-2 border-dashed border-amber-500 rounded-2xl flex flex-col items-center justify-center text-amber-600 font-extrabold shadow-inner";
-            card.innerHTML = `<span class="text-3xl font-black">+৳${currentScratchReward.toFixed(2)}</span><span class="text-xs uppercase mt-1">জিতে গেছেন!</span>`;
-            
-            const btn = document.getElementById('claimScratchBtn');
-            btn.disabled = false;
-            btn.className = "w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95";
-        }
-
-        async function claimScratchReward() {
-            const btn = document.getElementById('claimScratchBtn');
-            const closeBtn = document.getElementById('scratchCloseBtn');
-            btn.disabled = true;
-            closeBtn.classList.add('hidden');
-
-            let left = appSettings.scratch_timer || 12;
-            btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
-
-            const timerId = setInterval(async () => {
-                btn.innerText = `অ্যাড সম্পন্ন হচ্ছে (${left}s)...`;
-                left--;
-                if (left < 0) {
-                    clearInterval(timerId);
-                    closeBtn.classList.remove('hidden');
-                    closeModal('scratchModal');
-                    incrementTaskUsage('scratch');
-                    await saveUserBalance(currentScratchReward, "স্ক্র্যাচ থেকে যোগ হয়েছে");
-                }
-            }, 1000);
-        }
-
-        // ================= 3. LUCKY SPIN WHEEL (Max 2/day) ================= //
-        function triggerSpin() {
-            if (getTaskUsage('spin') >= 2) return showToast('আজকের Spin হুইল লিমিট শেষ (২/২)!');
-            openModal('spinModal');
-        }
-
-        function spinNow() {
-            if (isSpinning) return;
-            isSpinning = true;
-            const btn = document.getElementById('spinBtn');
-            const closeBtn = document.getElementById('spinCloseBtn');
-            btn.disabled = true;
-            closeBtn.classList.add('hidden');
-
-            const extraDeg = Math.floor(Math.random() * 360) + 1440;
-            currentDegree += extraDeg;
-            document.getElementById('spinWheel').style.transform = `rotate(${currentDegree}deg)`;
-
-            const won = getRandomReward(appSettings.spin_min, appSettings.spin_max);
-
-            setTimeout(() => {
-                let left = appSettings.spin_timer || 12;
-                btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
-
-                const timerId = setInterval(async () => {
-                    btn.innerText = `রিওয়ার্ড প্রসেস হচ্ছে (${left}s)...`;
-                    left--;
-                    if (left < 0) {
-                        clearInterval(timerId);
-                        isSpinning = false;
-                        btn.disabled = false;
-                        closeBtn.classList.remove('hidden');
-                        btn.className = "w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow";
-                        btn.innerText = "এখনই স্পিন করুন!";
-                        closeModal('spinModal');
-                        incrementTaskUsage('spin');
-                        await saveUserBalance(won, "স্পিন থেকে যোগ হয়েছে");
-                    }
-                }, 1000);
-
-            }, 3200);
-        }
-
-        // ================= 4. VIDEO & TASKS (Max 2/day) ================= //
-        async function loadTasks() {
-            const { data } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
-            tasks = data || [];
+        async function loadDashboardData() {
+            const { data: tData } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
+            tasks = tData || [];
             renderTasks();
+
+            const { data: uData } = await supabaseClient.from('users').select('*').order('created_at', { ascending: false });
+            users = uData || [];
+            renderUsers();
+
+            const { data: wData } = await supabaseClient.from('withdrawals').select('*').order('created_at', { ascending: false });
+            withdrawals = wData || [];
+            renderWithdrawals();
+
+            document.getElementById('dashUsers').innerText = users.length;
+            document.getElementById('dashTasks').innerText = tasks.length;
+            document.getElementById('dashPending').innerText = withdrawals.filter(w => w.status === 'Pending').length;
         }
 
         function renderTasks() {
-            const list = document.getElementById('jobsList');
-            list.innerHTML = "";
-            if (tasks.length === 0) {
-                list.innerHTML = `<div class="glass-box p-6 text-center text-xs text-slate-500 rounded-2xl">কোনো ভিডিও বা টাস্ক পাওয়া যায়নি।</div>`;
-                return;
-            }
-
-            tasks.forEach(t => {
-                const usage = getTaskUsage(`video_${t.id}`);
-                const isLimitOver = usage >= 2;
-
-                list.innerHTML += `
-                    <div class="glass-box p-3 rounded-2xl flex items-center justify-between shadow-sm">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs">
-                                <i class="fa-solid fa-play"></i>
-                            </div>
-                            <div>
-                                <p class="font-bold text-xs text-slate-900">${t.title}</p>
-                                <p class="text-[10px] font-bold text-emerald-600">+৳${Number(t.reward).toFixed(2)} • <span class="text-slate-400">${t.timer}s</span> • <span class="text-indigo-600 font-mono">(${usage}/2)</span></p>
-                            </div>
-                        </div>
-                        <button onclick="startTask(this, ${t.reward}, ${t.timer}, '${t.url}', ${t.id})" ${isLimitOver ? 'disabled' : ''} class="${isLimitOver ? 'bg-slate-300 text-slate-500' : 'bg-indigo-600 hover:bg-indigo-700 text-white active:scale-95'} font-bold text-xs px-3.5 py-1.5 rounded-xl">
-                            ${isLimitOver ? 'শেষ' : 'দেখুন'}
-                        </button>
-                    </div>
+            const body = document.getElementById('taskBody');
+            body.innerHTML = tasks.length ? "" : `<tr><td colspan="5" class="p-3 text-center text-slate-500">Kono task nei.</td></tr>`;
+            tasks.forEach((t) => {
+                body.innerHTML += `
+                    <tr>
+                        <td class="p-3 font-bold text-white">${t.title}</td>
+                        <td class="p-3 text-emerald-400 font-bold">৳${Number(t.reward).toFixed(2)}</td>
+                        <td class="p-3">${t.timer}s</td>
+                        <td class="p-3 truncate max-w-[120px] font-mono text-slate-400">${t.url}</td>
+                        <td class="p-3 text-right space-x-2">
+                            <button onclick="openEditTask(${t.id})" class="text-indigo-400 hover:text-indigo-300 font-bold"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteTask(${t.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
                 `;
             });
         }
 
-        function startTask(btn, reward, timer, url, taskId) {
-            if (btn.disabled) return;
-            if (getTaskUsage(`video_${taskId}`) >= 2) return showToast('এই ভিডিওর আজকের লিমিট শেষ (২/২)!');
-
-            btn.disabled = true;
-            if (url) window.open(url, '_blank');
-
-            let left = timer;
-            btn.className = "bg-amber-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
-            const timerId = setInterval(async () => {
-                btn.innerText = `${left}s`;
-                left--;
-                if (left < 0) {
-                    clearInterval(timerId);
-                    btn.className = "bg-emerald-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
-                    btn.innerText = "সম্পন্ন";
-                    incrementTaskUsage(`video_${taskId}`);
-                    renderTasks();
-                    await saveUserBalance(reward, "ভিডিও থেকে যোগ হয়েছে");
-                }
-            }, 1000);
+        function openEditTask(id) {
+            const t = tasks.find(x => x.id === id);
+            if (!t) return;
+            document.getElementById('editTaskId').value = t.id;
+            document.getElementById('editTaskTitle').value = t.title;
+            document.getElementById('editTaskReward').value = t.reward;
+            document.getElementById('editTaskTimer').value = t.timer;
+            document.getElementById('editTaskUrl').value = t.url;
+            openModal('editTaskModal');
         }
 
-        // ================= REFERRAL CODE ================= //
-        async function applyReferralCode() {
-            const inputCode = document.getElementById('inputReferralCode').value.trim();
-            if (!inputCode) return showToast('দয়া করে একটি রেফার কোড লিখুন!');
-            if (inputCode === user.id) return showToast('নিজের রেফার কোড নিজে ব্যবহার করা যাবে না!');
-
-            const claimedKey = `ref_claimed_${user.id}`;
-            if (localStorage.getItem(claimedKey)) return showToast('আপনি ইতিমধ্যে রেফার বোনাস নিয়ে নিয়েছেন!');
-
-            try {
-                const { data: refUser } = await supabaseClient.from('users').select('*').eq('id', inputCode).maybeSingle();
-                if (!refUser) return showToast('ভুল রেফার কোড! কোনো ইউজার পাওয়া যায়নি।');
-
-                await supabaseClient.from('users').update({
-                    joined: Number(refUser.joined || 0) + 1,
-                    balance: Number(refUser.balance || 0) + 5.00
-                }).eq('id', inputCode);
-
-                user.balance += 2.00;
-                await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
-
-                localStorage.setItem(claimedKey, 'true');
-                document.getElementById('referInputBoxSection').style.display = 'none';
-
-                updateUI();
-                showToast('সফল হয়েছে! আপনি ৳২.০০ বোনাস পেয়েছেন 🎉');
-            } catch (err) {
-                console.error("Refer error:", err);
-                showToast('কোড সাবমিট করতে সমস্যা হয়েছে!');
-            }
+        async function handleUpdateTask(e) {
+            e.preventDefault();
+            const id = document.getElementById('editTaskId').value;
+            const updated = {
+                title: document.getElementById('editTaskTitle').value,
+                reward: parseFloat(document.getElementById('editTaskReward').value),
+                timer: parseInt(document.getElementById('editTaskTimer').value),
+                url: document.getElementById('editTaskUrl').value
+            };
+            await supabaseClient.from('tasks').update(updated).eq('id', id);
+            closeModal('editTaskModal');
+            showToast('Task updated successfully!');
+            loadDashboardData();
         }
 
-        function copyMyCode() {
-            navigator.clipboard.writeText(user.id);
-            showToast('রেফার কোড কপি হয়েছে!');
-        }
-
-        function shareInviteCode() {
-            const text = encodeURIComponent(`আমার রেফার কোড: ${user.id} ব্যবহার করে Trend Video Hub মিনি অ্যাপে জয়েন করুন এবং ফ্রি বোনাস নিন!`);
-            window.open(`https://t.me/share/url?url=&text=${text}`, '_blank');
-        }
-
-        function getRandomReward(min, max) {
-            const rMin = parseFloat(min) || 0.10;
-            const rMax = parseFloat(max) || 1.00;
-            return parseFloat((Math.random() * (rMax - rMin) + rMin).toFixed(2));
-        }
-
-        async function saveUserBalance(reward, actionText) {
-            user.balance += reward;
-            await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
-            updateUI();
-            showToast(`+৳${reward.toFixed(2)} ${actionText}!`);
-        }
-
-        // ================= LEADERBOARD ================= //
-        async function loadLeaderboard() {
-            const { data } = await supabaseClient.from('users').select('*').order('balance', { ascending: false }).limit(5);
-            const rList = document.getElementById('rankList');
-            rList.innerHTML = "";
-            (data || []).forEach((u, i) => {
-                rList.innerHTML += `
-                    <div class="glass-box p-3 rounded-2xl flex items-center justify-between">
-                        <div class="flex items-center space-x-2.5">
-                            <span class="w-6 h-6 rounded-full ${i===0?'bg-amber-400 text-slate-900':(i===1?'bg-slate-300 text-slate-800':'bg-amber-700 text-white')} flex items-center justify-center font-black text-[10px]">${i+1}</span>
-                            <div>
-                                <p class="font-bold text-xs text-slate-800">${u.name}</p>
-                                <p class="text-[10px] text-slate-400">ID: ${u.id}</p>
-                            </div>
-                        </div>
-                        <span class="font-black text-xs text-emerald-600">৳${Number(u.balance || 0).toFixed(2)}</span>
-                    </div>
+        function renderUsers() {
+            const body = document.getElementById('userBody');
+            body.innerHTML = users.length ? "" : `<tr><td colspan="5" class="p-3 text-center text-slate-500">Kono user nei.</td></tr>`;
+            users.forEach(u => {
+                body.innerHTML += `
+                    <tr>
+                        <td class="p-3 font-bold text-white">${u.name}</td>
+                        <td class="p-3 font-mono text-slate-400">${u.id}</td>
+                        <td class="p-3 text-emerald-400 font-bold">৳${Number(u.balance || 0).toFixed(2)}</td>
+                        <td class="p-3 text-slate-300">${u.joined || 0}</td>
+                        <td class="p-3 text-right">
+                            <button onclick="openEditBalance('${u.id}', '${u.name}', ${u.balance || 0})" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold text-[11px] shadow">
+                                <i class="fa-solid fa-coins mr-1"></i> Edit Balance
+                            </button>
+                        </td>
+                    </tr>
                 `;
             });
         }
 
-        // ================= WITHDRAW ================= //
-        async function processWithdraw() {
-            const minW = appSettings.min_withdraw || 50;
-            const amt = parseFloat(document.getElementById('wAmount').value);
-            const method = document.getElementById('wMethod').value;
-            const acc = document.getElementById('wAccount').value.trim();
-
-            if (isNaN(amt) || amt < minW) return showToast(`সর্বনিম্ন উত্তোলন ${minW.toFixed(2)} টাকা`);
-            if (user.balance < amt) return showToast('পর্যাপ্ত ব্যালেন্স নেই!');
-            if (!acc) return showToast('একাউন্ট নম্বর দিন');
-
-            user.balance -= amt;
-            const wid = "W" + Date.now().toString().slice(-6);
-
-            await supabaseClient.from('withdrawals').insert([{
-                id: wid,
-                user_id: user.id,
-                username: user.name,
-                method: method,
-                account: acc,
-                amount: amt,
-                status: 'Pending'
-            }]);
-
-            await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
-            updateUI();
-            closeModal('withdrawModal');
-            showToast('উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!');
+        function openEditBalance(id, name, bal) {
+            document.getElementById('editUserId').value = id;
+            document.getElementById('editUserName').value = name;
+            document.getElementById('editUserBalance').value = bal;
+            openModal('editBalanceModal');
         }
 
-        function switchTab(id, idx) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
+        async function handleUpdateBalance(e) {
+            e.preventDefault();
+            const uid = document.getElementById('editUserId').value;
+            const newBal = parseFloat(document.getElementById('editUserBalance').value);
+            await supabaseClient.from('users').update({ balance: newBal }).eq('id', uid);
+            closeModal('editBalanceModal');
+            showToast('User balance updated!');
+            loadDashboardData();
+        }
+
+        function renderWithdrawals() {
+            const body = document.getElementById('withdrawBody');
+            body.innerHTML = withdrawals.length ? "" : `<tr><td colspan="6" class="p-3 text-center text-slate-500">Kono request nei.</td></tr>`;
+            withdrawals.forEach(w => {
+                body.innerHTML += `
+                    <tr>
+                        <td class="p-3 font-bold text-white">${w.username}</td>
+                        <td class="p-3">${w.method}</td>
+                        <td class="p-3 font-mono text-slate-400">${w.account}</td>
+                        <td class="p-3 font-bold text-amber-400">৳${Number(w.amount).toFixed(2)}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${w.status === 'Approved' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">${w.status}</span></td>
+                        <td class="p-3 text-right">
+                            ${w.status === 'Pending' ? `
+                                <button onclick="approveWithdrawal('${w.id}')" class="px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[10px] font-bold">Approve</button>
+                            ` : `<span class="text-slate-500 text-[10px]">Processed</span>`}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function handleAddTask(e) {
+            e.preventDefault();
+            const newTask = {
+                id: Date.now(),
+                title: document.getElementById('tTitle').value,
+                reward: parseFloat(document.getElementById('tReward').value),
+                timer: parseInt(document.getElementById('tTimer').value),
+                url: document.getElementById('tUrl').value,
+                active: true
+            };
+            await supabaseClient.from('tasks').insert([newTask]);
+            closeModal('addTaskModal');
+            showToast('Task added!');
+            e.target.reset();
+            loadDashboardData();
+        }
+
+        async function deleteTask(id) {
+            if (!confirm('Are you sure to delete this task?')) return;
+            await supabaseClient.from('tasks').delete().eq('id', id);
+            showToast('Task deleted!');
+            loadDashboardData();
+        }
+
+        async function approveWithdrawal(id) {
+            await supabaseClient.from('withdrawals').update({ status: 'Approved' }).eq('id', id);
+            showToast('Withdrawal approved!');
+            loadDashboardData();
+        }
+
+        function switchTab(tab) {
+            ['dashboard', 'notice', 'settings', 'tasks', 'users', 'withdrawals'].forEach(t => {
+                document.getElementById('view-' + t).classList.add('hidden');
+                document.getElementById('nav-' + t).className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white";
+            });
+            document.getElementById('view-' + tab).classList.remove('hidden');
+            document.getElementById('nav-' + tab).className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-600/30";
         }
 
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function closeApp() { window.Telegram?.WebApp?.close(); }
 
         function showToast(m) {
             const t = document.getElementById('toast');
             document.getElementById('toastMsg').innerText = m;
             t.classList.remove('opacity-0');
-            setTimeout(() => t.classList.add('opacity-0'), 2200);
+            setTimeout(() => t.classList.add('opacity-0'), 2000);
         }
     </script>
 </body>
