@@ -293,7 +293,7 @@
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-slate-700">
                     <button type="button" onclick="closeModal('addTaskModal')" class="px-3 py-2 bg-slate-800 text-slate-300 rounded-xl">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl">Publish</button>
+                    <button type="submit" id="addTaskSubmitBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl">Publish</button>
                 </div>
             </form>
         </div>
@@ -567,26 +567,43 @@
 
         async function handleAddTask(e) {
             e.preventDefault();
+            const btn = document.getElementById('addTaskSubmitBtn');
+            btn.disabled = true;
+            btn.innerText = "Adding...";
+
             const newTask = {
-                id: Date.now(),
-                title: document.getElementById('tTitle').value,
-                reward: parseFloat(document.getElementById('tReward').value),
-                timer: parseInt(document.getElementById('tTimer').value),
-                url: document.getElementById('tUrl').value,
+                title: document.getElementById('tTitle').value.trim(),
+                reward: parseFloat(document.getElementById('tReward').value) || 1.00,
+                timer: parseInt(document.getElementById('tTimer').value) || 30,
+                url: document.getElementById('tUrl').value.trim(),
                 active: true
             };
-            await supabaseClient.from('tasks').insert([newTask]);
-            closeModal('addTaskModal');
-            showToast('টাস্ক পাবলিশ হয়েছে!');
-            e.target.reset();
-            loadDashboardData();
+
+            const { data, error } = await supabaseClient.from('tasks').insert([newTask]).select();
+
+            btn.disabled = false;
+            btn.innerText = "Publish";
+
+            if (error) {
+                console.error("Task insert error:", error);
+                alert("টাস্ক সেভ হয়নি: " + error.message);
+            } else {
+                closeModal('addTaskModal');
+                showToast('টাস্ক সফলভাবে তৈরি হয়েছে!');
+                e.target.reset();
+                await loadDashboardData();
+            }
         }
 
         async function deleteTask(id) {
             if (!confirm('সত্যিই কি টাস্কটি ডিলিট করতে চান?')) return;
-            await supabaseClient.from('tasks').delete().eq('id', id);
-            showToast('টাস্ক মুছে ফেলা হয়েছে');
-            loadDashboardData();
+            const { error } = await supabaseClient.from('tasks').delete().eq('id', id);
+            if (error) {
+                alert('Delete error: ' + error.message);
+            } else {
+                showToast('টাস্ক মুছে ফেলা হয়েছে');
+                await loadDashboardData();
+            }
         }
 
         async function approveWithdrawal(id) {
