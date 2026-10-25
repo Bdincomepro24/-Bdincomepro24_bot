@@ -10,9 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
         tailwind.config = {
@@ -20,11 +19,6 @@
                 extend: {
                     fontFamily: {
                         sans: ['Hind Siliguri', 'Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        appGreen: '#16a34a',
-                        appDark: '#0f172a',
-                        appCard: '#1e293b'
                     }
                 }
             }
@@ -38,9 +32,9 @@
             -webkit-user-select: none;
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
         .golden-btn {
             background: linear-gradient(180deg, #facc15 0%, #eab308 50%, #ca8a04 100%);
@@ -62,18 +56,18 @@
         </div>
     </header>
 
-    <!-- User Header -->
+    <!-- User Bar -->
     <div class="bg-emerald-800 text-white px-4 py-2 flex justify-between items-center z-10 shadow-sm text-xs">
         <div class="flex items-center space-x-2">
             <img id="userAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-8 h-8 rounded-full border border-yellow-400 object-cover">
             <div>
-                <p id="headerName" class="font-bold truncate max-w-[110px]">User</p>
+                <p id="headerName" class="font-bold truncate max-w-[120px]">User</p>
                 <p id="headerUserId" class="text-[10px] text-emerald-200 font-mono">ID: ...</p>
             </div>
         </div>
         <div class="bg-emerald-950/70 border border-emerald-500/40 rounded-full px-3 py-1 flex items-center space-x-1.5 font-bold text-yellow-300">
             <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            <span>14 ONLINE</span>
+            <span>সক্রিয় আছেন</span>
         </div>
     </div>
 
@@ -113,15 +107,17 @@
 
         <!-- Tab: Earn -->
         <div id="tab-earn" class="tab-content hidden space-y-3">
-            <h3 class="text-sm font-bold text-slate-800">উপলব্ধ কাজসমূহ (Tasks & Visits)</h3>
-            <div id="jobsList" class="space-y-2.5"></div>
+            <h3 class="text-sm font-bold text-slate-800">উপলব্ধ কাজসমূহ (Tasks & Ads)</h3>
+            <div id="jobsList" class="space-y-2.5">
+                <div class="glass-card p-4 text-center text-xs text-slate-500 rounded-2xl">কাজ লোড হচ্ছে...</div>
+            </div>
         </div>
 
         <!-- Tab: Refer -->
         <div id="tab-refer" class="tab-content hidden space-y-4">
             <div class="bg-slate-900 rounded-3xl p-5 text-white space-y-3 border border-slate-700 shadow-xl text-center">
                 <h3 class="text-lg font-black text-yellow-400">প্রতি রেফারে সরাসরি বোনাস!</h3>
-                <p class="text-xs text-slate-300">বন্ধুদের ইনভাইট করুন এবং একাউন্টে যোগ করে নিন অতিরিক্ত ব্যালেন্স।</p>
+                <p class="text-xs text-slate-300">বন্ধুদের ইনভাইট করুন এবং একাউন্টে যোগ করে নিন বোনাস ব্যালেন্স।</p>
                 
                 <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex justify-around text-center">
                     <div>
@@ -150,7 +146,7 @@
 
     <!-- Bottom Nav -->
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-900 text-slate-400 px-4 py-2 flex justify-around items-center z-30 border-t border-slate-800">
-        <button onclick="switchTab('tab-home', 0)" class="nav-item active flex flex-col items-center py-1 text-emerald-400">
+        <button onclick="switchTab('tab-home', 0)" class="nav-item flex flex-col items-center py-1 text-emerald-400">
             <i class="fa-solid fa-house text-lg"></i>
             <span class="text-[10px] font-bold mt-1">হোম</span>
         </button>
@@ -202,14 +198,13 @@
         </div>
     </div>
 
-    <!-- Script -->
+    <!-- Script Logic with Supabase -->
     <script>
+        const SUPABASE_URL = "https://bldahjnrqtthnnlorkqx.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_KeZ0jUmEyj9OcZpngWy0pw_dZryTibp";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         const BOT_USERNAME = "Bdincomepro24_bot";
-        const firebaseConfig = {
-            databaseURL: "https://trend-video-hub-default-rtdb.firebaseio.com"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
 
         let user = {
             id: "",
@@ -219,12 +214,12 @@
         };
         let tasks = [];
 
-        document.addEventListener("DOMContentLoaded", () => {
-            initUser();
-            listenToTasks();
+        document.addEventListener("DOMContentLoaded", async () => {
+            await initUser();
+            await loadTasks();
         });
 
-        function initUser() {
+        async function initUser() {
             let tgId = "";
             let tgName = "";
             let tgPhoto = "";
@@ -253,31 +248,31 @@
 
             user.id = tgId;
             user.name = tgName || "User";
-
             if (tgPhoto) document.getElementById('userAvatar').src = tgPhoto;
 
-            // Cloud DB listener
-            db.ref('users/' + user.id).on('value', (snap) => {
-                const data = snap.val();
+            // Fetch or insert into Supabase
+            try {
+                const { data, error } = await supabaseClient.from('users').select('*').eq('id', user.id).single();
                 if (data) {
                     user.balance = Number(data.balance || 0);
                     user.joined = data.joined || 0;
                 } else {
-                    db.ref('users/' + user.id).set({
+                    await supabaseClient.from('users').insert([{
                         id: user.id,
                         name: user.name,
                         balance: 0.00,
                         joined: 0
-                    });
+                    }]);
                 }
-                updateUI();
-            });
+            } catch (err) {
+                console.error("Supabase user load err:", err);
+            }
 
-            checkReferral(user.id);
+            await checkReferral(user.id);
             updateUI();
         }
 
-        function checkReferral(uid) {
+        async function checkReferral(uid) {
             let refId = null;
             const tg = window.Telegram?.WebApp;
             if (tg?.initDataUnsafe?.start_param) {
@@ -291,13 +286,17 @@
                 const already = localStorage.getItem('pki_ref_done');
                 if (!already) {
                     localStorage.setItem('pki_ref_done', 'true');
-                    db.ref('users/' + refId).transaction((u) => {
-                        if (u) {
-                            u.joined = (u.joined || 0) + 1;
-                            u.balance = (u.balance || 0) + 1.00;
+                    try {
+                        const { data: refUser } = await supabaseClient.from('users').select('*').eq('id', refId).single();
+                        if (refUser) {
+                            await supabaseClient.from('users').update({
+                                joined: (refUser.joined || 0) + 1,
+                                balance: Number(refUser.balance || 0) + 1.00
+                            }).eq('id', refId);
                         }
-                        return u;
-                    });
+                    } catch (e) {
+                        console.error("Referral err:", e);
+                    }
                 }
             }
         }
@@ -311,12 +310,14 @@
             document.getElementById('refLinkText').innerText = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
         }
 
-        function listenToTasks() {
-            db.ref('tasks').on('value', (snap) => {
-                const data = snap.val();
-                tasks = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
+        async function loadTasks() {
+            try {
+                const { data, error } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
+                tasks = data || [];
                 renderTasks();
-            });
+            } catch (err) {
+                console.error(err);
+            }
         }
 
         function renderTasks() {
@@ -347,7 +348,7 @@
 
             let left = timer;
             btn.className = "bg-amber-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
-            const timerId = setInterval(() => {
+            const timerId = setInterval(async () => {
                 btn.innerText = `${left}s`;
                 left--;
                 if (left < 0) {
@@ -355,13 +356,14 @@
                     btn.className = "bg-green-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
                     btn.innerText = "Done";
                     user.balance += reward;
-                    db.ref('users/' + user.id).update({ balance: user.balance });
+                    await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
+                    updateUI();
                     showToast(`+$${reward.toFixed(2)} একাউন্টে যোগ হয়েছে!`);
                 }
             }, 1000);
         }
 
-        function processWithdraw() {
+        async function processWithdraw() {
             const amt = parseFloat(document.getElementById('wAmount').value);
             const method = document.getElementById('wMethod').value;
             const acc = document.getElementById('wAccount').value.trim();
@@ -371,19 +373,22 @@
             if (!acc) return showToast('একাউন্ট নম্বর দিন!');
 
             user.balance -= amt;
-            const wid = "W" + Date.now().toString().slice(-5);
-            db.ref('withdrawals/' + wid).set({
+            const wid = "W" + Date.now().toString().slice(-6);
+
+            await supabaseClient.from('withdrawals').insert([{
                 id: wid,
-                userId: user.id,
+                user_id: user.id,
                 username: user.name,
                 method: method,
                 account: acc,
                 amount: amt,
                 status: 'Pending'
-            });
-            db.ref('users/' + user.id).update({ balance: user.balance });
+            }]);
+
+            await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
+            updateUI();
             closeModal('withdrawModal');
-            showToast('উইথড্র রিকোয়েস্ট জমা হয়েছে!');
+            showToast('উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!');
         }
 
         function copyRefLink() {
