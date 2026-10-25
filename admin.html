@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pocket Income - Supabase Admin Panel</title>
+    <title>Pocket Income - Admin Panel (BDT)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -62,7 +62,7 @@
         <div class="flex justify-between items-center pb-4 border-b border-slate-800">
             <div>
                 <h2 id="pageTitle" class="text-lg font-bold text-white">ড্যাশবোর্ড অ্যানালিটিক্স</h2>
-                <p class="text-xs text-slate-400">PostgreSQL ডেটাবেজ দ্বারা পরিচালিত</p>
+                <p class="text-xs text-slate-400">টাকা (৳ / BDT) কারেন্সি সিস্টেম</p>
             </div>
             <button onclick="openModal('addTaskModal')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> নতুন ভিডিও/টাস্ক যোগ করুন
@@ -85,11 +85,11 @@
             </div>
         </section>
 
-        <!-- Section: Game Controls (Math, Spin, Scratch) -->
+        <!-- Section: Game Controls -->
         <section id="view-settings" class="hidden space-y-5">
             <div class="glass-panel p-6 rounded-2xl space-y-4">
                 <h3 class="text-sm font-bold text-yellow-400 flex items-center gap-2">
-                    <i class="fa-solid fa-sliders"></i> Math Quiz, Spin & Scratch সেটিংস (Ad Link, Timer, Min/Max Reward)
+                    <i class="fa-solid fa-sliders"></i> Math Quiz, Spin & Scratch কন্ট্রোল (টাকা ৳)
                 </h3>
                 
                 <form onsubmit="saveAppSettings(event)" class="space-y-6 text-xs">
@@ -97,7 +97,7 @@
                     <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
                         <h4 class="font-bold text-purple-400 text-sm">১. Math Quiz সেটিংস</h4>
                         <div>
-                            <label class="block text-slate-400 mb-1">অ্যাড / টার্গেট লিংক (উত্তর দেওয়ার পর যা ওপেন হবে)</label>
+                            <label class="block text-slate-400 mb-1">অ্যাড / টার্গেট লিংক</label>
                             <input type="url" id="s_math_url" placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
                         </div>
                         <div class="grid grid-cols-3 gap-3">
@@ -106,11 +106,11 @@
                                 <input type="number" id="s_math_timer" value="15" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">মিনিমাম রিওয়ার্ড ($)</label>
+                                <label class="block text-slate-400 mb-1">মিনিমাম রিওয়ার্ড (টাকা ৳)</label>
                                 <input type="number" step="0.01" id="s_math_min" value="0.10" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">ম্যাক্সিমাম রিওয়ার্ড ($)</label>
+                                <label class="block text-slate-400 mb-1">ম্যাক্সিমাম রিওয়ার্ড (টাকা ৳)</label>
                                 <input type="number" step="0.01" id="s_math_max" value="0.50" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
                             </div>
                         </div>
@@ -129,11 +129,11 @@
                                 <input type="number" id="s_spin_timer" value="15" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">মিনিমাম রিওয়ার্ড ($)</label>
+                                <label class="block text-slate-400 mb-1">মিনিমাম রিওয়ার্ড (টাকা ৳)</label>
                                 <input type="number" step="0.01" id="s_spin_min" value="0.10" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">ম্যাক্সিমাম রিওয়ার্ড ($)</label>
+                                <label class="block text-slate-400 mb-1">ম্যাক্সিমাম রিওয়ার্ড (টাকা ৳)</label>
                                 <input type="number" step="0.01" id="s_spin_max" value="1.00" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
                             </div>
                         </div>
@@ -152,11 +152,11 @@
                                 <input type="number" id="s_scratch_timer" value="15" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">মিনিমাম রিওয়ার্ড ($)</label>
+                                <label class="block text-slate-400 mb-1">মিনিমাম রিওয়ার্ড (টাকা ৳)</label>
                                 <input type="number" step="0.01" id="s_scratch_min" value="0.10" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">ম্যাক্সিমাম রিওয়ার্ড ($)</label>
+                                <label class="block text-slate-400 mb-1">ম্যাক্সিমাম রিওয়ার্ড (টাকা ৳)</label>
                                 <input type="number" step="0.01" id="s_scratch_max" value="1.00" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
                             </div>
                         </div>
@@ -175,7 +175,7 @@
                     <thead class="bg-slate-800/80 text-slate-400 border-b border-slate-700">
                         <tr>
                             <th class="p-3">শিরোনাম</th>
-                            <th class="p-3">রিওয়ার্ড ($)</th>
+                            <th class="p-3">রিওয়ার্ড (৳)</th>
                             <th class="p-3">টাইমার (s)</th>
                             <th class="p-3">লিংক</th>
                             <th class="p-3 text-right">ডিলিট</th>
@@ -195,7 +195,7 @@
                         <tr>
                             <th class="p-3">ইউজার</th>
                             <th class="p-3">আইডি</th>
-                            <th class="p-3">ব্যালেন্স ($)</th>
+                            <th class="p-3">ব্যালেন্স (৳)</th>
                             <th class="p-3">রেফার</th>
                         </tr>
                     </thead>
@@ -214,7 +214,7 @@
                             <th class="p-3">ইউজার</th>
                             <th class="p-3">মেথড</th>
                             <th class="p-3">একাউন্ট</th>
-                            <th class="p-3">পরিমাণ ($)</th>
+                            <th class="p-3">পরিমাণ (৳)</th>
                             <th class="p-3">স্ট্যাটাস</th>
                             <th class="p-3 text-right">অ্যাকশন</th>
                         </tr>
@@ -240,8 +240,8 @@
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-slate-300 mb-1">রিওয়ার্ড ($)</label>
-                        <input type="number" step="0.01" id="tReward" value="0.50" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
+                        <label class="block text-slate-300 mb-1">রিওয়ার্ড (টাকা ৳)</label>
+                        <input type="number" step="0.01" id="tReward" value="1.00" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
                     </div>
                     <div>
                         <label class="block text-slate-400 mb-1">টাইমার (s)</label>
@@ -273,22 +273,26 @@
         };
 
         async function loadAppSettings() {
-            const { data } = await supabaseClient.from('app_settings').select('*').eq('id', 'default').single();
-            if (data) {
-                document.getElementById('s_math_url').value = data.math_ad_url || '';
-                document.getElementById('s_math_timer').value = data.math_timer || 15;
-                document.getElementById('s_math_min').value = data.math_min || 0.10;
-                document.getElementById('s_math_max').value = data.math_max || 0.50;
+            try {
+                const { data } = await supabaseClient.from('app_settings').select('*').eq('id', 'default').single();
+                if (data) {
+                    document.getElementById('s_math_url').value = data.math_ad_url || '';
+                    document.getElementById('s_math_timer').value = data.math_timer || 15;
+                    document.getElementById('s_math_min').value = data.math_min || 0.10;
+                    document.getElementById('s_math_max').value = data.math_max || 0.50;
 
-                document.getElementById('s_spin_url').value = data.spin_ad_url || '';
-                document.getElementById('s_spin_timer').value = data.spin_timer || 15;
-                document.getElementById('s_spin_min').value = data.spin_min || 0.10;
-                document.getElementById('s_spin_max').value = data.spin_max || 1.00;
+                    document.getElementById('s_spin_url').value = data.spin_ad_url || '';
+                    document.getElementById('s_spin_timer').value = data.spin_timer || 15;
+                    document.getElementById('s_spin_min').value = data.spin_min || 0.10;
+                    document.getElementById('s_spin_max').value = data.spin_max || 1.00;
 
-                document.getElementById('s_scratch_url').value = data.scratch_ad_url || '';
-                document.getElementById('s_scratch_timer').value = data.scratch_timer || 15;
-                document.getElementById('s_scratch_min').value = data.scratch_min || 0.10;
-                document.getElementById('s_scratch_max').value = data.scratch_max || 1.00;
+                    document.getElementById('s_scratch_url').value = data.scratch_ad_url || '';
+                    document.getElementById('s_scratch_timer').value = data.scratch_timer || 15;
+                    document.getElementById('s_scratch_min').value = data.scratch_min || 0.10;
+                    document.getElementById('s_scratch_max').value = data.scratch_max || 1.00;
+                }
+            } catch(e) {
+                console.error(e);
             }
         }
 
@@ -340,7 +344,7 @@
                 body.innerHTML += `
                     <tr>
                         <td class="p-3 font-bold text-white">${t.title}</td>
-                        <td class="p-3 text-emerald-400 font-bold">$${Number(t.reward).toFixed(2)}</td>
+                        <td class="p-3 text-emerald-400 font-bold">৳${Number(t.reward).toFixed(2)}</td>
                         <td class="p-3">${t.timer}s</td>
                         <td class="p-3 truncate max-w-[120px] font-mono text-slate-400">${t.url}</td>
                         <td class="p-3 text-right">
@@ -359,7 +363,7 @@
                     <tr>
                         <td class="p-3 font-bold text-white">${u.name}</td>
                         <td class="p-3 font-mono text-slate-400">${u.id}</td>
-                        <td class="p-3 text-emerald-400 font-bold">$${Number(u.balance || 0).toFixed(2)}</td>
+                        <td class="p-3 text-emerald-400 font-bold">৳${Number(u.balance || 0).toFixed(2)}</td>
                         <td class="p-3 text-slate-300">${u.joined || 0}</td>
                     </tr>
                 `;
@@ -375,7 +379,7 @@
                         <td class="p-3 font-bold text-white">${w.username}</td>
                         <td class="p-3">${w.method}</td>
                         <td class="p-3 font-mono text-slate-400">${w.account}</td>
-                        <td class="p-3 font-bold text-amber-400">$${Number(w.amount).toFixed(2)}</td>
+                        <td class="p-3 font-bold text-amber-400">৳${Number(w.amount).toFixed(2)}</td>
                         <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${w.status === 'Approved' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">${w.status}</span></td>
                         <td class="p-3 text-right">
                             ${w.status === 'Pending' ? `
