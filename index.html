@@ -549,9 +549,14 @@
             document.getElementById('progressFill').style.width = `${Math.max(pct, 5)}%`;
         }
 
-        // ================= POP-UP SYSTEM ================= //
+        // ================= POP-UP SYSTEM (5 MINUTE INTERVAL) ================= //
         function startPeriodicPopUp() {
+            // Check every 10 seconds if 5 minutes (300000 ms) have passed
             setInterval(() => {
+                const now = Date.now();
+                const lastPopupTime = parseInt(localStorage.getItem(`last_popup_${user.id}`) || '0');
+                const fiveMinutes = 5 * 60 * 1000;
+
                 const isAnyModalOpen = !document.getElementById('mathModal').classList.contains('hidden') ||
                                        !document.getElementById('spinModal').classList.contains('hidden') ||
                                        !document.getElementById('scratchModal').classList.contains('hidden') ||
@@ -560,10 +565,12 @@
                                        !document.getElementById('randomPopUpModal').classList.contains('hidden');
 
                 const popUsage = getTaskUsage('popup');
-                if (!isAnyModalOpen && popUsage < 2) {
+
+                if (!isAnyModalOpen && popUsage < 2 && (now - lastPopupTime >= fiveMinutes)) {
+                    localStorage.setItem(`last_popup_${user.id}`, now.toString());
                     openLockedPopUpAd();
                 }
-            }, 45000);
+            }, 10000);
         }
 
         function openLockedPopUpAd() {
