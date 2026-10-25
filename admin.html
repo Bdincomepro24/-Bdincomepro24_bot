@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pocket Income - Live Admin Panel</title>
+    <title>Pocket Income - Supabase Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0b1120; color: #f1f5f9; }
@@ -36,7 +35,7 @@
                 <div>
                     <h1 class="font-bold text-sm text-white">পকেট খরচ অ্যাডমিন</h1>
                     <span class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Firebase Live
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Supabase Connected
                     </span>
                 </div>
             </div>
@@ -65,7 +64,7 @@
         <div class="flex justify-between items-center pb-4 border-b border-slate-800">
             <div>
                 <h2 id="pageTitle" class="text-lg font-bold text-white">ড্যাশবোর্ড অ্যানালিটিক্স</h2>
-                <p class="text-xs text-slate-400">রিলোড দিলেও Firebase-এ সব তথ্য সুরক্ষিত থাকে</p>
+                <p class="text-xs text-slate-400">PostgreSQL ডেটাবেজ দ্বারা পরিচালিত</p>
             </div>
             <button onclick="openModal('addTaskModal')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> নতুন টাস্ক যোগ করুন
@@ -115,7 +114,7 @@
                     <thead class="bg-slate-800/80 text-slate-400 border-b border-slate-700">
                         <tr>
                             <th class="p-3">ইউজার</th>
-                            <th class="p-3">টেলিগ্রাম আইডি</th>
+                            <th class="p-3">আইডি</th>
                             <th class="p-3">ব্যালেন্স ($)</th>
                             <th class="p-3">রেফার</th>
                         </tr>
@@ -170,7 +169,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-slate-300 mb-1">ওয়েবসাইট / টার্গেট লিংক</label>
+                    <label class="block text-slate-300 mb-1">টার্গেট লিংক (Ad / Website URL)</label>
                     <input type="url" id="tUrl" placeholder="https://..." required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-slate-700">
@@ -181,43 +180,38 @@
         </div>
     </div>
 
-    <!-- Script -->
+    <!-- Script Logic with Supabase -->
     <script>
-        const firebaseConfig = {
-            databaseURL: "https://trend-video-hub-default-rtdb.firebaseio.com"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        const SUPABASE_URL = "https://bldahjnrqtthnnlorkqx.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_KeZ0jUmEyj9OcZpngWy0pw_dZryTibp";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let tasks = [];
         let users = [];
         let withdrawals = [];
 
         window.onload = function() {
-            // Task Listener
-            db.ref('tasks').on('value', snap => {
-                const data = snap.val();
-                tasks = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
-                renderTasks();
-                updateStats();
-            });
-
-            // User Listener
-            db.ref('users').on('value', snap => {
-                const data = snap.val();
-                users = data ? Object.values(data) : [];
-                renderUsers();
-                updateStats();
-            });
-
-            // Withdrawal Listener
-            db.ref('withdrawals').on('value', snap => {
-                const data = snap.val();
-                withdrawals = data ? Object.values(data).reverse() : [];
-                renderWithdrawals();
-                updateStats();
-            });
+            loadDashboardData();
         };
+
+        async function loadDashboardData() {
+            // Load Tasks
+            const { data: tData } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
+            tasks = tData || [];
+            renderTasks();
+
+            // Load Users
+            const { data: uData } = await supabaseClient.from('users').select('*').order('created_at', { ascending: false });
+            users = uData || [];
+            renderUsers();
+
+            // Load Withdrawals
+            const { data: wData } = await supabaseClient.from('withdrawals').select('*').order('created_at', { ascending: false });
+            withdrawals = wData || [];
+            renderWithdrawals();
+
+            updateStats();
+        }
 
         function updateStats() {
             document.getElementById('dashUsers').innerText = users.length;
@@ -228,7 +222,7 @@
         function renderTasks() {
             const body = document.getElementById('taskBody');
             body.innerHTML = tasks.length ? "" : `<tr><td colspan="5" class="p-3 text-center text-slate-500">কোনো টাস্ক নেই।</td></tr>`;
-            tasks.forEach((t, i) => {
+            tasks.forEach((t) => {
                 body.innerHTML += `
                     <tr>
                         <td class="p-3 font-bold text-white">${t.title}</td>
@@ -236,7 +230,7 @@
                         <td class="p-3">${t.timer}s</td>
                         <td class="p-3 truncate max-w-[120px] font-mono text-slate-400">${t.url}</td>
                         <td class="p-3 text-right">
-                            <button onclick="deleteTask(${i})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="deleteTask(${t.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -250,7 +244,7 @@
                 body.innerHTML += `
                     <tr>
                         <td class="p-3 font-bold text-white">${u.name}</td>
-                        <td class="p-3 font-mono text-slate-400">@${u.id}</td>
+                        <td class="p-3 font-mono text-slate-400">${u.id}</td>
                         <td class="p-3 text-emerald-400 font-bold">$${Number(u.balance || 0).toFixed(2)}</td>
                         <td class="p-3 text-slate-300">${u.joined || 0}</td>
                     </tr>
@@ -279,31 +273,34 @@
             });
         }
 
-        function handleAddTask(e) {
+        async function handleAddTask(e) {
             e.preventDefault();
             const newTask = {
                 id: Date.now(),
                 title: document.getElementById('tTitle').value,
                 reward: parseFloat(document.getElementById('tReward').value),
                 timer: parseInt(document.getElementById('tTimer').value),
-                url: document.getElementById('tUrl').value
+                url: document.getElementById('tUrl').value,
+                active: true
             };
-            tasks.unshift(newTask);
-            db.ref('tasks').set(tasks);
+
+            await supabaseClient.from('tasks').insert([newTask]);
             closeModal('addTaskModal');
             showToast('টাস্ক পাবলিশ হয়েছে!');
             e.target.reset();
+            loadDashboardData();
         }
 
-        function deleteTask(idx) {
-            tasks.splice(idx, 1);
-            db.ref('tasks').set(tasks);
-            showToast('টাস্ক ডিলিট হয়েছে');
+        async function deleteTask(id) {
+            await supabaseClient.from('tasks').delete().eq('id', id);
+            showToast('টাস্ক মুছে ফেলা হয়েছে');
+            loadDashboardData();
         }
 
-        function approveWithdrawal(id) {
-            db.ref('withdrawals/' + id).update({ status: 'Approved' });
+        async function approveWithdrawal(id) {
+            await supabaseClient.from('withdrawals').update({ status: 'Approved' }).eq('id', id);
             showToast('উইথড্র অ্যাপ্রুভ করা হয়েছে!');
+            loadDashboardData();
         }
 
         function switchTab(tab) {
