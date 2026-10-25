@@ -1,200 +1,306 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>পকেট খরচ ইনকাম করুন</title>
+    <title>Trend Video Hub</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Hind Siliguri', 'Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         body {
-            font-family: 'Hind Siliguri', 'Inter', sans-serif;
-            background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 40%, #e2e8f0 100%);
+            font-family: 'Poppins', 'Hind Siliguri', sans-serif;
+            background: linear-gradient(180deg, #ede9fe 0%, #f3e8ff 50%, #e0e7ff 100%);
             user-select: none;
             -webkit-user-select: none;
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+        .header-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
         }
-        .golden-btn {
-            background: linear-gradient(180deg, #facc15 0%, #eab308 50%, #ca8a04 100%);
-            box-shadow: 0 4px 15px rgba(234, 179, 8, 0.35);
+        .balance-card-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #3b82f6 50%, #60a5fa 100%);
+        }
+        .withdraw-banner-btn {
+            background: linear-gradient(90deg, #f43f5e 0%, #fb7185 100%);
+            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
+        }
+        .glass-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+        .nav-home-bubble {
+            background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
         }
     </style>
 </head>
-<body class="flex flex-col h-screen max-w-md mx-auto overflow-hidden relative bg-slate-900 text-slate-800">
+<body class="flex flex-col h-screen max-w-md mx-auto overflow-hidden relative text-slate-800">
 
-    <!-- Top Bar -->
-    <header class="bg-gradient-to-r from-emerald-600 to-green-700 text-white px-4 py-3 flex justify-between items-center z-20 shadow">
-        <div class="flex items-center space-x-2">
-            <span class="font-extrabold text-base tracking-wide">পকেট খরচ ইনকাম করুন</span>
-        </div>
-        <div class="flex items-center space-x-3">
-            <button onclick="closeApp()" class="text-white hover:opacity-80">
-                <i class="fa-solid text-xl fa-xmark"></i>
+    <!-- Top App Header -->
+    <header class="header-gradient text-white px-4 py-3 flex justify-between items-center z-20 shadow-md">
+        <h1 class="font-extrabold text-base tracking-wide flex items-center gap-2">
+            Trend Video Hub
+        </h1>
+        <div class="flex items-center space-x-3 text-white">
+            <i class="fa-solid fa-ellipsis-vertical text-lg cursor-pointer"></i>
+            <button onclick="closeApp()" class="hover:opacity-80">
+                <i class="fa-solid fa-xmark text-xl"></i>
             </button>
         </div>
     </header>
 
-    <!-- User Bar -->
-    <div class="bg-emerald-800 text-white px-4 py-2 flex justify-between items-center z-10 shadow-sm text-xs">
-        <div class="flex items-center space-x-2">
-            <img id="userAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-8 h-8 rounded-full border border-yellow-400 object-cover">
+    <!-- User Profile Bar -->
+    <div class="header-gradient text-white px-4 pb-3 flex justify-between items-center z-10 shadow-sm text-xs">
+        <div class="flex items-center space-x-2.5">
+            <div class="relative">
+                <img id="userAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-9 h-9 rounded-full border-2 border-emerald-400 object-cover">
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 rounded-full border border-white"></span>
+            </div>
             <div>
-                <p id="headerName" class="font-bold truncate max-w-[120px]">User</p>
-                <p id="headerUserId" class="text-[10px] text-emerald-200 font-mono">ID: ...</p>
+                <p id="headerName" class="font-bold text-sm leading-tight truncate max-w-[130px]">User</p>
+                <p id="headerUserId" class="text-[10px] text-purple-200 font-mono">ID: ...</p>
             </div>
         </div>
-        <div class="bg-emerald-950/70 border border-emerald-500/40 rounded-full px-3 py-1 flex items-center space-x-1.5 font-bold text-yellow-300">
-            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            <span>সক্রিয় আছেন</span>
+        <div class="flex items-center space-x-2">
+            <div class="bg-indigo-950/60 border border-emerald-400/40 rounded-full px-2.5 py-1 flex items-center space-x-1.5 font-bold text-emerald-300 text-[11px]">
+                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                <span>14 ONLINE</span>
+            </div>
+            <button onclick="switchTab('tab-profile', 4)" class="w-7 h-7 rounded-full bg-indigo-950/60 flex items-center justify-center text-yellow-400 hover:text-yellow-300 border border-purple-500/30">
+                <i class="fa-solid fa-gear text-xs"></i>
+            </button>
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Main Container -->
     <main class="flex-1 overflow-y-auto px-4 pt-3 pb-24 space-y-4" id="mainContent">
 
         <!-- Tab: Home -->
         <div id="tab-home" class="tab-content space-y-4">
-            <div class="bg-gradient-to-tr from-emerald-600 via-teal-600 to-emerald-700 rounded-3xl p-5 text-white shadow-xl relative overflow-hidden">
-                <p class="text-xs font-semibold text-emerald-100 uppercase tracking-wider">মোট ব্যালেন্স</p>
-                <div class="flex items-baseline space-x-1 my-1">
+            
+            <!-- Balance Card -->
+            <div class="balance-card-gradient rounded-3xl p-5 text-white shadow-xl relative overflow-hidden">
+                <p class="text-xs font-semibold text-blue-100 uppercase tracking-wider">Total Balance</p>
+                <div class="flex items-baseline space-x-1.5 my-1.5">
                     <span class="text-yellow-300 text-2xl font-black">$</span>
-                    <span class="text-4xl font-extrabold" id="homeBalance">0.00</span>
-                    <span class="text-xs text-emerald-200 font-bold">USD</span>
+                    <span class="text-4xl font-extrabold tracking-tight" id="homeBalance">0.00</span>
+                    <span class="text-xs text-blue-100 font-bold">USD</span>
                 </div>
-                <button onclick="openModal('withdrawModal')" class="w-full mt-3 bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-900 py-2.5 rounded-xl font-black text-xs shadow flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-wallet"></i>
-                    <span>টাকা উত্তোলন (Withdraw)</span>
+                
+                <!-- Progress Line -->
+                <div class="w-full bg-blue-900/40 h-2 rounded-full overflow-hidden mt-2 mb-4">
+                    <div id="progressFill" class="bg-gradient-to-r from-emerald-400 to-teal-300 h-full w-[5%] transition-all duration-500"></div>
+                </div>
+
+                <!-- Withdraw Action Banner -->
+                <button onclick="openModal('withdrawModal')" class="w-full withdraw-banner-btn text-white py-2.5 rounded-2xl font-bold text-xs flex items-center justify-center space-x-2 transition active:scale-95">
+                    <span>🔔</span>
+                    <span>Withdraw from minimum $10.00!</span>
                 </button>
             </div>
 
-            <div class="grid grid-cols-3 gap-2">
-                <button onclick="switchTab('tab-earn', 1)" class="glass-card p-3 rounded-2xl flex flex-col items-center justify-center space-y-1 shadow">
-                    <i class="fa-solid fa-list-check text-emerald-600 text-xl"></i>
-                    <span class="text-xs font-bold">টাস্ক</span>
+            <!-- Quick Action Grid (4 Buttons) -->
+            <div class="grid grid-cols-4 gap-2">
+                <button onclick="switchTab('tab-tasks', 2)" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
+                    <div class="w-10 h-10 rounded-xl bg-pink-500 text-white flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-list-check text-base"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-slate-700">Tasks</span>
                 </button>
-                <button onclick="switchTab('tab-refer', 2)" class="glass-card p-3 rounded-2xl flex flex-col items-center justify-center space-y-1 shadow">
-                    <i class="fa-solid fa-users text-blue-600 text-xl"></i>
-                    <span class="text-xs font-bold">রেফার</span>
-                </button>
-                <button onclick="openModal('withdrawModal')" class="glass-card p-3 rounded-2xl flex flex-col items-center justify-center space-y-1 shadow">
-                    <i class="fa-solid fa-money-bill-transfer text-amber-500 text-xl"></i>
-                    <span class="text-xs font-bold">উইথড্র</span>
-                </button>
-            </div>
-        </div>
 
-        <!-- Tab: Earn -->
-        <div id="tab-earn" class="tab-content hidden space-y-3">
-            <h3 class="text-sm font-bold text-slate-800">উপলব্ধ কাজসমূহ (Tasks & Ads)</h3>
-            <div id="jobsList" class="space-y-2.5">
-                <div class="glass-card p-4 text-center text-xs text-slate-500 rounded-2xl">কাজ লোড হচ্ছে...</div>
+                <button onclick="switchTab('tab-tasks', 2)" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-video text-base"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-slate-700">Videos</span>
+                </button>
+
+                <button onclick="switchTab('tab-refer', 1)" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
+                    <div class="w-10 h-10 rounded-xl bg-blue-500 text-white flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-user-group text-base"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-slate-700">Refer</span>
+                </button>
+
+                <button onclick="openModal('withdrawModal')" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
+                    <div class="w-10 h-10 rounded-xl bg-teal-500 text-white flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-building-columns text-base"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-slate-700">Withdraw</span>
+                </button>
             </div>
+
+            <!-- Fresh Videos Promotion Card -->
+            <div class="glass-box p-4 rounded-3xl flex items-center justify-between shadow-sm border border-purple-200/60">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-500 flex items-center justify-center">
+                        <i class="fa-solid fa-fire text-lg"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-xs text-slate-800 tracking-wide">FRESH VIDEOS</h4>
+                        <p class="text-[10px] text-slate-500">Watch & earn extra cash daily</p>
+                    </div>
+                </div>
+                <button onclick="switchTab('tab-tasks', 2)" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-2 rounded-xl shadow-md active:scale-95 transition">
+                    Watch Now
+                </button>
+            </div>
+
         </div>
 
         <!-- Tab: Refer -->
         <div id="tab-refer" class="tab-content hidden space-y-4">
-            <div class="bg-slate-900 rounded-3xl p-5 text-white space-y-3 border border-slate-700 shadow-xl text-center">
-                <h3 class="text-lg font-black text-yellow-400">প্রতি রেফারে সরাসরি বোনাস!</h3>
-                <p class="text-xs text-slate-300">বন্ধুদের ইনভাইট করুন এবং একাউন্টে যোগ করে নিন বোনাস ব্যালেন্স।</p>
+            <div class="bg-slate-900 rounded-3xl p-5 text-white space-y-4 border border-slate-700 shadow-xl text-center">
+                <div class="w-12 h-12 mx-auto rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <h3 class="text-lg font-black text-white">Invite Friends & Earn</h3>
+                <p class="text-xs text-slate-300">Share your link and earn $1.00 for every invited friend!</p>
                 
-                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex justify-around text-center">
+                <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 flex justify-around">
                     <div>
-                        <p class="text-xl font-black text-green-400" id="refCount">0</p>
-                        <p class="text-[10px] text-slate-400 uppercase">মোট রেফার</p>
+                        <p class="text-xl font-black text-emerald-400" id="refCount">0</p>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold">Total Referrals</p>
                     </div>
                     <div>
                         <p class="text-xl font-black text-yellow-400" id="refBonus">$0.00</p>
-                        <p class="text-[10px] text-slate-400 uppercase">রেফার বোনাস</p>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold">Bonus Earned</p>
                     </div>
                 </div>
 
                 <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
                     <span class="text-xs text-slate-300 truncate font-mono px-2" id="refLinkText">...</span>
-                    <button onclick="copyRefLink()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-1.5 rounded-lg">Copy</button>
+                    <button onclick="copyRefLink()" class="bg-indigo-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg active:scale-95">Copy</button>
                 </div>
 
-                <button onclick="shareInvite()" class="w-full golden-btn text-slate-900 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center space-x-1.5">
-                    <i class="fa-solid fa-share-nodes"></i>
-                    <span>টেলিগ্রামে বন্ধুদের পাঠান</span>
+                <button onclick="shareInvite()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg active:scale-95">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Share on Telegram</span>
                 </button>
+            </div>
+        </div>
+
+        <!-- Tab: Tasks/Earn -->
+        <div id="tab-tasks" class="tab-content hidden space-y-3">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">Available Tasks & Ads</h3>
+            <div id="jobsList" class="space-y-2.5">
+                <div class="glass-box p-4 text-center text-xs text-slate-500 rounded-2xl">Loading tasks...</div>
+            </div>
+        </div>
+
+        <!-- Tab: Rank / Leaderboard -->
+        <div id="tab-rank" class="tab-content hidden space-y-3">
+            <div class="header-gradient text-white p-4 rounded-3xl shadow-lg flex items-center justify-between">
+                <div>
+                    <h3 class="font-extrabold text-sm">Top Earners</h3>
+                    <p class="text-[10px] text-purple-200">Global Leaderboard Today</p>
+                </div>
+                <i class="fa-solid fa-trophy text-2xl text-yellow-300"></i>
+            </div>
+            <div id="rankList" class="space-y-2 text-xs">
+                <!-- Dynamically loaded from Supabase -->
+            </div>
+        </div>
+
+        <!-- Tab: Profile -->
+        <div id="tab-profile" class="tab-content hidden space-y-3">
+            <div class="glass-box p-5 rounded-3xl space-y-3 text-center">
+                <img id="profileAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-16 h-16 mx-auto rounded-full border-2 border-indigo-500 object-cover">
+                <h3 class="font-bold text-sm text-slate-800" id="profName">User</h3>
+                <p class="text-xs text-slate-400 font-mono" id="profId">ID: ...</p>
+            </div>
+            <div class="glass-box p-4 rounded-2xl space-y-2 text-xs">
+                <div class="flex justify-between py-1.5 border-b border-slate-100">
+                    <span class="text-slate-500">Status</span>
+                    <span class="font-bold text-emerald-600">Active VIP</span>
+                </div>
+                <div class="flex justify-between py-1.5 border-b border-slate-100">
+                    <span class="text-slate-500">Bot Channel</span>
+                    <span class="font-bold text-indigo-600">@Bdincomepro24_bot</span>
+                </div>
+                <div class="flex justify-between py-1.5">
+                    <span class="text-slate-500">Support</span>
+                    <span class="font-bold text-slate-700">24/7 Available</span>
+                </div>
             </div>
         </div>
 
     </main>
 
-    <!-- Bottom Nav -->
-    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-900 text-slate-400 px-4 py-2 flex justify-around items-center z-30 border-t border-slate-800">
-        <button onclick="switchTab('tab-home', 0)" class="nav-item flex flex-col items-center py-1 text-emerald-400">
-            <i class="fa-solid fa-house text-lg"></i>
-            <span class="text-[10px] font-bold mt-1">হোম</span>
+    <!-- Bottom Navigation Bar (Matches Image: Home, Refer, Earn, Rank, Profile) -->
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-900 text-slate-400 px-3 py-2 flex justify-around items-center z-30 border-t border-slate-800">
+        
+        <!-- Home (Center bubble button) -->
+        <button onclick="switchTab('tab-home', 0)" class="nav-item flex flex-col items-center -mt-4">
+            <div class="w-11 h-11 rounded-full nav-home-bubble text-white flex items-center justify-center border-2 border-slate-900">
+                <i class="fa-solid fa-house text-sm"></i>
+            </div>
+            <span class="text-[10px] font-bold text-red-400 mt-0.5">Home</span>
         </button>
-        <button onclick="switchTab('tab-earn', 1)" class="nav-item flex flex-col items-center py-1 hover:text-white">
-            <i class="fa-solid fa-coins text-lg"></i>
-            <span class="text-[10px] font-bold mt-1">ইনকাম</span>
+
+        <button onclick="switchTab('tab-refer', 1)" class="nav-item flex flex-col items-center py-1 hover:text-white">
+            <i class="fa-solid fa-user-plus text-base"></i>
+            <span class="text-[10px] font-semibold mt-1">Refer</span>
         </button>
-        <button onclick="switchTab('tab-refer', 2)" class="nav-item flex flex-col items-center py-1 hover:text-white">
-            <i class="fa-solid fa-users text-lg"></i>
-            <span class="text-[10px] font-bold mt-1">রেফার</span>
+
+        <button onclick="switchTab('tab-tasks', 2)" class="nav-item flex flex-col items-center py-1 hover:text-white">
+            <i class="fa-solid fa-sack-dollar text-base"></i>
+            <span class="text-[10px] font-semibold mt-1">Earn</span>
+        </button>
+
+        <button onclick="switchTab('tab-rank', 3)" class="nav-item flex flex-col items-center py-1 hover:text-white">
+            <i class="fa-solid fa-chart-simple text-base"></i>
+            <span class="text-[10px] font-semibold mt-1">Rank</span>
+        </button>
+
+        <button onclick="switchTab('tab-profile', 4)" class="nav-item flex flex-col items-center py-1 hover:text-white">
+            <i class="fa-solid fa-user text-base"></i>
+            <span class="text-[10px] font-semibold mt-1">Profile</span>
         </button>
     </nav>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed top-12 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 opacity-0 pointer-events-none">
-        <div class="bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full border border-emerald-500/50 shadow-2xl flex items-center space-x-2">
-            <i class="fa-solid fa-circle-check text-emerald-400"></i>
-            <span id="toastMsg"></span>
-        </div>
-    </div>
 
     <!-- Withdraw Modal -->
     <div id="withdrawModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-extrabold text-base text-slate-900">টাকা উত্তোলন (Withdraw)</h3>
+                <h3 class="font-extrabold text-sm text-slate-800">Withdraw Funds</h3>
                 <button onclick="closeModal('withdrawModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">পেমেন্ট মেথড</label>
+                    <label class="block font-bold text-slate-700 mb-1">Payment Method</label>
                     <select id="wMethod" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold">
-                        <option value="bKash">bKash (বিকাশ Personal)</option>
-                        <option value="Nagad">Nagad (নগদ Personal)</option>
+                        <option value="bKash">bKash (Personal)</option>
+                        <option value="Nagad">Nagad (Personal)</option>
                         <option value="USDT">Binance USDT (TRC20)</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">একাউন্ট নম্বর / অ্যাড্রেস</label>
+                    <label class="block font-bold text-slate-700 mb-1">Account Number / Wallet</label>
                     <input type="text" id="wAccount" placeholder="017XXXXXXXX" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">পরিমাণ ($)</label>
+                    <label class="block font-bold text-slate-700 mb-1">Amount ($)</label>
                     <input type="number" id="wAmount" value="10.00" min="10" step="0.5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold">
-                    <p class="text-[10px] text-slate-500 mt-1">সর্বনিম্ন উইথড্র $10.00 USD</p>
+                    <p class="text-[10px] text-slate-500 mt-1">Minimum withdraw $10.00 USD</p>
                 </div>
             </div>
-            <button onclick="processWithdraw()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl shadow">উইথড্র সাবমিট করুন</button>
+            <button onclick="processWithdraw()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95 transition">Submit Withdrawal</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-12 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 opacity-0 pointer-events-none">
+        <div class="bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full border border-indigo-500/50 shadow-2xl flex items-center space-x-2">
+            <i class="fa-solid fa-circle-check text-emerald-400"></i>
+            <span id="toastMsg"></span>
         </div>
     </div>
 
@@ -217,6 +323,7 @@
         document.addEventListener("DOMContentLoaded", async () => {
             await initUser();
             await loadTasks();
+            await loadLeaderboard();
         });
 
         async function initUser() {
@@ -248,11 +355,14 @@
 
             user.id = tgId;
             user.name = tgName || "User";
-            if (tgPhoto) document.getElementById('userAvatar').src = tgPhoto;
+            if (tgPhoto) {
+                document.getElementById('userAvatar').src = tgPhoto;
+                document.getElementById('profileAvatar').src = tgPhoto;
+            }
 
-            // Fetch or insert into Supabase
+            // Supabase Database Fetch / Create
             try {
-                const { data, error } = await supabaseClient.from('users').select('*').eq('id', user.id).single();
+                const { data } = await supabaseClient.from('users').select('*').eq('id', user.id).single();
                 if (data) {
                     user.balance = Number(data.balance || 0);
                     user.joined = data.joined || 0;
@@ -265,7 +375,7 @@
                     }]);
                 }
             } catch (err) {
-                console.error("Supabase user load err:", err);
+                console.error("Supabase user err:", err);
             }
 
             await checkReferral(user.id);
@@ -295,7 +405,7 @@
                             }).eq('id', refId);
                         }
                     } catch (e) {
-                        console.error("Referral err:", e);
+                        console.error("Ref error:", e);
                     }
                 }
             }
@@ -303,16 +413,23 @@
 
         function updateUI() {
             document.getElementById('headerName').innerText = user.name;
+            document.getElementById('profName').innerText = user.name;
             document.getElementById('headerUserId').innerText = "ID: " + user.id;
+            document.getElementById('profId').innerText = "ID: " + user.id;
+            
             document.getElementById('homeBalance').innerText = Number(user.balance).toFixed(2);
             document.getElementById('refCount').innerText = user.joined || 0;
             document.getElementById('refBonus').innerText = "$" + Number(user.joined * 1.00).toFixed(2);
             document.getElementById('refLinkText').innerText = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
+
+            // Update Progress bar to $10 minimum
+            let pct = Math.min((user.balance / 10) * 100, 100);
+            document.getElementById('progressFill').style.width = `${Math.max(pct, 5)}%`;
         }
 
         async function loadTasks() {
             try {
-                const { data, error } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
+                const { data } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
                 tasks = data || [];
                 renderTasks();
             } catch (err) {
@@ -324,18 +441,23 @@
             const list = document.getElementById('jobsList');
             list.innerHTML = "";
             if (tasks.length === 0) {
-                list.innerHTML = `<div class="glass-card p-6 text-center text-xs text-slate-500 rounded-2xl">কোনো কাজ অবশিষ্ট নেই।</div>`;
+                list.innerHTML = `<div class="glass-box p-6 text-center text-xs text-slate-500 rounded-2xl">No tasks available right now.</div>`;
                 return;
             }
 
             tasks.forEach(t => {
                 list.innerHTML += `
-                    <div class="glass-card p-3 rounded-2xl flex items-center justify-between shadow-sm">
-                        <div>
-                            <p class="font-bold text-xs text-slate-900">${t.title}</p>
-                            <p class="text-[10px] font-bold text-emerald-600">+$${Number(t.reward).toFixed(2)} • <span class="text-slate-400">${t.timer}s</span></p>
+                    <div class="glass-box p-3 rounded-2xl flex items-center justify-between shadow-sm">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-xs text-slate-900">${t.title}</p>
+                                <p class="text-[10px] font-bold text-emerald-600">+$${Number(t.reward).toFixed(2)} • <span class="text-slate-400">${t.timer}s</span></p>
+                            </div>
                         </div>
-                        <button onclick="startTask(this, ${t.reward}, ${t.timer}, '${t.url}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl">Start</button>
+                        <button onclick="startTask(this, ${t.reward}, ${t.timer}, '${t.url}')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl active:scale-95">Start</button>
                     </div>
                 `;
             });
@@ -353,14 +475,42 @@
                 left--;
                 if (left < 0) {
                     clearInterval(timerId);
-                    btn.className = "bg-green-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
+                    btn.className = "bg-emerald-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
                     btn.innerText = "Done";
                     user.balance += reward;
                     await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
                     updateUI();
-                    showToast(`+$${reward.toFixed(2)} একাউন্টে যোগ হয়েছে!`);
+                    showToast(`+$${reward.toFixed(2)} added to balance!`);
                 }
             }, 1000);
+        }
+
+        async function loadLeaderboard() {
+            try {
+                const { data } = await supabaseClient.from('users').select('*').order('balance', { ascending: false }).limit(5);
+                const rList = document.getElementById('rankList');
+                if (!data || data.length === 0) {
+                    rList.innerHTML = `<div class="glass-box p-4 text-center text-slate-500 rounded-2xl">No rank data yet.</div>`;
+                    return;
+                }
+                rList.innerHTML = "";
+                data.forEach((u, i) => {
+                    rList.innerHTML += `
+                        <div class="glass-box p-3 rounded-2xl flex items-center justify-between">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="w-6 h-6 rounded-full ${i===0?'bg-amber-400 text-slate-900':(i===1?'bg-slate-300 text-slate-800':'bg-amber-700 text-white')} flex items-center justify-center font-black text-[10px]">${i+1}</span>
+                                <div>
+                                    <p class="font-bold text-xs text-slate-800">${u.name}</p>
+                                    <p class="text-[10px] text-slate-400">ID: ${u.id}</p>
+                                </div>
+                            </div>
+                            <span class="font-black text-xs text-emerald-600">$${Number(u.balance || 0).toFixed(2)}</span>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                console.error(e);
+            }
         }
 
         async function processWithdraw() {
@@ -368,9 +518,9 @@
             const method = document.getElementById('wMethod').value;
             const acc = document.getElementById('wAccount').value.trim();
 
-            if (isNaN(amt) || amt < 10) return showToast('সর্বনিম্ন উইথড্র $10');
-            if (user.balance < amt) return showToast('পর্যাপ্ত ব্যালেন্স নেই!');
-            if (!acc) return showToast('একাউন্ট নম্বর দিন!');
+            if (isNaN(amt) || amt < 10) return showToast('Minimum withdraw is $10.00');
+            if (user.balance < amt) return showToast('Insufficient balance!');
+            if (!acc) return showToast('Please enter account number');
 
             user.balance -= amt;
             const wid = "W" + Date.now().toString().slice(-6);
@@ -388,28 +538,23 @@
             await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
             updateUI();
             closeModal('withdrawModal');
-            showToast('উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!');
+            showToast('Withdrawal request submitted!');
         }
 
         function copyRefLink() {
             navigator.clipboard.writeText(`https://t.me/${BOT_USERNAME}?start=${user.id}`);
-            showToast('রেফারেল লিংক কপি হয়েছে!');
+            showToast('Referral link copied!');
         }
 
         function shareInvite() {
             const url = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
-            const text = encodeURIComponent("পকেট খরচ ইনকাম করুন - ছোট ছোট কাজ করে টাকা আয় করুন!");
+            const text = encodeURIComponent("Watch videos and complete simple tasks to earn pocket money!");
             window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${text}`, '_blank');
         }
 
         function switchTab(id, idx) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
-            const navs = document.querySelectorAll('.nav-item');
-            navs.forEach((n, i) => {
-                if (i === idx) n.className = "nav-item flex flex-col items-center py-1 text-emerald-400";
-                else n.className = "nav-item flex flex-col items-center py-1 hover:text-white";
-            });
         }
 
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
