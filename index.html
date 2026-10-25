@@ -39,6 +39,9 @@
             background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
             box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
         }
+        #spinWheel {
+            transition: transform 3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
     </style>
 </head>
 <body class="flex flex-col h-screen max-w-md mx-auto overflow-hidden relative text-slate-800">
@@ -94,47 +97,48 @@
                     <span class="text-xs text-blue-100 font-bold">USD</span>
                 </div>
                 
-                <!-- Progress Line -->
                 <div class="w-full bg-blue-900/40 h-2 rounded-full overflow-hidden mt-2 mb-4">
                     <div id="progressFill" class="bg-gradient-to-r from-emerald-400 to-teal-300 h-full w-[5%] transition-all duration-500"></div>
                 </div>
 
-                <!-- Withdraw Action Banner -->
                 <button onclick="openModal('withdrawModal')" class="w-full withdraw-banner-btn text-white py-2.5 rounded-2xl font-bold text-xs flex items-center justify-center space-x-2 transition active:scale-95">
                     <span>🔔</span>
                     <span>Withdraw from minimum $10.00!</span>
                 </button>
             </div>
 
-            <!-- Quick Action Grid (4 Buttons) -->
-            <div class="grid grid-cols-4 gap-2">
-                <button onclick="switchTab('tab-tasks', 2)" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
-                    <div class="w-10 h-10 rounded-xl bg-pink-500 text-white flex items-center justify-center shadow-md">
-                        <i class="fa-solid fa-list-check text-base"></i>
-                    </div>
-                    <span class="text-[11px] font-bold text-slate-700">Tasks</span>
-                </button>
+            <!-- Quick Action 4-Grid: Math, Video, Scratch, Spin -->
+            <div>
+                <p class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 px-1">Daily Earning Zones</p>
+                <div class="grid grid-cols-4 gap-2">
+                    <button onclick="openModal('mathModal'); generateMathQuiz();" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
+                        <div class="w-10 h-10 rounded-xl bg-purple-500 text-white flex items-center justify-center shadow-md">
+                            <i class="fa-solid fa-calculator text-base"></i>
+                        </div>
+                        <span class="text-[11px] font-bold text-slate-700">Math Quiz</span>
+                    </button>
 
-                <button onclick="switchTab('tab-tasks', 2)" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
-                    <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md">
-                        <i class="fa-solid fa-video text-base"></i>
-                    </div>
-                    <span class="text-[11px] font-bold text-slate-700">Videos</span>
-                </button>
+                    <button onclick="switchTab('tab-tasks', 2)" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md">
+                            <i class="fa-solid fa-video text-base"></i>
+                        </div>
+                        <span class="text-[11px] font-bold text-slate-700">Videos</span>
+                    </button>
 
-                <button onclick="switchTab('tab-refer', 1)" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
-                    <div class="w-10 h-10 rounded-xl bg-blue-500 text-white flex items-center justify-center shadow-md">
-                        <i class="fa-solid fa-user-group text-base"></i>
-                    </div>
-                    <span class="text-[11px] font-bold text-slate-700">Refer</span>
-                </button>
+                    <button onclick="openModal('scratchModal'); resetScratch();" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
+                        <div class="w-10 h-10 rounded-xl bg-pink-500 text-white flex items-center justify-center shadow-md">
+                            <i class="fa-solid fa-gift text-base"></i>
+                        </div>
+                        <span class="text-[11px] font-bold text-slate-700">Scratch</span>
+                    </button>
 
-                <button onclick="openModal('withdrawModal')" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
-                    <div class="w-10 h-10 rounded-xl bg-teal-500 text-white flex items-center justify-center shadow-md">
-                        <i class="fa-solid fa-building-columns text-base"></i>
-                    </div>
-                    <span class="text-[11px] font-bold text-slate-700">Withdraw</span>
-                </button>
+                    <button onclick="openModal('spinModal')" class="glass-box py-3 px-1 rounded-2xl flex flex-col items-center justify-center space-y-1.5 shadow-sm active:scale-95 transition">
+                        <div class="w-10 h-10 rounded-xl bg-teal-500 text-white flex items-center justify-center shadow-md">
+                            <i class="fa-solid fa-arrows-spin text-base"></i>
+                        </div>
+                        <span class="text-[11px] font-bold text-slate-700">Spin Wheel</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Fresh Videos Promotion Card -->
@@ -153,6 +157,14 @@
                 </button>
             </div>
 
+        </div>
+
+        <!-- Tab: Tasks / Videos -->
+        <div id="tab-tasks" class="tab-content hidden space-y-3">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">Watch Videos & Complete Tasks</h3>
+            <div id="jobsList" class="space-y-2.5">
+                <div class="glass-box p-4 text-center text-xs text-slate-500 rounded-2xl">Loading tasks...</div>
+            </div>
         </div>
 
         <!-- Tab: Refer -->
@@ -187,15 +199,7 @@
             </div>
         </div>
 
-        <!-- Tab: Tasks/Earn -->
-        <div id="tab-tasks" class="tab-content hidden space-y-3">
-            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">Available Tasks & Ads</h3>
-            <div id="jobsList" class="space-y-2.5">
-                <div class="glass-box p-4 text-center text-xs text-slate-500 rounded-2xl">Loading tasks...</div>
-            </div>
-        </div>
-
-        <!-- Tab: Rank / Leaderboard -->
+        <!-- Tab: Rank -->
         <div id="tab-rank" class="tab-content hidden space-y-3">
             <div class="header-gradient text-white p-4 rounded-3xl shadow-lg flex items-center justify-between">
                 <div>
@@ -204,9 +208,7 @@
                 </div>
                 <i class="fa-solid fa-trophy text-2xl text-yellow-300"></i>
             </div>
-            <div id="rankList" class="space-y-2 text-xs">
-                <!-- Dynamically loaded from Supabase -->
-            </div>
+            <div id="rankList" class="space-y-2 text-xs"></div>
         </div>
 
         <!-- Tab: Profile -->
@@ -222,22 +224,16 @@
                     <span class="font-bold text-emerald-600">Active VIP</span>
                 </div>
                 <div class="flex justify-between py-1.5 border-b border-slate-100">
-                    <span class="text-slate-500">Bot Channel</span>
+                    <span class="text-slate-500">Telegram Bot</span>
                     <span class="font-bold text-indigo-600">@Bdincomepro24_bot</span>
-                </div>
-                <div class="flex justify-between py-1.5">
-                    <span class="text-slate-500">Support</span>
-                    <span class="font-bold text-slate-700">24/7 Available</span>
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- Bottom Navigation Bar (Matches Image: Home, Refer, Earn, Rank, Profile) -->
+    <!-- Bottom Navigation Bar -->
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-900 text-slate-400 px-3 py-2 flex justify-around items-center z-30 border-t border-slate-800">
-        
-        <!-- Home (Center bubble button) -->
         <button onclick="switchTab('tab-home', 0)" class="nav-item flex flex-col items-center -mt-4">
             <div class="w-11 h-11 rounded-full nav-home-bubble text-white flex items-center justify-center border-2 border-slate-900">
                 <i class="fa-solid fa-house text-sm"></i>
@@ -266,7 +262,54 @@
         </button>
     </nav>
 
-    <!-- Withdraw Modal -->
+    <!-- MODAL 1: Math Quiz -->
+    <div id="mathModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-calculator text-purple-600 mr-1"></i> Math Solve & Earn</h3>
+                <button onclick="closeModal('mathModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200">
+                <span class="text-2xl font-black text-purple-700 tracking-wider" id="mathProblem">5 + 8 = ?</span>
+            </div>
+            <input type="number" id="mathAnswer" placeholder="Your Answer" class="w-full text-center bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold text-lg">
+            <button onclick="submitMathQuiz()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95">Check & Claim (+$0.20)</button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Scratch Card -->
+    <div id="scratchModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-gift text-pink-600 mr-1"></i> Scratch & Win</h3>
+                <button onclick="closeModal('scratchModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-500">Tap below to scratch and reveal reward!</p>
+            <div onclick="revealScratch()" id="scratchCard" class="w-48 h-32 mx-auto bg-gradient-to-tr from-pink-500 to-rose-400 rounded-2xl flex flex-col items-center justify-center text-white font-extrabold shadow-lg cursor-pointer active:scale-95 transition">
+                <i class="fa-solid fa-hand-pointer text-2xl mb-1 animate-bounce"></i>
+                <span id="scratchText">Tap to Scratch</span>
+            </div>
+            <button id="claimScratchBtn" onclick="claimScratchReward()" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl shadow cursor-not-allowed">Claim Reward</button>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Lucky Spin Wheel -->
+    <div id="spinModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-box rounded-3xl w-full max-w-xs p-6 space-y-4 shadow-2xl text-center">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-extrabold text-sm text-slate-800"><i class="fa-solid fa-arrows-spin text-teal-600 mr-1"></i> Lucky Spin Wheel</h3>
+                <button onclick="closeModal('spinModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="relative w-44 h-44 mx-auto my-2">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 -mt-2 z-10 text-red-500 text-xl font-black">▼</div>
+                <div id="spinWheel" class="w-full h-full rounded-full border-4 border-slate-800 shadow-xl overflow-hidden relative" style="background: conic-gradient(#10b981 0deg 60deg, #f59e0b 60deg 120deg, #3b82f6 120deg 180deg, #ec4899 180deg 240deg, #8b5cf6 240deg 300deg, #ef4444 300deg 360deg);">
+                </div>
+            </div>
+            <button id="spinBtn" onclick="spinNow()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95">Spin Now!</button>
+        </div>
+    </div>
+
+    <!-- MODAL 4: Withdraw -->
     <div id="withdrawModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b pb-2">
@@ -312,13 +355,12 @@
 
         const BOT_USERNAME = "Bdincomepro24_bot";
 
-        let user = {
-            id: "",
-            name: "User",
-            balance: 0.00,
-            joined: 0
-        };
+        let user = { id: "", name: "User", balance: 0.00, joined: 0 };
         let tasks = [];
+        let currentMathAns = 0;
+        let currentScratchReward = 0;
+        let isSpinning = false;
+        let currentDegree = 0;
 
         document.addEventListener("DOMContentLoaded", async () => {
             await initUser();
@@ -360,7 +402,6 @@
                 document.getElementById('profileAvatar').src = tgPhoto;
             }
 
-            // Supabase Database Fetch / Create
             try {
                 const { data } = await supabaseClient.from('users').select('*').eq('id', user.id).single();
                 if (data) {
@@ -422,11 +463,18 @@
             document.getElementById('refBonus').innerText = "$" + Number(user.joined * 1.00).toFixed(2);
             document.getElementById('refLinkText').innerText = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
 
-            // Update Progress bar to $10 minimum
             let pct = Math.min((user.balance / 10) * 100, 100);
             document.getElementById('progressFill').style.width = `${Math.max(pct, 5)}%`;
         }
 
+        async function saveUserBalance(reward, actionText) {
+            user.balance += reward;
+            await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
+            updateUI();
+            showToast(`+$${reward.toFixed(2)} ${actionText}!`);
+        }
+
+        // ================= TASKS / VIDEOS ================= //
         async function loadTasks() {
             try {
                 const { data } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
@@ -441,7 +489,7 @@
             const list = document.getElementById('jobsList');
             list.innerHTML = "";
             if (tasks.length === 0) {
-                list.innerHTML = `<div class="glass-box p-6 text-center text-xs text-slate-500 rounded-2xl">No tasks available right now.</div>`;
+                list.innerHTML = `<div class="glass-box p-6 text-center text-xs text-slate-500 rounded-2xl">No video tasks available right now.</div>`;
                 return;
             }
 
@@ -477,14 +525,81 @@
                     clearInterval(timerId);
                     btn.className = "bg-emerald-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
                     btn.innerText = "Done";
-                    user.balance += reward;
-                    await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
-                    updateUI();
-                    showToast(`+$${reward.toFixed(2)} added to balance!`);
+                    await saveUserBalance(reward, "from Task/Video");
                 }
             }, 1000);
         }
 
+        // ================= 1. MATH QUIZ ================= //
+        function generateMathQuiz() {
+            const n1 = Math.floor(Math.random() * 20) + 1;
+            const n2 = Math.floor(Math.random() * 20) + 1;
+            currentMathAns = n1 + n2;
+            document.getElementById('mathProblem').innerText = `${n1} + ${n2} = ?`;
+            document.getElementById('mathAnswer').value = "";
+        }
+
+        async function submitMathQuiz() {
+            const ans = parseInt(document.getElementById('mathAnswer').value);
+            if (ans === currentMathAns) {
+                closeModal('mathModal');
+                await saveUserBalance(0.20, "from Math Quiz");
+            } else {
+                showToast("Wrong answer! Try again.");
+                generateMathQuiz();
+            }
+        }
+
+        // ================= 2. SCRATCH REWARD ================= //
+        function resetScratch() {
+            const rewards = [0.10, 0.25, 0.50, 0.15, 0.30];
+            currentScratchReward = rewards[Math.floor(Math.random() * rewards.length)];
+            const card = document.getElementById('scratchCard');
+            card.className = "w-48 h-32 mx-auto bg-gradient-to-tr from-pink-500 to-rose-400 rounded-2xl flex flex-col items-center justify-center text-white font-extrabold shadow-lg cursor-pointer active:scale-95 transition";
+            card.innerHTML = `<i class="fa-solid fa-hand-pointer text-2xl mb-1 animate-bounce"></i><span>Tap to Scratch</span>`;
+            
+            const btn = document.getElementById('claimScratchBtn');
+            btn.disabled = true;
+            btn.className = "w-full bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl shadow cursor-not-allowed";
+        }
+
+        function revealScratch() {
+            const card = document.getElementById('scratchCard');
+            card.className = "w-48 h-32 mx-auto bg-amber-100 border-2 border-dashed border-amber-500 rounded-2xl flex flex-col items-center justify-center text-amber-600 font-extrabold shadow-inner";
+            card.innerHTML = `<span class="text-3xl font-black">+$${currentScratchReward.toFixed(2)}</span><span class="text-xs uppercase mt-1">Scratch Won!</span>`;
+            
+            const btn = document.getElementById('claimScratchBtn');
+            btn.disabled = false;
+            btn.className = "w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95";
+        }
+
+        async function claimScratchReward() {
+            closeModal('scratchModal');
+            await saveUserBalance(currentScratchReward, "from Scratch Card");
+        }
+
+        // ================= 3. LUCKY SPIN WHEEL ================= //
+        function spinNow() {
+            if (isSpinning) return;
+            isSpinning = true;
+            document.getElementById('spinBtn').disabled = true;
+
+            const extraDeg = Math.floor(Math.random() * 360) + 1440; // 4 full spins + random angle
+            currentDegree += extraDeg;
+            document.getElementById('spinWheel').style.transform = `rotate(${currentDegree}deg)`;
+
+            const rewards = [0.10, 0.20, 0.50, 0.15, 0.35, 0.05];
+            const won = rewards[Math.floor(Math.random() * rewards.length)];
+
+            setTimeout(async () => {
+                isSpinning = false;
+                document.getElementById('spinBtn').disabled = false;
+                closeModal('spinModal');
+                await saveUserBalance(won, "from Lucky Spin");
+            }, 3200);
+        }
+
+        // ================= LEADERBOARD ================= //
         async function loadLeaderboard() {
             try {
                 const { data } = await supabaseClient.from('users').select('*').order('balance', { ascending: false }).limit(5);
@@ -513,6 +628,7 @@
             }
         }
 
+        // ================= WITHDRAW ================= //
         async function processWithdraw() {
             const amt = parseFloat(document.getElementById('wAmount').value);
             const method = document.getElementById('wMethod').value;
@@ -548,7 +664,7 @@
 
         function shareInvite() {
             const url = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
-            const text = encodeURIComponent("Watch videos and complete simple tasks to earn pocket money!");
+            const text = encodeURIComponent("Watch videos, spin and solve math to earn pocket money!");
             window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${text}`, '_blank');
         }
 
