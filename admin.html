@@ -37,22 +37,22 @@
             </div>
             <nav class="mt-6 space-y-2 text-xs font-semibold">
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-600/30">
-                    <i class="fa-solid fa-chart-pie w-4"></i> Dashboard
+                    <i class="fa-solid fa-chart-pie w-4"></i> ড্যাশবোর্ড
                 </button>
                 <button onclick="switchTab('notice')" id="nav-notice" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-bullhorn w-4 text-amber-400"></i> Pop-up Notice
+                    <i class="fa-solid fa-bullhorn w-4 text-amber-400"></i> লাইভ নোটিশ পপ-আপ
                 </button>
                 <button onclick="switchTab('settings')" id="nav-settings" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-sliders w-4 text-teal-400"></i> Withdraw & Ad Settings
+                    <i class="fa-solid fa-sliders w-4 text-teal-400"></i> অ্যাড ও আর্নিং জোন কন্ট্রোল
                 </button>
                 <button onclick="switchTab('tasks')" id="nav-tasks" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-video w-4 text-purple-400"></i> Tasks Management
+                    <i class="fa-solid fa-video w-4 text-purple-400"></i> ভিডিও ও টাস্ক ম্যানেজমেন্ট
                 </button>
                 <button onclick="switchTab('users')" id="nav-users" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-users w-4 text-blue-400"></i> Users & Balance Edit
+                    <i class="fa-solid fa-users w-4 text-blue-400"></i> ইউজার ও ব্যালেন্স এডিট
                 </button>
                 <button onclick="switchTab('withdrawals')" id="nav-withdrawals" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-wallet w-4 text-rose-400"></i> Withdraw Requests
+                    <i class="fa-solid fa-wallet w-4 text-rose-400"></i> উইথড্র রিকোয়েস্ট
                 </button>
             </nav>
         </div>
@@ -64,8 +64,8 @@
 
         <div class="flex justify-between items-center pb-4 border-b border-slate-800">
             <div>
-                <h2 id="pageTitle" class="text-lg font-bold text-white">Instant Admin Controller</h2>
-                <p class="text-xs text-slate-400">এখানে পরিবর্তন করলে সরাসরি ইনডেক্স অ্যাপে আপডেট হবে</p>
+                <h2 id="pageTitle" class="text-lg font-bold text-white">ইনস্ট্যান্ট অ্যাডমিন কন্ট্রোলার</h2>
+                <p class="text-xs text-slate-400">যেকোনো সেকশন আলাদা আলাদা সেভ করলে সরাসরি ইনডেক্স অ্যাপে সিঙ্ক হবে</p>
             </div>
             <button onclick="openModal('addTaskModal')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> নতুন টাস্ক যোগ করুন
@@ -75,15 +75,15 @@
         <!-- Section: Dashboard -->
         <section id="view-dashboard" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="glass-panel p-5 rounded-2xl">
-                <p class="text-xs text-slate-400 uppercase font-semibold">Total Users</p>
+                <p class="text-xs text-slate-400 uppercase font-semibold">মোট ইউজার</p>
                 <h3 class="text-3xl font-black text-white mt-1" id="dashUsers">0</h3>
             </div>
             <div class="glass-panel p-5 rounded-2xl">
-                <p class="text-xs text-slate-400 uppercase font-semibold">Live Tasks</p>
+                <p class="text-xs text-slate-400 uppercase font-semibold">লাইভ টাস্ক</p>
                 <h3 class="text-3xl font-black text-emerald-400 mt-1" id="dashTasks">0</h3>
             </div>
             <div class="glass-panel p-5 rounded-2xl">
-                <p class="text-xs text-slate-400 uppercase font-semibold">Pending Withdraw</p>
+                <p class="text-xs text-slate-400 uppercase font-semibold">পেন্ডিং উইথড্র</p>
                 <h3 class="text-3xl font-black text-amber-400 mt-1" id="dashPending">0</h3>
             </div>
         </section>
@@ -92,131 +92,164 @@
         <section id="view-notice" class="hidden space-y-4">
             <div class="glass-panel p-6 rounded-2xl space-y-4">
                 <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
-                    <i class="fa-solid fa-bullhorn"></i> Live Pop-up Notice (ইউজার অ্যাপ খুললেই সামনে আসবে)
+                    <i class="fa-solid fa-bullhorn"></i> লাইভ নোটিশ পপ-আপ (ইউজার অ্যাপ ওপেন করলে সামনে আসবে)
                 </h3>
                 <form onsubmit="saveNoticeSettings(event)" class="space-y-4 text-xs">
                     <div>
-                        <label class="block text-slate-300 font-bold mb-1">Notice Message</label>
-                        <textarea id="s_notice_text" rows="3" placeholder="নোটিশের বিবরণ লিখুন..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white"></textarea>
+                        <label class="block text-slate-300 font-bold mb-1">নোটিশের বিবরণ</label>
+                        <textarea id="s_notice_text" rows="3" placeholder="নোটিশের মেসেজ লিখুন..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white"></textarea>
                     </div>
                     <div>
-                        <label class="block text-slate-300 font-bold mb-1">Notice Target URL (অপশনাল লিংক)</label>
+                        <label class="block text-slate-300 font-bold mb-1">নোটিশ টার্গেট লিংক (ঐচ্ছিক)</label>
                         <input type="url" id="s_notice_url" placeholder="https://t.me/..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                     </div>
                     <div class="flex items-center gap-2 pt-1">
                         <input type="checkbox" id="s_notice_active" class="w-4 h-4 rounded text-indigo-600 bg-slate-950 border-slate-700">
-                        <label for="s_notice_active" class="text-slate-300 font-bold">নোটিশ পপ-আপ চালু থাকবে</label>
+                        <label for="s_notice_active" class="text-slate-300 font-bold">নোটিশ পপ-আপ লাইভ চালু থাকবে</label>
                     </div>
-                    <button type="submit" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl shadow">Save & Publish Notice</button>
+                    <button type="submit" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl shadow">
+                        <i class="fa-solid fa-floppy-disk mr-1"></i> নোটিশ সেভ ও পাবলিশ করুন
+                    </button>
                 </form>
             </div>
         </section>
 
-        <!-- Section: Settings -->
+        <!-- Section: Modular Settings (Each saves separately) -->
         <section id="view-settings" class="hidden space-y-5">
-            <div class="glass-panel p-6 rounded-2xl space-y-4">
-                <h3 class="text-sm font-bold text-teal-400 flex items-center gap-2">
-                    <i class="fa-solid fa-sliders"></i> Withdraw & Ad Settings Controller
-                </h3>
-                <form onsubmit="saveAppSettings(event)" class="space-y-6 text-xs">
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
-                            <label class="block text-amber-400 font-bold mb-1 text-sm">সর্বনিম্ন উত্তোলন (BDT ৳)</label>
-                            <input type="number" id="s_min_withdraw" value="50.00" step="1" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white font-bold text-sm">
-                        </div>
-                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
-                            <label class="block text-emerald-400 font-bold mb-1 text-sm">Pop-up Banner Key (Adsterra)</label>
-                            <input type="text" id="s_banner_key" placeholder="ad5e35bd1c459f37a4cb5a9eba66ed21" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white font-mono">
-                        </div>
+            
+            <!-- 1. System Base Control -->
+            <div class="glass-panel p-5 rounded-2xl space-y-3">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-wallet"></i> উইথড্র লিমিট ও পপ-আপ ব্যানার কি
+                    </h3>
+                    <button onclick="saveBaseSettings()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg shadow">
+                        সেভ করুন
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-slate-300 font-bold mb-1">সর্বনিম্ন উইথড্র লিমিট (BDT ৳)</label>
+                        <input type="number" id="s_min_withdraw" value="50.00" step="1" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white font-bold">
                     </div>
-
-                    <!-- Math Settings -->
-                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
-                        <h4 class="font-bold text-purple-400 text-sm">Math Quiz Settings</h4>
-                        <div>
-                            <label class="block text-slate-400 mb-1">Direct Ad Link</label>
-                            <input type="url" id="s_math_url" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
-                        </div>
-                        <div class="grid grid-cols-3 gap-3">
-                            <div>
-                                <label class="block text-slate-400 mb-1">Timer (s)</label>
-                                <input type="number" id="s_math_timer" value="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
-                            </div>
-                            <div>
-                                <label class="block text-slate-400 mb-1">Min (৳)</label>
-                                <input type="number" step="0.01" id="s_math_min" value="0.10" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
-                            </div>
-                            <div>
-                                <label class="block text-slate-400 mb-1">Max (৳)</label>
-                                <input type="number" step="0.01" id="s_math_max" value="0.50" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
-                            </div>
-                        </div>
+                    <div>
+                        <label class="block text-slate-300 font-bold mb-1">Adsterra Pop-up Banner Key</label>
+                        <input type="text" id="s_banner_key" placeholder="ad5e35bd1c459f37a4cb5a9eba66ed21" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white font-mono">
                     </div>
-
-                    <!-- Spin Settings -->
-                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
-                        <h4 class="font-bold text-teal-400 text-sm">Lucky Spin Wheel Settings</h4>
-                        <div>
-                            <label class="block text-slate-400 mb-1">Direct Ad Link</label>
-                            <input type="url" id="s_spin_url" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
-                        </div>
-                        <div class="grid grid-cols-3 gap-3">
-                            <div>
-                                <label class="block text-slate-400 mb-1">Timer (s)</label>
-                                <input type="number" id="s_spin_timer" value="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
-                            </div>
-                            <div>
-                                <label class="block text-slate-400 mb-1">Min (৳)</label>
-                                <input type="number" step="0.01" id="s_spin_min" value="0.10" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
-                            </div>
-                            <div>
-                                <label class="block text-slate-400 mb-1">Max (৳)</label>
-                                <input type="number" step="0.01" id="s_spin_max" value="1.00" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Scratch Settings -->
-                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
-                        <h4 class="font-bold text-pink-400 text-sm">Scratch Card Settings</h4>
-                        <div>
-                            <label class="block text-slate-400 mb-1">Direct Ad Link</label>
-                            <input type="url" id="s_scratch_url" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
-                        </div>
-                        <div class="grid grid-cols-3 gap-3">
-                            <div>
-                                <label class="block text-slate-400 mb-1">Timer (s)</label>
-                                <input type="number" id="s_scratch_timer" value="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
-                            </div>
-                            <div>
-                                <label class="block text-slate-400 mb-1">Min (৳)</label>
-                                <input type="number" step="0.01" id="s_scratch_min" value="0.10" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
-                            </div>
-                            <div>
-                                <label class="block text-slate-400 mb-1">Max (৳)</label>
-                                <input type="number" step="0.01" id="s_scratch_max" value="1.00" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg">Save All Settings (Instant Sync)</button>
-                </form>
+                </div>
             </div>
+
+            <!-- 2. Math Quiz Settings -->
+            <div class="glass-panel p-5 rounded-2xl space-y-3">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <h3 class="text-sm font-bold text-purple-400 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator"></i> Math Quiz অ্যাড ও সেটিংস
+                    </h3>
+                    <button onclick="saveMathSettings()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-lg shadow">
+                        Math সেভ করুন
+                    </button>
+                </div>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="block text-slate-300 mb-1">Direct Ad Link</label>
+                        <input type="url" id="s_math_url" placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-slate-400 mb-1">টাইমার (সেকেন্ড)</label>
+                            <input type="number" id="s_math_timer" value="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">মিনিমাম (৳)</label>
+                            <input type="number" step="0.01" id="s_math_min" value="0.10" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">ম্যাক্সিমাম (৳)</label>
+                            <input type="number" step="0.01" id="s_math_max" value="0.50" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Spin Wheel Settings -->
+            <div class="glass-panel p-5 rounded-2xl space-y-3">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <h3 class="text-sm font-bold text-teal-400 flex items-center gap-2">
+                        <i class="fa-solid fa-arrows-spin"></i> Lucky Spin Wheel অ্যাড ও সেটিংস
+                    </h3>
+                    <button onclick="saveSpinSettings()" class="px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs rounded-lg shadow">
+                        Spin সেভ করুন
+                    </button>
+                </div>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="block text-slate-300 mb-1">Direct Ad Link</label>
+                        <input type="url" id="s_spin_url" placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-slate-400 mb-1">টাইমার (সেকেন্ড)</label>
+                            <input type="number" id="s_spin_timer" value="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">মিনিমাম (৳)</label>
+                            <input type="number" step="0.01" id="s_spin_min" value="0.10" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">ম্যাক্সিমাম (৳)</label>
+                            <input type="number" step="0.01" id="s_spin_max" value="1.00" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Scratch Card Settings -->
+            <div class="glass-panel p-5 rounded-2xl space-y-3">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <h3 class="text-sm font-bold text-pink-400 flex items-center gap-2">
+                        <i class="fa-solid fa-gift"></i> Scratch Card অ্যাড ও সেটিংস
+                    </h3>
+                    <button onclick="saveScratchSettings()" class="px-3 py-1.5 bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs rounded-lg shadow">
+                        Scratch সেভ করুন
+                    </button>
+                </div>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="block text-slate-300 mb-1">Direct Ad Link</label>
+                        <input type="url" id="s_scratch_url" placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-slate-400 mb-1">টাইমার (সেকেন্ড)</label>
+                            <input type="number" id="s_scratch_timer" value="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">মিনিমাম (৳)</label>
+                            <input type="number" step="0.01" id="s_scratch_min" value="0.10" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">ম্যাক্সিমাম (৳)</label>
+                            <input type="number" step="0.01" id="s_scratch_max" value="1.00" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
         <!-- Section: Tasks Management -->
         <section id="view-tasks" class="hidden glass-panel p-5 rounded-2xl space-y-4">
-            <h3 class="text-sm font-bold text-white">Tasks List (সরাসরি এডিট ও ডিলিট)</h3>
+            <h3 class="text-sm font-bold text-white">টাস্ক তালিকা (লাইভ এডিট ও ডিলিট)</h3>
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs text-slate-300">
                     <thead class="bg-slate-800/80 text-slate-400 border-b border-slate-700">
                         <tr>
-                            <th class="p-3">Title</th>
-                            <th class="p-3">Reward (৳)</th>
-                            <th class="p-3">Timer (s)</th>
-                            <th class="p-3">Link</th>
-                            <th class="p-3 text-right">Actions</th>
+                            <th class="p-3">আইডি</th>
+                            <th class="p-3">শিরোনাম</th>
+                            <th class="p-3">রিওয়ার্ড (৳)</th>
+                            <th class="p-3">টাইমার (s)</th>
+                            <th class="p-3">লিংক</th>
+                            <th class="p-3 text-right">অ্যাকশন</th>
                         </tr>
                     </thead>
                     <tbody id="taskBody" class="divide-y divide-slate-800"></tbody>
@@ -231,11 +264,11 @@
                 <table class="w-full text-left text-xs text-slate-300">
                     <thead class="bg-slate-800/80 text-slate-400 border-b border-slate-700">
                         <tr>
-                            <th class="p-3">User</th>
-                            <th class="p-3">ID</th>
-                            <th class="p-3">Balance (৳)</th>
-                            <th class="p-3">Refer</th>
-                            <th class="p-3 text-right">Edit</th>
+                            <th class="p-3">ইউজার নাম</th>
+                            <th class="p-3">আইডি</th>
+                            <th class="p-3">ব্যালেন্স (৳)</th>
+                            <th class="p-3">রেফার</th>
+                            <th class="p-3 text-right">ব্যালেন্স এডিট</th>
                         </tr>
                     </thead>
                     <tbody id="userBody" class="divide-y divide-slate-800"></tbody>
@@ -245,17 +278,17 @@
 
         <!-- Section: Withdrawals -->
         <section id="view-withdrawals" class="hidden glass-panel p-5 rounded-2xl space-y-4">
-            <h3 class="text-sm font-bold text-white">উইথড্র রিকোয়েস্ট</h3>
+            <h3 class="text-sm font-bold text-white">উইথড্র রিকোয়েস্ট তালিকা</h3>
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs text-slate-300">
                     <thead class="bg-slate-800/80 text-slate-400 border-b border-slate-700">
                         <tr>
-                            <th class="p-3">User</th>
-                            <th class="p-3">Method</th>
-                            <th class="p-3">Account</th>
-                            <th class="p-3">Amount (৳)</th>
-                            <th class="p-3">Status</th>
-                            <th class="p-3 text-right">Action</th>
+                            <th class="p-3">ইউজার</th>
+                            <th class="p-3">মেথড</th>
+                            <th class="p-3">একাউন্ট নম্বর</th>
+                            <th class="p-3">পরিমাণ (৳)</th>
+                            <th class="p-3">স্ট্যাটাস</th>
+                            <th class="p-3 text-right">অ্যাকশন</th>
                         </tr>
                     </thead>
                     <tbody id="withdrawBody" class="divide-y divide-slate-800"></tbody>
@@ -269,31 +302,31 @@
     <div id="addTaskModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="glass-panel w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-                <h3 class="text-sm font-bold text-white">Add New Task</h3>
+                <h3 class="text-sm font-bold text-white">নতুন টাস্ক / ভিডিও যোগ করুন</h3>
                 <button onclick="closeModal('addTaskModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="handleAddTask(event)" class="space-y-3 text-xs">
                 <div>
-                    <label class="block text-slate-300 mb-1">Title</label>
+                    <label class="block text-slate-300 mb-1">ভিডিও / টাস্ক শিরোনাম</label>
                     <input type="text" id="tTitle" placeholder="Video 1" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-slate-300 mb-1">Reward (৳)</label>
+                        <label class="block text-slate-300 mb-1">রিওয়ার্ড (৳)</label>
                         <input type="number" step="0.01" id="tReward" value="1.00" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
                     </div>
                     <div>
-                        <label class="block text-slate-400 mb-1">Timer (s)</label>
+                        <label class="block text-slate-400 mb-1">টাইমার (s)</label>
                         <input type="number" id="tTimer" value="30" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-slate-300 mb-1">URL / Video Link</label>
+                    <label class="block text-slate-300 mb-1">ভিডিও বা অ্যাড লিংক</label>
                     <input type="url" id="tUrl" placeholder="https://..." required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-slate-700">
-                    <button type="button" onclick="closeModal('addTaskModal')" class="px-3 py-2 bg-slate-800 text-slate-300 rounded-xl">Cancel</button>
-                    <button type="submit" id="addTaskSubmitBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl">Publish</button>
+                    <button type="button" onclick="closeModal('addTaskModal')" class="px-3 py-2 bg-slate-800 text-slate-300 rounded-xl">বাতিল</button>
+                    <button type="submit" id="addTaskSubmitBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl">পাবলিশ করুন</button>
                 </div>
             </form>
         </div>
@@ -303,30 +336,30 @@
     <div id="editTaskModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="glass-panel w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-                <h3 class="text-sm font-bold text-white">Edit Task Details</h3>
+                <h3 class="text-sm font-bold text-white">টাস্ক তথ্য এডিট করুন</h3>
                 <button onclick="closeModal('editTaskModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="handleUpdateTask(event)" class="space-y-3 text-xs">
                 <input type="hidden" id="editTaskId">
                 <div>
-                    <label class="block text-slate-300 mb-1">Title</label>
+                    <label class="block text-slate-300 mb-1">শিরোনাম</label>
                     <input type="text" id="editTaskTitle" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-slate-300 mb-1">Reward (৳)</label>
+                        <label class="block text-slate-300 mb-1">রিওয়ার্ড (৳)</label>
                         <input type="number" step="0.01" id="editTaskReward" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
                     </div>
                     <div>
-                        <label class="block text-slate-400 mb-1">Timer (s)</label>
+                        <label class="block text-slate-400 mb-1">টাইমার (s)</label>
                         <input type="number" id="editTaskTimer" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-slate-300 mb-1">URL</label>
+                    <label class="block text-slate-300 mb-1">লিংক</label>
                     <input type="url" id="editTaskUrl" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white">
                 </div>
-                <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow">Update Task</button>
+                <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow">আপডেট করুন</button>
             </form>
         </div>
     </div>
@@ -335,20 +368,20 @@
     <div id="editBalanceModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="glass-panel w-full max-w-xs rounded-2xl p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-                <h3 class="text-sm font-bold text-white">Modify User Balance</h3>
+                <h3 class="text-sm font-bold text-white">ইউজার ব্যালেন্স পরিবর্তন</h3>
                 <button onclick="closeModal('editBalanceModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="handleUpdateBalance(event)" class="space-y-3 text-xs">
                 <input type="hidden" id="editUserId">
                 <div>
-                    <label class="block text-slate-400 mb-1">User Name</label>
+                    <label class="block text-slate-400 mb-1">ইউজার নাম</label>
                     <input type="text" id="editUserName" disabled class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-slate-400 font-bold">
                 </div>
                 <div>
-                    <label class="block text-slate-300 font-bold mb-1">New Balance (BDT ৳)</label>
+                    <label class="block text-slate-300 font-bold mb-1">নতুন ব্যালেন্স (BDT ৳)</label>
                     <input type="number" step="0.01" id="editUserBalance" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-bold text-base">
                 </div>
-                <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow">Save Balance</button>
+                <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow">ব্যালেন্স সেভ করুন</button>
             </form>
         </div>
     </div>
@@ -391,8 +424,64 @@
                     document.getElementById('s_scratch_max').value = data.scratch_max || 1.00;
                 }
             } catch(e) {
-                console.error(e);
+                console.error("Settings load error:", e);
             }
+        }
+
+        // ================= SEPARATE SAVE FUNCTIONS ================= //
+
+        async function saveBaseSettings() {
+            const payload = {
+                id: 'default',
+                min_withdraw: parseFloat(document.getElementById('s_min_withdraw').value) || 50.00,
+                banner_key: document.getElementById('s_banner_key').value.trim() || 'ad5e35bd1c459f37a4cb5a9eba66ed21',
+                updated_at: new Date().toISOString()
+            };
+            const { error } = await supabaseClient.from('app_settings').upsert(payload, { onConflict: 'id' });
+            if (error) alert('উইথড্র সেটিংস সেভ হয়নি: ' + error.message);
+            else showToast('উইথড্র ও ব্যানার সেটিংস সেভ হয়েছে!');
+        }
+
+        async function saveMathSettings() {
+            const payload = {
+                id: 'default',
+                math_ad_url: document.getElementById('s_math_url').value.trim(),
+                math_timer: parseInt(document.getElementById('s_math_timer').value) || 12,
+                math_min: parseFloat(document.getElementById('s_math_min').value) || 0.10,
+                math_max: parseFloat(document.getElementById('s_math_max').value) || 0.50,
+                updated_at: new Date().toISOString()
+            };
+            const { error } = await supabaseClient.from('app_settings').upsert(payload, { onConflict: 'id' });
+            if (error) alert('Math সেটিংস সেভ হয়নি: ' + error.message);
+            else showToast('Math Quiz সেটিংস সফলভাবে সেভ হয়েছে!');
+        }
+
+        async function saveSpinSettings() {
+            const payload = {
+                id: 'default',
+                spin_ad_url: document.getElementById('s_spin_url').value.trim(),
+                spin_timer: parseInt(document.getElementById('s_spin_timer').value) || 12,
+                spin_min: parseFloat(document.getElementById('s_spin_min').value) || 0.10,
+                spin_max: parseFloat(document.getElementById('s_spin_max').value) || 1.00,
+                updated_at: new Date().toISOString()
+            };
+            const { error } = await supabaseClient.from('app_settings').upsert(payload, { onConflict: 'id' });
+            if (error) alert('Spin সেটিংস সেভ হয়নি: ' + error.message);
+            else showToast('Lucky Spin সেটিংস সফলভাবে সেভ হয়েছে!');
+        }
+
+        async function saveScratchSettings() {
+            const payload = {
+                id: 'default',
+                scratch_ad_url: document.getElementById('s_scratch_url').value.trim(),
+                scratch_timer: parseInt(document.getElementById('s_scratch_timer').value) || 12,
+                scratch_min: parseFloat(document.getElementById('s_scratch_min').value) || 0.10,
+                scratch_max: parseFloat(document.getElementById('s_scratch_max').value) || 1.00,
+                updated_at: new Date().toISOString()
+            };
+            const { error } = await supabaseClient.from('app_settings').upsert(payload, { onConflict: 'id' });
+            if (error) alert('Scratch সেটিংস সেভ হয়নি: ' + error.message);
+            else showToast('Scratch Card সেটিংস সফলভাবে সেভ হয়েছে!');
         }
 
         async function saveNoticeSettings(e) {
@@ -405,44 +494,11 @@
                 updated_at: new Date().toISOString()
             };
             const { error } = await supabaseClient.from('app_settings').upsert(payload, { onConflict: 'id' });
-            if (error) {
-                alert('Notice save error: ' + error.message);
-            } else {
-                showToast('Notice instant update hoyeche!');
-            }
+            if (error) alert('নোটিশ সেভ হয়নি: ' + error.message);
+            else showToast('নোটিশ সফলভাবে সেভ ও পাবলিশ হয়েছে!');
         }
 
-        async function saveAppSettings(e) {
-            e.preventDefault();
-            const payload = {
-                id: 'default',
-                min_withdraw: parseFloat(document.getElementById('s_min_withdraw').value) || 50.00,
-                banner_key: document.getElementById('s_banner_key').value.trim() || 'ad5e35bd1c459f37a4cb5a9eba66ed21',
-                math_ad_url: document.getElementById('s_math_url').value.trim(),
-                math_timer: parseInt(document.getElementById('s_math_timer').value) || 12,
-                math_min: parseFloat(document.getElementById('s_math_min').value) || 0.10,
-                math_max: parseFloat(document.getElementById('s_math_max').value) || 0.50,
-
-                spin_ad_url: document.getElementById('s_spin_url').value.trim(),
-                spin_timer: parseInt(document.getElementById('s_spin_timer').value) || 12,
-                spin_min: parseFloat(document.getElementById('s_spin_min').value) || 0.10,
-                spin_max: parseFloat(document.getElementById('s_spin_max').value) || 1.00,
-
-                scratch_ad_url: document.getElementById('s_scratch_url').value.trim(),
-                scratch_timer: parseInt(document.getElementById('s_scratch_timer').value) || 12,
-                scratch_min: parseFloat(document.getElementById('s_scratch_min').value) || 0.10,
-                scratch_max: parseFloat(document.getElementById('s_scratch_max').value) || 1.00,
-                updated_at: new Date().toISOString()
-            };
-
-            const { error } = await supabaseClient.from('app_settings').upsert(payload, { onConflict: 'id' });
-            if (error) {
-                console.error("Save error:", error);
-                alert('Save failed: ' + error.message);
-            } else {
-                showToast('Settings saved & synced instantly!');
-            }
-        }
+        // ================= TASKS, USERS & WITHDRAW ================= //
 
         async function loadDashboardData() {
             const { data: tData } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
@@ -464,10 +520,11 @@
 
         function renderTasks() {
             const body = document.getElementById('taskBody');
-            body.innerHTML = tasks.length ? "" : `<tr><td colspan="5" class="p-3 text-center text-slate-500">কোনো টাস্ক নেই।</td></tr>`;
+            body.innerHTML = tasks.length ? "" : `<tr><td colspan="6" class="p-3 text-center text-slate-500">কোনো টাস্ক নেই।</td></tr>`;
             tasks.forEach((t) => {
                 body.innerHTML += `
                     <tr>
+                        <td class="p-3 font-mono text-slate-400 text-[11px]">${t.id}</td>
                         <td class="p-3 font-bold text-white">${t.title}</td>
                         <td class="p-3 text-emerald-400 font-bold">৳${Number(t.reward).toFixed(2)}</td>
                         <td class="p-3">${t.timer}s</td>
@@ -501,10 +558,14 @@
                 timer: parseInt(document.getElementById('editTaskTimer').value),
                 url: document.getElementById('editTaskUrl').value
             };
-            await supabaseClient.from('tasks').update(updated).eq('id', id);
-            closeModal('editTaskModal');
-            showToast('টাস্ক তথ্য আপডেট হয়েছে!');
-            loadDashboardData();
+            const { error } = await supabaseClient.from('tasks').update(updated).eq('id', id);
+            if (error) {
+                alert('আপডেট ব্যর্থ হয়েছে: ' + error.message);
+            } else {
+                closeModal('editTaskModal');
+                showToast('টাস্ক তথ্য আপডেট হয়েছে!');
+                await loadDashboardData();
+            }
         }
 
         function renderUsers() {
@@ -538,10 +599,14 @@
             e.preventDefault();
             const uid = document.getElementById('editUserId').value;
             const newBal = parseFloat(document.getElementById('editUserBalance').value);
-            await supabaseClient.from('users').update({ balance: newBal }).eq('id', uid);
-            closeModal('editBalanceModal');
-            showToast('ইউজারের ব্যালেন্স সফলভাবে আপডেট হয়েছে!');
-            loadDashboardData();
+            const { error } = await supabaseClient.from('users').update({ balance: newBal }).eq('id', uid);
+            if (error) {
+                alert('ব্যালেন্স আপডেট হয়নি: ' + error.message);
+            } else {
+                closeModal('editBalanceModal');
+                showToast('ইউজারের ব্যালেন্স সফলভাবে আপডেট হয়েছে!');
+                await loadDashboardData();
+            }
         }
 
         function renderWithdrawals() {
@@ -565,13 +630,18 @@
             });
         }
 
+        // ================= FIX FOR NULL ID ERROR ================= //
         async function handleAddTask(e) {
             e.preventDefault();
             const btn = document.getElementById('addTaskSubmitBtn');
             btn.disabled = true;
             btn.innerText = "Adding...";
 
+            // Generate guaranteed numeric integer ID
+            const generatedId = Math.floor(Date.now() / 1000);
+
             const newTask = {
+                id: generatedId,
                 title: document.getElementById('tTitle').value.trim(),
                 reward: parseFloat(document.getElementById('tReward').value) || 1.00,
                 timer: parseInt(document.getElementById('tTimer').value) || 30,
@@ -589,7 +659,7 @@
                 alert("টাস্ক সেভ হয়নি: " + error.message);
             } else {
                 closeModal('addTaskModal');
-                showToast('টাস্ক সফলভাবে তৈরি হয়েছে!');
+                showToast('টাস্ক সফলভাবে পাবলিশ হয়েছে!');
                 e.target.reset();
                 await loadDashboardData();
             }
@@ -599,7 +669,7 @@
             if (!confirm('সত্যিই কি টাস্কটি ডিলিট করতে চান?')) return;
             const { error } = await supabaseClient.from('tasks').delete().eq('id', id);
             if (error) {
-                alert('Delete error: ' + error.message);
+                alert('ডিলিট এরর: ' + error.message);
             } else {
                 showToast('টাস্ক মুছে ফেলা হয়েছে');
                 await loadDashboardData();
@@ -609,7 +679,7 @@
         async function approveWithdrawal(id) {
             await supabaseClient.from('withdrawals').update({ status: 'Approved' }).eq('id', id);
             showToast('উইথড্র অ্যাপ্রুভ করা হয়েছে!');
-            loadDashboardData();
+            await loadDashboardData();
         }
 
         function switchTab(tab) {
