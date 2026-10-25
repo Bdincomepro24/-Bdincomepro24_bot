@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Trend Video Hub</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -20,42 +17,22 @@
             user-select: none;
             -webkit-user-select: none;
         }
-        .header-gradient {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-        }
-        .balance-card-gradient {
-            background: linear-gradient(135deg, #6366f1 0%, #3b82f6 50%, #60a5fa 100%);
-        }
-        .withdraw-banner-btn {
-            background: linear-gradient(90deg, #f43f5e 0%, #fb7185 100%);
-            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
-        }
-        .glass-box {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-        }
-        .nav-home-bubble {
-            background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
-        }
-        #spinWheel {
-            transition: transform 3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
+        .header-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        .balance-card-gradient { background: linear-gradient(135deg, #6366f1 0%, #3b82f6 50%, #60a5fa 100%); }
+        .withdraw-banner-btn { background: linear-gradient(90deg, #f43f5e 0%, #fb7185 100%); box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4); }
+        .glass-box { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.7); }
+        .nav-home-bubble { background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
+        #spinWheel { transition: transform 3s cubic-bezier(0.2, 0.8, 0.2, 1); }
     </style>
 </head>
 <body class="flex flex-col h-screen max-w-md mx-auto overflow-hidden relative text-slate-800">
 
     <!-- Top App Header -->
     <header class="header-gradient text-white px-4 py-3 flex justify-between items-center z-20 shadow-md">
-        <h1 class="font-extrabold text-base tracking-wide flex items-center gap-2">
-            Trend Video Hub
-        </h1>
+        <h1 class="font-extrabold text-base tracking-wide flex items-center gap-2">Trend Video Hub</h1>
         <div class="flex items-center space-x-3 text-white">
             <i class="fa-solid fa-ellipsis-vertical text-lg cursor-pointer"></i>
-            <button onclick="closeApp()" class="hover:opacity-80">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
+            <button onclick="closeApp()" class="hover:opacity-80"><i class="fa-solid fa-xmark text-xl"></i></button>
         </div>
     </header>
 
@@ -88,7 +65,6 @@
         <!-- Tab: Home -->
         <div id="tab-home" class="tab-content space-y-4">
             
-            <!-- Balance Card -->
             <div class="balance-card-gradient rounded-3xl p-5 text-white shadow-xl relative overflow-hidden">
                 <p class="text-xs font-semibold text-blue-100 uppercase tracking-wider">Total Balance</p>
                 <div class="flex items-baseline space-x-1.5 my-1.5">
@@ -107,7 +83,7 @@
                 </button>
             </div>
 
-            <!-- Quick Action 4-Grid: Math, Video, Scratch, Spin -->
+            <!-- Quick Action 4-Grid -->
             <div>
                 <p class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 px-1">Daily Earning Zones</p>
                 <div class="grid grid-cols-4 gap-2">
@@ -152,9 +128,7 @@
                         <p class="text-[10px] text-slate-500">Watch & earn extra cash daily</p>
                     </div>
                 </div>
-                <button onclick="switchTab('tab-tasks', 2)" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-2 rounded-xl shadow-md active:scale-95 transition">
-                    Watch Now
-                </button>
+                <button onclick="switchTab('tab-tasks', 2)" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-2 rounded-xl shadow-md active:scale-95 transition">Watch Now</button>
             </div>
 
         </div>
@@ -163,7 +137,7 @@
         <div id="tab-tasks" class="tab-content hidden space-y-3">
             <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">Watch Videos & Complete Tasks</h3>
             <div id="jobsList" class="space-y-2.5">
-                <div class="glass-box p-4 text-center text-xs text-slate-500 rounded-2xl">Loading tasks...</div>
+                <div class="glass-box p-4 text-center text-xs text-slate-500 rounded-2xl">Loading videos/tasks...</div>
             </div>
         </div>
 
@@ -273,7 +247,7 @@
                 <span class="text-2xl font-black text-purple-700 tracking-wider" id="mathProblem">5 + 8 = ?</span>
             </div>
             <input type="number" id="mathAnswer" placeholder="Your Answer" class="w-full text-center bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold text-lg">
-            <button onclick="submitMathQuiz()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95">Check & Claim (+$0.20)</button>
+            <button id="mathClaimBtn" onclick="submitMathQuiz()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95">Claim Reward</button>
         </div>
     </div>
 
@@ -302,8 +276,7 @@
             </div>
             <div class="relative w-44 h-44 mx-auto my-2">
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 -mt-2 z-10 text-red-500 text-xl font-black">▼</div>
-                <div id="spinWheel" class="w-full h-full rounded-full border-4 border-slate-800 shadow-xl overflow-hidden relative" style="background: conic-gradient(#10b981 0deg 60deg, #f59e0b 60deg 120deg, #3b82f6 120deg 180deg, #ec4899 180deg 240deg, #8b5cf6 240deg 300deg, #ef4444 300deg 360deg);">
-                </div>
+                <div id="spinWheel" class="w-full h-full rounded-full border-4 border-slate-800 shadow-xl overflow-hidden relative" style="background: conic-gradient(#10b981 0deg 60deg, #f59e0b 60deg 120deg, #3b82f6 120deg 180deg, #ec4899 180deg 240deg, #8b5cf6 240deg 300deg, #ef4444 300deg 360deg);"></div>
             </div>
             <button id="spinBtn" onclick="spinNow()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95">Spin Now!</button>
         </div>
@@ -347,7 +320,6 @@
         </div>
     </div>
 
-    <!-- Script Logic with Supabase -->
     <script>
         const SUPABASE_URL = "https://bldahjnrqtthnnlorkqx.supabase.co";
         const SUPABASE_KEY = "sb_publishable_KeZ0jUmEyj9OcZpngWy0pw_dZryTibp";
@@ -356,6 +328,12 @@
         const BOT_USERNAME = "Bdincomepro24_bot";
 
         let user = { id: "", name: "User", balance: 0.00, joined: 0 };
+        let appSettings = {
+            math_ad_url: '', math_timer: 15, math_min: 0.10, math_max: 0.50,
+            spin_ad_url: '', spin_timer: 15, spin_min: 0.10, spin_max: 1.00,
+            scratch_ad_url: '', scratch_timer: 15, scratch_min: 0.10, scratch_max: 1.00
+        };
+
         let tasks = [];
         let currentMathAns = 0;
         let currentScratchReward = 0;
@@ -364,15 +342,18 @@
 
         document.addEventListener("DOMContentLoaded", async () => {
             await initUser();
+            await fetchSettings();
             await loadTasks();
             await loadLeaderboard();
         });
 
-        async function initUser() {
-            let tgId = "";
-            let tgName = "";
-            let tgPhoto = "";
+        async function fetchSettings() {
+            const { data } = await supabaseClient.from('app_settings').select('*').eq('id', 'default').single();
+            if (data) appSettings = data;
+        }
 
+        async function initUser() {
+            let tgId = "", tgName = "", tgPhoto = "";
             const tg = window.Telegram?.WebApp;
             if (tg) {
                 tg.ready();
@@ -408,15 +389,10 @@
                     user.balance = Number(data.balance || 0);
                     user.joined = data.joined || 0;
                 } else {
-                    await supabaseClient.from('users').insert([{
-                        id: user.id,
-                        name: user.name,
-                        balance: 0.00,
-                        joined: 0
-                    }]);
+                    await supabaseClient.from('users').insert([{ id: user.id, name: user.name, balance: 0.00, joined: 0 }]);
                 }
             } catch (err) {
-                console.error("Supabase user err:", err);
+                console.error(err);
             }
 
             await checkReferral(user.id);
@@ -429,24 +405,19 @@
             if (tg?.initDataUnsafe?.start_param) {
                 refId = String(tg.initDataUnsafe.start_param);
             } else {
-                const params = new URLSearchParams(window.location.search);
-                refId = params.get('start');
+                refId = new URLSearchParams(window.location.search).get('start');
             }
 
             if (refId && refId !== uid) {
                 const already = localStorage.getItem('pki_ref_done');
                 if (!already) {
                     localStorage.setItem('pki_ref_done', 'true');
-                    try {
-                        const { data: refUser } = await supabaseClient.from('users').select('*').eq('id', refId).single();
-                        if (refUser) {
-                            await supabaseClient.from('users').update({
-                                joined: (refUser.joined || 0) + 1,
-                                balance: Number(refUser.balance || 0) + 1.00
-                            }).eq('id', refId);
-                        }
-                    } catch (e) {
-                        console.error("Ref error:", e);
+                    const { data: refUser } = await supabaseClient.from('users').select('*').eq('id', refId).single();
+                    if (refUser) {
+                        await supabaseClient.from('users').update({
+                            joined: (refUser.joined || 0) + 1,
+                            balance: Number(refUser.balance || 0) + 1.00
+                        }).eq('id', refId);
                     }
                 }
             }
@@ -457,7 +428,6 @@
             document.getElementById('profName').innerText = user.name;
             document.getElementById('headerUserId').innerText = "ID: " + user.id;
             document.getElementById('profId').innerText = "ID: " + user.id;
-            
             document.getElementById('homeBalance').innerText = Number(user.balance).toFixed(2);
             document.getElementById('refCount').innerText = user.joined || 0;
             document.getElementById('refBonus').innerText = "$" + Number(user.joined * 1.00).toFixed(2);
@@ -467,6 +437,12 @@
             document.getElementById('progressFill').style.width = `${Math.max(pct, 5)}%`;
         }
 
+        function getRandomReward(min, max) {
+            const rMin = parseFloat(min) || 0.10;
+            const rMax = parseFloat(max) || 1.00;
+            return parseFloat((Math.random() * (rMax - rMin) + rMin).toFixed(2));
+        }
+
         async function saveUserBalance(reward, actionText) {
             user.balance += reward;
             await supabaseClient.from('users').update({ balance: user.balance }).eq('id', user.id);
@@ -474,22 +450,18 @@
             showToast(`+$${reward.toFixed(2)} ${actionText}!`);
         }
 
-        // ================= TASKS / VIDEOS ================= //
+        // ================= 1. VIDEO & TASKS ================= //
         async function loadTasks() {
-            try {
-                const { data } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
-                tasks = data || [];
-                renderTasks();
-            } catch (err) {
-                console.error(err);
-            }
+            const { data } = await supabaseClient.from('tasks').select('*').eq('active', true).order('id', { ascending: false });
+            tasks = data || [];
+            renderTasks();
         }
 
         function renderTasks() {
             const list = document.getElementById('jobsList');
             list.innerHTML = "";
             if (tasks.length === 0) {
-                list.innerHTML = `<div class="glass-box p-6 text-center text-xs text-slate-500 rounded-2xl">No video tasks available right now.</div>`;
+                list.innerHTML = `<div class="glass-box p-6 text-center text-xs text-slate-500 rounded-2xl">No video tasks available.</div>`;
                 return;
             }
 
@@ -505,7 +477,7 @@
                                 <p class="text-[10px] font-bold text-emerald-600">+$${Number(t.reward).toFixed(2)} • <span class="text-slate-400">${t.timer}s</span></p>
                             </div>
                         </div>
-                        <button onclick="startTask(this, ${t.reward}, ${t.timer}, '${t.url}')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl active:scale-95">Start</button>
+                        <button onclick="startTask(this, ${t.reward}, ${t.timer}, '${t.url}')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl active:scale-95">Watch</button>
                     </div>
                 `;
             });
@@ -525,41 +497,62 @@
                     clearInterval(timerId);
                     btn.className = "bg-emerald-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl";
                     btn.innerText = "Done";
-                    await saveUserBalance(reward, "from Task/Video");
+                    await saveUserBalance(reward, "from Video");
                 }
             }, 1000);
         }
 
-        // ================= 1. MATH QUIZ ================= //
+        // ================= 2. MATH QUIZ ================= //
         function generateMathQuiz() {
             const n1 = Math.floor(Math.random() * 20) + 1;
             const n2 = Math.floor(Math.random() * 20) + 1;
             currentMathAns = n1 + n2;
             document.getElementById('mathProblem').innerText = `${n1} + ${n2} = ?`;
             document.getElementById('mathAnswer').value = "";
+            const btn = document.getElementById('mathClaimBtn');
+            btn.disabled = false;
+            btn.innerText = "Claim Reward";
+            btn.className = "w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-xl shadow active:scale-95";
         }
 
         async function submitMathQuiz() {
             const ans = parseInt(document.getElementById('mathAnswer').value);
-            if (ans === currentMathAns) {
-                closeModal('mathModal');
-                await saveUserBalance(0.20, "from Math Quiz");
-            } else {
-                showToast("Wrong answer! Try again.");
-                generateMathQuiz();
+            if (ans !== currentMathAns) {
+                showToast("ভুল উত্তর! আবার চেষ্টা করুন।");
+                return generateMathQuiz();
             }
+
+            const btn = document.getElementById('mathClaimBtn');
+            btn.disabled = true;
+
+            // Open Ad Link
+            if (appSettings.math_ad_url) window.open(appSettings.math_ad_url, '_blank');
+
+            let left = appSettings.math_timer || 15;
+            btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
+
+            const timerId = setInterval(async () => {
+                btn.innerText = `অ্যাড দেখুন (${left}s)...`;
+                left--;
+                if (left < 0) {
+                    clearInterval(timerId);
+                    closeModal('mathModal');
+                    const earned = getRandomReward(appSettings.math_min, appSettings.math_max);
+                    await saveUserBalance(earned, "from Math Quiz");
+                }
+            }, 1000);
         }
 
-        // ================= 2. SCRATCH REWARD ================= //
+        // ================= 3. SCRATCH CARD ================= //
         function resetScratch() {
-            const rewards = [0.10, 0.25, 0.50, 0.15, 0.30];
-            currentScratchReward = rewards[Math.floor(Math.random() * rewards.length)];
+            currentScratchReward = getRandomReward(appSettings.scratch_min, appSettings.scratch_max);
             const card = document.getElementById('scratchCard');
             card.className = "w-48 h-32 mx-auto bg-gradient-to-tr from-pink-500 to-rose-400 rounded-2xl flex flex-col items-center justify-center text-white font-extrabold shadow-lg cursor-pointer active:scale-95 transition";
             card.innerHTML = `<i class="fa-solid fa-hand-pointer text-2xl mb-1 animate-bounce"></i><span>Tap to Scratch</span>`;
             
             const btn = document.getElementById('claimScratchBtn');
             btn.disabled = true;
+            btn.innerText = "Claim Reward";
             btn.className = "w-full bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl shadow cursor-not-allowed";
         }
 
@@ -574,58 +567,82 @@
         }
 
         async function claimScratchReward() {
-            closeModal('scratchModal');
-            await saveUserBalance(currentScratchReward, "from Scratch Card");
+            const btn = document.getElementById('claimScratchBtn');
+            btn.disabled = true;
+
+            if (appSettings.scratch_ad_url) window.open(appSettings.scratch_ad_url, '_blank');
+
+            let left = appSettings.scratch_timer || 15;
+            btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
+
+            const timerId = setInterval(async () => {
+                btn.innerText = `অ্যাড দেখুন (${left}s)...`;
+                left--;
+                if (left < 0) {
+                    clearInterval(timerId);
+                    closeModal('scratchModal');
+                    await saveUserBalance(currentScratchReward, "from Scratch Card");
+                }
+            }, 1000);
         }
 
-        // ================= 3. LUCKY SPIN WHEEL ================= //
+        // ================= 4. LUCKY SPIN WHEEL ================= //
         function spinNow() {
             if (isSpinning) return;
             isSpinning = true;
-            document.getElementById('spinBtn').disabled = true;
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true;
 
-            const extraDeg = Math.floor(Math.random() * 360) + 1440; // 4 full spins + random angle
+            // Spin animation
+            const extraDeg = Math.floor(Math.random() * 360) + 1440;
             currentDegree += extraDeg;
             document.getElementById('spinWheel').style.transform = `rotate(${currentDegree}deg)`;
 
-            const rewards = [0.10, 0.20, 0.50, 0.15, 0.35, 0.05];
-            const won = rewards[Math.floor(Math.random() * rewards.length)];
+            const won = getRandomReward(appSettings.spin_min, appSettings.spin_max);
 
-            setTimeout(async () => {
-                isSpinning = false;
-                document.getElementById('spinBtn').disabled = false;
-                closeModal('spinModal');
-                await saveUserBalance(won, "from Lucky Spin");
+            setTimeout(() => {
+                // Open Ad Link
+                if (appSettings.spin_ad_url) window.open(appSettings.spin_ad_url, '_blank');
+
+                let left = appSettings.spin_timer || 15;
+                btn.className = "w-full bg-amber-500 text-white font-bold py-2.5 rounded-xl";
+
+                const timerId = setInterval(async () => {
+                    btn.innerText = `রিওয়ার্ড পেতে অ্যাড দেখুন (${left}s)...`;
+                    left--;
+                    if (left < 0) {
+                        clearInterval(timerId);
+                        isSpinning = false;
+                        btn.disabled = false;
+                        btn.className = "w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow";
+                        btn.innerText = "Spin Now!";
+                        closeModal('spinModal');
+                        await saveUserBalance(won, "from Lucky Spin");
+                    }
+                }, 1000);
+
             }, 3200);
         }
 
         // ================= LEADERBOARD ================= //
         async function loadLeaderboard() {
-            try {
-                const { data } = await supabaseClient.from('users').select('*').order('balance', { ascending: false }).limit(5);
-                const rList = document.getElementById('rankList');
-                if (!data || data.length === 0) {
-                    rList.innerHTML = `<div class="glass-box p-4 text-center text-slate-500 rounded-2xl">No rank data yet.</div>`;
-                    return;
-                }
-                rList.innerHTML = "";
-                data.forEach((u, i) => {
-                    rList.innerHTML += `
-                        <div class="glass-box p-3 rounded-2xl flex items-center justify-between">
-                            <div class="flex items-center space-x-2.5">
-                                <span class="w-6 h-6 rounded-full ${i===0?'bg-amber-400 text-slate-900':(i===1?'bg-slate-300 text-slate-800':'bg-amber-700 text-white')} flex items-center justify-center font-black text-[10px]">${i+1}</span>
-                                <div>
-                                    <p class="font-bold text-xs text-slate-800">${u.name}</p>
-                                    <p class="text-[10px] text-slate-400">ID: ${u.id}</p>
-                                </div>
+            const { data } = await supabaseClient.from('users').select('*').order('balance', { ascending: false }).limit(5);
+            const rList = document.getElementById('rankList');
+            rList.innerHTML = "";
+            (data || []).forEach((u, i) => {
+                rList.innerHTML += `
+                    <div class="glass-box p-3 rounded-2xl flex items-center justify-between">
+                        <div class="flex items-center space-x-2.5">
+                            <span class="w-6 h-6 rounded-full ${i===0?'bg-amber-400 text-slate-900':(i===1?'bg-slate-300 text-slate-800':'bg-amber-700 text-white')} flex items-center justify-center font-black text-[10px]">${i+1}</span>
+                            <div>
+                                <p class="font-bold text-xs text-slate-800">${u.name}</p>
+                                <p class="text-[10px] text-slate-400">ID: ${u.id}</p>
                             </div>
-                            <span class="font-black text-xs text-emerald-600">$${Number(u.balance || 0).toFixed(2)}</span>
                         </div>
-                    `;
-                });
-            } catch (e) {
-                console.error(e);
-            }
+                        <span class="font-black text-xs text-emerald-600">$${Number(u.balance || 0).toFixed(2)}</span>
+                    </div>
+                `;
+            });
         }
 
         // ================= WITHDRAW ================= //
